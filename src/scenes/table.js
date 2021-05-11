@@ -4,7 +4,8 @@ class Table extends Phaser.Scene{
   }
 
   preload(){
-
+    this.load.path= 'assets/';//shortens future path names
+    this.load.image('cards', 'cardBack.png');
   }
 
   create(){
@@ -13,7 +14,7 @@ class Table extends Phaser.Scene{
     this.mouse = this.input.activePointer;
 
     //creating "square" object for tests
-    this.square = this.add.rectangle(width/2, height/2, 100, 100)
+    this.square = this.add.rectangle(game.width/2, game.height/2, 100, 100,  0x6666ff);
   }
 
   update(){
