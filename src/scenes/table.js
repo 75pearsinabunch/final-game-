@@ -42,5 +42,6 @@ class Table extends Phaser.Scene {
   //event:???
   recordInput(pointer, gameObject, event){
     this.iL.pushAction({pointer, gameObject, event});
+    console.log("something");//just to see if card collision is detected 
   }
 }
