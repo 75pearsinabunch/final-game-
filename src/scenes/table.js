@@ -1,23 +1,41 @@
-class Table extends Phaser.Scene{
-  constructor(){
+class Table extends Phaser.Scene {
+  constructor() {
     super('tableScene')
   }
 
-  preload(){
-    this.load.path= 'assets/';//shortens future path names
+  preload() {
+    this.load.path = 'assets/';//shortens future path names
     this.load.image('cards', 'cardBack.png');
   }
 
-  create(){
+  create() {
+    //-------CAMERA---------
+    this.cameras.main.setBackgroundColor('#FFF');
+    console.log("scene started");
+    //-------INPUT OBJECTS------
     //using event system from prof Altice's example
     //https://newdocs.phaser.io/docs/3.54.0/Phaser.Input.Events
     this.mouse = this.input.activePointer;
 
-    //creating "square" object for tests
-    this.square = this.add.rectangle(game.width/2, game.height/2, 100, 100,  0x6666ff);
+    //-----ACTORS------
+    //Deck of cards
+    this.cards = this.add.sprite(gameConfig.width / 2, gameConfig.height / 2, 'cards');
+    this.cards.setInteractive();
+    this.input.on('gameobjectdown', (pointer, gameObject,event) => {
+      this.recordInput(pointer, gameObject, event);
+    }, this);
+    //-----PROMPTS-----
+    //sets up text at upper right of the screen
+    this.prompt = this.add.text(gameConfig.width-10, 100, '', { color: '#000' } ).setOrigin(1);
   }
 
-  update(){
-    console.log(this.mouse.active);
+  //The base of the data structure that will take in
+  //information about what was pressed and store it,
+  //just a function in its current iteration
+  //pointer: The pointer that pressed the object
+  //gameObject: The object pressed
+  //event:???
+  recordInput(pointer, gameObject, event){
+    console.log("Clicked on: "+gameObject.texture.key);
   }
 }

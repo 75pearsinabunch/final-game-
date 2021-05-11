@@ -1,10 +1,10 @@
 'use strict';
 
 let gameConfig = {
+  type: Phaser.AUTO, //auto render
   width: 500,
   height: 500,
-  type: Phaser.AUTO, //auto render
-  scene:[Table], //scenes
+  scene: [Table], //scenes
 };
 
 let game = new Phaser.Game(gameConfig);//instantiate game
