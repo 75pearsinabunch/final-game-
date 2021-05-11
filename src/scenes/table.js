@@ -41,7 +41,6 @@ class Table extends Phaser.Scene {
   //gameObject: The object pressed
   //event:???
   recordInput(pointer, gameObject, event){
-    let action = {pointer, gameObject, event}
-    this.iL.pushAction(action);
+    this.iL.pushAction({pointer, gameObject, event});
   }
 }
