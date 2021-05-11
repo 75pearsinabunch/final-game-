@@ -28,7 +28,7 @@ class Table extends Phaser.Scene {
 
     //-----INPUT LOGGER DATA STRUCTURE----
     this.iL = new InputLogger();
-    
+
     //-----PROMPTS-----
     //sets up text at upper right of the screen
     this.prompt = this.add.text(gameConfig.width-10, 100, '', { color: '#000' } ).setOrigin(1);
@@ -41,6 +41,7 @@ class Table extends Phaser.Scene {
   //gameObject: The object pressed
   //event:???
   recordInput(pointer, gameObject, event){
-    console.log("Clicked on: "+gameObject.texture.key);
+    let action = {pointer, gameObject, event}
+    this.iL.pushAction(action);
   }
 }
