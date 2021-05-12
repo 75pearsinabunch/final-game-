@@ -1,11 +1,11 @@
 //Input logger serves to store player input and hold it as a repository
 //for use across all objects. 
 class InputController {
-  constructor(text) {
+  constructor(scene) {
     //Variables
     this.actions = [];//used to store actions
     this.actors = [];
-    this.text = text;
+    this.scene = scene
   }
 
   //pushes a given action struct onto the actions stack
@@ -22,8 +22,7 @@ class InputController {
 
   generateStimulus(){
     let i = Phaser.Math.Between(0,this.actors.length);
-    this.text = i;
-    //console.log(i);
+    this.scene.promptAnim(i); 
   }
 
   //---PRINT STATEMENTS FOR TESTING

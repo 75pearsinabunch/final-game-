@@ -25,7 +25,7 @@ class Table extends Phaser.Scene {
 
 
     //-----INPUT LOGGER DATA STRUCTURE----
-    this.iC = new InputController(this.prompt.text);
+    this.iC = new InputController(this);
 
     //-----ACTORS------
     //Deck of cards
@@ -51,5 +51,18 @@ class Table extends Phaser.Scene {
   recordInput(pointer, gameObject, event) {
     this.iC.pushAction({ pointer, gameObject, event });
     console.log("something");//just to see if card collision is detected 
+  }
+
+  //changes the text of the prompt to a given statement
+  //shows prompt for a short time, then removes text
+  promptAnim(changeText){
+    this.prompt.text = changeText;
+    let promptTweenIn = this.tweens.add({
+      targets: this.prompt,
+      alpha:{from:0, to: 1},
+      duration: 3000,
+      yoyo:true,
+      hold: 1000,
+    })
   }
 }
