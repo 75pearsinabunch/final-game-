@@ -13,3 +13,5 @@ let game = new Phaser.Game(gameConfig);//instantiate game
 let settings = {
 
 }
+
+let value = 1;
