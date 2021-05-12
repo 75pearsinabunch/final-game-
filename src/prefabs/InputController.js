@@ -10,6 +10,7 @@ class InputController {
 
   //pushes a given action struct onto the actions stack
   //action: an input of form: {pointer, gameObject, event}
+  ///TODO: change action form
   pushAction(action) {
     this.actions.push(action);
   }
@@ -20,9 +21,12 @@ class InputController {
     this.actors.push(actor);
   }
 
+  //Selects an actor at random to determine what happens to it
   generateStimulus(){
+    //Selects actor and random
     let i = Phaser.Math.Between(0,this.actors.length);
-    this.scene.promptAnim(i); 
+    //this.scene.promptAnim(i);//Testing only 
+    //TODO: determine what action to take
   }
 
   //---PRINT STATEMENTS FOR TESTING
