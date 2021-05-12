@@ -10,28 +10,36 @@ class Table extends Phaser.Scene {
 
   create() {
     //-------CAMERA---------
-    this.cameras.main.setBackgroundColor('#FFF');
+    //this.cameras.main.setBackgroundColor('#FFF');
     console.log("scene started");
+
 
     //-------INPUT OBJECTS------
     //using event system from prof Altice's example
     //https://newdocs.phaser.io/docs/3.54.0/Phaser.Input.Events
     this.mouse = this.input.activePointer;
 
-    //-----ACTORS------
-    //Deck of cards
-    this.cards = this.add.sprite(gameConfig.width / 2, gameConfig.height / 2, 'cards');
-    this.cards.setInteractive();
-    this.input.on('gameobjectdown', (pointer, gameObject,event) => {
-      this.recordInput(pointer, gameObject, event);
-    }, this);
-
-    //-----INPUT LOGGER DATA STRUCTURE----
-    this.iL = new InputLogger();
-
     //-----PROMPTS-----
     //sets up text at upper right of the screen
-    this.prompt = this.add.text(gameConfig.width-10, 100, '', { color: '#000' } ).setOrigin(1);
+    this.prompt = this.add.text(gameConfig.width - 10, 100, 'prompt', { color: '#FFF' }).setOrigin(1);
+
+
+    //-----INPUT LOGGER DATA STRUCTURE----
+    this.iC = new InputController(this.prompt.text);
+
+    //-----ACTORS------
+    //Deck of cards
+    this.cards = new Actor(
+      this,//scene 
+      gameConfig.width / 2, //x
+      gameConfig.height / 2, //y
+      'cards', //texture
+      this.iC //input controller
+    );
+
+    //----MISC TESTING-----
+    this.iC.generateStimulus();
+
   }
 
   //The base of the data structure that will take in
@@ -40,8 +48,8 @@ class Table extends Phaser.Scene {
   //pointer: The pointer that pressed the object
   //gameObject: The object pressed
   //event:???
-  recordInput(pointer, gameObject, event){
-    this.iL.pushAction({pointer, gameObject, event});
+  recordInput(pointer, gameObject, event) {
+    this.iC.pushAction({ pointer, gameObject, event });
     console.log("something");//just to see if card collision is detected 
   }
 }
