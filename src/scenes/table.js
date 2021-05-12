@@ -21,24 +21,35 @@ class Table extends Phaser.Scene {
 
   create() {
     //-------CAMERA---------
-    this.cameras.main.setBackgroundColor('#FFF');
+    //this.cameras.main.setBackgroundColor('#FFF');
     console.log("scene started");
+
 
     //-------INPUT OBJECTS------
     //using event system from prof Altice's example
     //https://newdocs.phaser.io/docs/3.54.0/Phaser.Input.Events
     this.mouse = this.input.activePointer;
 
-    //-----ACTORS------
-    //Deck of cards
-    this.cards = this.add.sprite(gameConfig.width / 2, gameConfig.height / 2, 'cards');
-    this.cards.setInteractive();
-    this.input.on('gameobjectdown', (pointer, gameObject, event) => {
-      this.recordInput(pointer, gameObject, event);
-    }, this);
+    //-----PROMPTS-----
+    //sets up text at upper right of the screen
+    this.prompt = this.add.text(gameConfig.width - 10, 100, 'prompt', { color: '#FFF' }).setOrigin(1);
+
 
     //-----INPUT LOGGER DATA STRUCTURE----
-    this.iL = new InputLogger();
+    this.iC = new InputController(this);
+
+    //-----ACTORS------
+    //Deck of cards
+    this.cards = new Actor(
+      this,//scene 
+      gameConfig.width / 2, //x
+      gameConfig.height / 2, //y
+      'cards', //texture
+      this.iC //input controller
+    );
+
+    //----MISC TESTING-----
+    this.iC.generateStimulus();
 
     //-----PROMPTS-----
     //sets up text at upper right of the screen
@@ -98,5 +109,18 @@ class Table extends Phaser.Scene {
       value = value - 0.1;
     }
     this.setMeterPercentage(value);
+  }
+
+  //changes the text of the prompt to a given statement
+  //shows prompt for a short time, then removes text
+  promptAnim(changeText){
+    this.prompt.text = changeText;
+    let promptTweenIn = this.tweens.add({
+      targets: this.prompt,
+      alpha:{from:0, to: 1},
+      duration: 3000,
+      yoyo:true,
+      hold: 1000,
+    })
   }
 }
