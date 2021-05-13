@@ -44,6 +44,7 @@ class InputController {
     //Find random actor
     this.i = Phaser.Math.Between(0, (this.actors.length - 1));
     this.currActor = this.actors[this.i];
+    
 
     //stimulus object which holds information about results of functions
     let stimulus = {//this Can be const
