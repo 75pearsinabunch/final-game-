@@ -5,7 +5,8 @@ class InputController {
     //Variables
     this.actions = [];//used to store actions
     this.actors = [];
-    this.scene = scene
+    this.scene = scene;
+
   }
 
   //pushes a given action struct onto the actions stack
@@ -22,11 +23,39 @@ class InputController {
   }
 
   //Selects an actor at random to determine what happens to it
-  generateStimulus(){
+  generateStimulus(pointer, gameObject, event) {
     //Selects actor and random
-    let i = Phaser.Math.Between(0,this.actors.length);
-    //this.scene.promptAnim(i);//Testing only 
-    //TODO: determine what action to take
+    this.i = Phaser.Math.Between(0, (this.actors.length-1));
+    this.currActor = this.actors[this.i];
+    //figure out how to react
+    this.response = null;
+    switch (Phaser.Math.Between(0, 3)) {
+      case (0):
+        this.currActor.approve();
+        this.response = "good";
+        break;
+      case (1):
+        this.currActor.disapprove();
+        this.response = "bad";
+        break;
+      case (2):
+        this.currActor.vague();
+        this.response = "unknown";
+      default:
+        //Does nothing
+        this.response = null;
+        break;
+    }
+
+    //save action taken
+    this.action = {
+      pointer: pointer,
+      gameObject: gameObject,
+      event: event,
+      response: this.response
+    };
+
+    this.pushAction(this.action);
   }
 
   //---PRINT STATEMENTS FOR TESTING

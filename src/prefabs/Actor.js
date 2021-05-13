@@ -7,26 +7,29 @@ class Actor extends Phaser.GameObjects.Sprite {
     scene.add.existing(this);
     //Set interactivity
     this.setInteractive();
-    scene.input.on('gameobjectdown', (pointer, gameObject, event) => {
-      //records input to input logger
-      scene.recordInput(pointer, gameObject, event);
-    }, scene);
-
+    //Store actor in list of actors in input controller
     controller.pushActor(this);
 
     //variables
     this.scene = scene;
     this.tag = texture;
+    this.controller = controller;
   }
 
   //States a message of approval
   approve() {
+    //console.log("Actor, approve");
     //TODO: push action onto stack
+    //scene.setMeterPercentage(10);//TODO: should probably randomize
     this.scene.promptAnim(this.tag + " liked this");
   }
 
-//TODO: push action onto stack
   disapprove() {
+    //this.scene.setMeterPercentage(-10);//TODO: should probably randomize
     this.scene.promptAnim(this.tag + " disliked this");
+  }
+
+  vague() {
+    this.scene.promptAnim(this.tag + " will remember this");
   }
 }
