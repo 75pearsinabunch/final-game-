@@ -32,11 +32,17 @@ class Table extends Phaser.Scene {
 
     //-----PROMPTS-----
     //sets up text at upper right of the screen
-    this.prompt = this.add.text(gameConfig.width - 10, 100, 'prompt', { color: '#FFF' }).setOrigin(1);
+    this.prompt = this.add.text(gameConfig.width - 10, 100, '', { color: '#FFF' }).setOrigin(1);
 
 
     //-----INPUT LOGGER DATA STRUCTURE----
     this.iC = new InputController(this);
+
+    //-----INPUT TO RECIEVE CLICK ACTIONS---
+    this.input.on('gameobjectdown', (pointer, gameObject, event) => {
+      //records input to input logger
+      this.iC.determineResult(pointer, gameObject, event);
+    }, this);
 
     //-----ACTORS------
     //Deck of cards
@@ -48,12 +54,13 @@ class Table extends Phaser.Scene {
       this.iC //input controller
     );
 
+
     //----MISC TESTING-----
-    this.iC.generateStimulus();
+    //this.iC.generateStimulus();
 
     //-----PROMPTS-----
     //sets up text at upper right of the screen
-    this.prompt = this.add.text(gameConfig.width - 10, 100, '', { color: '#000' }).setOrigin(1);
+    //this.prompt = this.add.text(gameConfig.width - 10, 100, '', { color: '#000' }).setOrigin(1);
 
     //-----health bar/status bar
     //pre-plans the bar changes 
@@ -70,7 +77,7 @@ class Table extends Phaser.Scene {
     this.setMeterPercentage(value);
   }
 
-
+  //-------METER FUNCTIONS--------
   //handles the percentage 
   setMeterPercentage(percent = 1) {
     const width = this.fullWidth * percent;
@@ -101,26 +108,24 @@ class Table extends Phaser.Scene {
   //pointer: The pointer that pressed the object
   //gameObject: The object pressed
   //event:???
-  recordInput(pointer, gameObject, event) {
-    this.iL.pushAction({ pointer, gameObject, event });
-    console.log("recordInput(pointer, gameObject, event)<card collision>");//just to see if card collision is detected 
-    //if statements that stops the bar from hitting 0
-    if(value > 0.1){
-      value = value - 0.1;
-    }
-    this.setMeterPercentage(value);
-  }
+  //recordInput(pointer, gameObject, event) {
+  //  this.iC.pushAction({ pointer, gameObject, event });
+  //if statements that stops the bar from hitting 0
+  //if(value > 0.1){FIND ME A NEW HOME
+  // value = value - 0.1;
+  //}
+  //}
 
   //changes the text of the prompt to a given statement
   //shows prompt for a short time, then removes text
-  promptAnim(changeText){
+  promptAnim(changeText) {
     this.prompt.text = changeText;
     let promptTweenIn = this.tweens.add({
       targets: this.prompt,
-      alpha:{from:0, to: 1},
+      alpha: { from: 0, to: 1 },
       duration: 3000,
-      yoyo:true,
+      yoyo: true,
       hold: 1000,
-    })
+    });
   }
 }
