@@ -102,7 +102,7 @@ class Table extends Phaser.Scene {
   //gameObject: The object pressed
   //event:???
   recordInput(pointer, gameObject, event) {
-    this.iL.pushAction({ pointer, gameObject, event });
+    this.iC.pushAction({ pointer, gameObject, event });
     console.log("recordInput(pointer, gameObject, event)<card collision>");//just to see if card collision is detected 
     //if statements that stops the bar from hitting 0
     if(value > 0.1){
