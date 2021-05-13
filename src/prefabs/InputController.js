@@ -29,7 +29,6 @@ class InputController {
       return;
     }
 
-
     console.log("InputController, determineResult");
     if (this.stimuli.length > 0) {
       let sI = this.stimuli.findIndex((element) => { return gameObject.tag == element.key; });
