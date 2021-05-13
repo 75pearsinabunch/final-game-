@@ -41,7 +41,7 @@ class Table extends Phaser.Scene {
     //-----INPUT TO RECIEVE CLICK ACTIONS---
     this.input.on('gameobjectdown', (pointer, gameObject, event) => {
       //records input to input logger
-      this.iC.generateStimulus(pointer, gameObject, event);
+      this.iC.determineResult(pointer, gameObject, event);
     }, this);
 
     //-----ACTORS------
