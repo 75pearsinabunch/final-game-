@@ -13,6 +13,9 @@ class Table extends Phaser.Scene {
     this.load.image('left-cap-shadow', 'barHorizontal_shadow_left.png');
     this.load.image('middle-shadow', 'barHorizontal_shadow_mid.png');
     this.load.image('right-cap-shadow', 'barHorizontal_shadow_right.png');
+
+    //audio
+    this.load.audio('music', 'Ambience.mp3');
   }
 
   init() {
@@ -38,6 +41,19 @@ class Table extends Phaser.Scene {
     //-----INPUT LOGGER DATA STRUCTURE----
     this.iC = new InputController(this);
 
+    //-----AUDIO-----
+    let musicConfig = {
+      mute: false,
+      volume: 0.3,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0
+    }
+    let music = this.sound.add('music', musicConfig);
+    music.play();
+    
     //-----ACTORS------
     //Deck of cards
     this.cards = new Actor(
