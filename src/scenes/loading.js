@@ -1,62 +1,49 @@
 //An actor is one of the characters in our scene
 //they are automatically instantiated to be interactive
 class Loading extends Phaser.Scene {
-    constructor(scene, label){
+    constructor() {
         super("loadingScene");
-        this.scene = scene;
-        this.label = label;
     }
-    preload(){
+    preload() {
         this.load.image('timer', 'assets/loading.png')
+        this.load.bitmapFont('digital', 'assets/font/digital-7.ttf');
     }
-    create(){
+    create() {
+        let timeConfig = {
+            fontSize: '100px',
+            align: 'center',
+            padding: {
+                top: 5,
+                bottom: 5,
+            },
+            fixedWidth: 0
+        };
         this.timer = this.add.image(game.config.width / 2, game.config.height / 2, 'timer');
         this.timer.setDisplaySize(game.config.width, game.config.height);
         console.log("loading scene");
 
+        this.timeText = this.add.text(gameConfig.width/2-110, gameConfig.height/2-50, '0:',timeConfig);
+        timeLeft = 59;
+        this.remainText = this.add.text(gameConfig.width/2, gameConfig.height/2-50, timeLeft, timeConfig);
+    
+        this.timing = this.time.addEvent({
+            delay: 1000, // time in ms
+            paused: false, // timer continues even when clicked off if set to false
+            loop: true, // repeats
+            callback:()=> {
+                // add one to score
+                timeLeft -= 1;
+                //console.log(score); // debugging check
+            }
+        });
     }
-	start(callback, duration = 45000)
-	{
-		this.stop()
 
-		this.finishedCallback = callback
-		this.duration = duration
+    update() {
+        this.remainText.text = timeLeft;
 
-		this.timerEvent = this.scene.time.addEvent({
-			delay: duration,
-			callback: () => {
-				this.label.text = '0'
+        if(timeLeft == 52){
+            this.scene.start('tableScene');
+        }
+    }
 
-				this.stop()
-				
-				if (callback)
-				{
-					callback()
-				}
-			}
-		})
-	}
-
-	stop()
-	{
-		if (this.timerEvent)
-		{
-			this.timerEvent.destroy()
-			this.timerEvent = undefined
-		}
-	}
-
-	update()
-	{
-		if (!this.timerEvent || this.duration <= 0)
-		{
-			return
-		}
-
-		const elapsed = this.timerEvent.getElapsed()
-		const remaining = this.duration - elapsed
-		const seconds = remaining / 1000
-
-		this.label.text = seconds.toFixed(2)
-	}
 }

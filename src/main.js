@@ -17,3 +17,5 @@ let settings = {
 let green_value = 1;
 
 let blue_value = 0.5;
+
+let timeLeft = 59;
