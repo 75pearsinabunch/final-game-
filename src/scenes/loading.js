@@ -5,6 +5,7 @@ class Loading extends Phaser.Scene {
         super("loadingScene");
     }
     preload() {
+        this.load.image('1back','assets/cardBack.png')
         this.load.image('timer', 'assets/loading.png')
         this.load.bitmapFont('digital', 'assets/font/digital-7.ttf');
     }
@@ -41,7 +42,7 @@ class Loading extends Phaser.Scene {
     update() {
         this.remainText.text = timeLeft;
 
-        if(timeLeft == 52){
+        if(timeLeft == 56){
             this.scene.start('tableScene');
         }
     }

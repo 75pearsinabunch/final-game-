@@ -50,7 +50,7 @@ class InputController {
     let stimulus = {//this Can be const
       key: gameObject.tag, //the game object which was clicked
       subject: this.currActor, //a game object generated below
-      response: Phaser.Math.Between(0, 3), //responseType enum generated
+      response: Phaser.Math.Between(0, 2), //responseType enum generated
       uses: 2//probably make a function to generate this
     }
     console.log("InputController, generateStimulus, stimulus: " + stimulus.response);

@@ -36,7 +36,6 @@ class Table extends Phaser.Scene {
     //this.cameras.main.setBackgroundColor('#FFF');
     console.log("scene started");
 
-
     //-------INPUT OBJECTS------
     //using event system from prof Altice's example
     //https://newdocs.phaser.io/docs/3.54.0/Phaser.Input.Events
@@ -45,7 +44,6 @@ class Table extends Phaser.Scene {
     //-----PROMPTS-----
     //sets up text at upper right of the screen
     this.prompt = this.add.text(gameConfig.width - 10, 100, '', { color: '#FFF' }).setOrigin(1);
-
 
     //-----INPUT LOGGER DATA STRUCTURE----
     this.iC = new InputController(this);
@@ -75,17 +73,9 @@ class Table extends Phaser.Scene {
       this,//scene 
       gameConfig.width / 2, //x
       gameConfig.height / 2, //y
-      'cards', //texture
+      //'cards', //texture
       this.iC //input controller
     );
-
-
-    //----MISC TESTING-----
-    //this.iC.generateStimulus();
-
-    //-----PROMPTS-----
-    //sets up text at upper right of the screen
-    //this.prompt = this.add.text(gameConfig.width - 10, 100, '', { color: '#000' }).setOrigin(1);
 
     //-----health bar/status bar
     //pre-plans the bar changes 
@@ -101,6 +91,9 @@ class Table extends Phaser.Scene {
     this.green_middle = this.add.image(this.green_leftCap.x + this.green_leftCap.width, green_y, 'green_middle').setOrigin(0, 0.5);
     this.green_rightCap = this.add.image(this.green_middle.x + this.green_middle.displayWidth, green_y, 'green_right-cap').setOrigin(0, 0.5)
     this.setMeterPercentage(green_value);
+    //Temp meter fill
+    this.barFill = .5;
+    this.setMeterPercentage(this.barFill);
 
     // const blue_leftShadowCap = this.add.image(x, blue_y, 'left-cap-shadow').setOrigin(0, 0.5);
     // const blue_middleShaddowCap = this.add.image(blue_leftShadowCap.x + blue_leftShadowCap.width2, blue_y, 'middle-shadow').setOrigin(0, 0.5);
