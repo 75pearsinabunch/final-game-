@@ -4,7 +4,7 @@ let gameConfig = {
   type: Phaser.AUTO, //auto render
   width: 500,
   height: 500,
-  scene: [Table], //scenes
+  scene: [Loading, Table], //scenes
 };
 
 let game = new Phaser.Game(gameConfig);//instantiate game
@@ -14,4 +14,6 @@ let settings = {
 
 }
 
-let value = 1;
+let green_value = 1;
+
+let blue_value = 0.5;

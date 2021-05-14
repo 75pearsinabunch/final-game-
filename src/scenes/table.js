@@ -7,9 +7,18 @@ class Table extends Phaser.Scene {
     this.load.path = 'assets/';//shortens future path names
     this.load.image('cards', 'cardBack.png');
     //health bar/ status bar assets
-    this.load.image('left-cap', 'barHorizontal_green_left.png');
-    this.load.image('middle', 'barHorizontal_green_mid.png');
-    this.load.image('right-cap', 'barHorizontal_green_right.png');
+    this.load.image('green_left-cap', 'barHorizontal_green_left.png');
+    this.load.image('green_middle', 'barHorizontal_green_mid.png');
+    this.load.image('green_right-cap', 'barHorizontal_green_right.png');
+    
+    this.load.image('blue_left-cap', 'barHorizontal_blue_left.png');
+    this.load.image('blue_middle', 'barHorizontal_blue_mid.png');
+    this.load.image('blue_right-cap', 'barHorizontal_blue_right.png');
+
+    this.load.image('red_left-cap', 'barHorizontal_red_left.png');
+    this.load.image('red_middle', 'barHorizontal_red_mid.png');
+    this.load.image('red_right-cap', 'barHorizontal_red_right.png');
+
     this.load.image('left-cap-shadow', 'barHorizontal_shadow_left.png');
     this.load.image('middle-shadow', 'barHorizontal_shadow_mid.png');
     this.load.image('right-cap-shadow', 'barHorizontal_shadow_right.png');
@@ -57,25 +66,57 @@ class Table extends Phaser.Scene {
 
     //-----health bar/status bar
     //pre-plans the bar changes 
-    const y = 24;
+    const green_y = 25;
     const x = 10;
+    const blue_y = 55;
     // background shadow
-    const leftShadowCap = this.add.image(x, y, 'left-cap-shadow').setOrigin(0, 0.5);
-    const middleShaddowCap = this.add.image(leftShadowCap.x + leftShadowCap.width, y, 'middle-shadow').setOrigin(0, 0.5);
-    middleShaddowCap.displayWidth = this.fullWidth;
-    this.add.image(middleShaddowCap.x + middleShaddowCap.displayWidth, y, 'right-cap-shadow').setOrigin(0, 0.5);
-    this.leftCap = this.add.image(x, y, 'left-cap').setOrigin(0, 0.5);
-    this.middle = this.add.image(this.leftCap.x + this.leftCap.width, y, 'middle').setOrigin(0, 0.5);
-    this.rightCap = this.add.image(this.middle.x + this.middle.displayWidth, y, 'right-cap').setOrigin(0, 0.5)
-    this.setMeterPercentage(value);
+    const green_leftShadowCap = this.add.image(x, green_y, 'left-cap-shadow').setOrigin(0, 0.5);
+    const green_middleShaddowCap = this.add.image(green_leftShadowCap.x + green_leftShadowCap.width, green_y, 'middle-shadow').setOrigin(0, 0.5);
+    green_middleShaddowCap.displayWidth = this.fullWidth;
+    this.add.image(green_middleShaddowCap.x + green_middleShaddowCap.displayWidth, green_y, 'right-cap-shadow').setOrigin(0, 0.5);
+    this.green_leftCap = this.add.image(x, green_y, 'green_left-cap').setOrigin(0, 0.5);
+    this.green_middle = this.add.image(this.green_leftCap.x + this.green_leftCap.width, green_y, 'green_middle').setOrigin(0, 0.5);
+    this.green_rightCap = this.add.image(this.green_middle.x + this.green_middle.displayWidth, green_y, 'green_right-cap').setOrigin(0, 0.5)
+    this.setMeterPercentage(green_value);
+
+    // const blue_leftShadowCap = this.add.image(x, blue_y, 'left-cap-shadow').setOrigin(0, 0.5);
+    // const blue_middleShaddowCap = this.add.image(blue_leftShadowCap.x + blue_leftShadowCap.width2, blue_y, 'middle-shadow').setOrigin(0, 0.5);
+    // blue_middleShaddowCap.displayWidth = this.fullWidth;
+    // this.add.image(blue_middleShaddowCap.x + blue_middleShaddowCap.displayWidth2, blue_y, 'right-cap-shadow').setOrigin(0, 0.5);
+    // this.blue_leftCap = this.add.image(x, blue_y, 'blue_left-cap').setOrigin(0, 0.5);
+    // this.blue_middle = this.add.image(this.blue_leftCap.x + this.blue_leftCap.width2, blue_y, 'blue_middle').setOrigin(0, 0.5);
+    // this.blue_rightCap = this.add.image(this.blue_middle.x + this.blue_middle.displayWidth2, blue_y, 'blue_right-cap').setOrigin(0, 0.5)
+    // this.setMeterPercentage(blue_value);
+
+    this.timing = this.time.addEvent({
+      delay: 5000, // time in ms
+      paused: false, // timer continues even when clicked off if set to false
+      loop: true, // repeats
+      paused: false,
+      callback: () => {
+        // add one to score
+        if(green_value > 1 ){
+          this.setMeterPercentage(green_value);
+          this.timing.paused = true;
+          console.log(green_value);
+        } 
+        if(green_value < 1){
+          this.timing.paused = false;
+          this.setMeterPercentage(green_value);
+          green_value += 0.1;
+          console.log(green_value);
+        }
+      }
+    });
   }
 
 
   //handles the percentage 
   setMeterPercentage(percent = 1) {
     const width = this.fullWidth * percent;
-    this.middle.displayWidth = width;
-    this.rightCap.x = this.middle.x + this.middle.displayWidth;
+    this.green_middle.displayWidth = width;
+    this.green_rightCap.x = this.green_middle.x + this.green_middle.displayWidth;
+
   }
 
   //handles updating the animation of the bar
@@ -87,10 +128,11 @@ class Table extends Phaser.Scene {
       duration,
       ease: Phaser.Math.Easing.Sine.Out,
       onUpdate: () => {
-        this.rightCap.x = this.middle.x + this.middle.displayWidth;
-        this.leftCap.visible = this.middle.displayWidth > 0;
-        this.middle.visible = this.middle.displayWidth > 0;
-        this.rightCap.visible = this.middle.displayWidth > 0;
+        this.green_rightCap.x = this.green_middle.x + this.green_middle.displayWidth;
+        this.green_leftCap.visible = this.green_middle.displayWidth > 0;
+        this.green_middle.visible = this.green_middle.displayWidth > 0;
+        this.green_rightCap.visible = this.green_middle.displayWidth > 0;
+
       }
     })
   }
@@ -105,21 +147,22 @@ class Table extends Phaser.Scene {
     this.iC.pushAction({ pointer, gameObject, event });
     console.log("recordInput(pointer, gameObject, event)<card collision>");//just to see if card collision is detected 
     //if statements that stops the bar from hitting 0
-    if(value > 0.1){
-      value = value - 0.1;
+    if (green_value > 0.1) {
+      green_value = green_value - 0.1;
     }
-    this.setMeterPercentage(value);
+    this.setMeterPercentage(green_value);
+    console.log(green_value);
   }
 
   //changes the text of the prompt to a given statement
   //shows prompt for a short time, then removes text
-  promptAnim(changeText){
+  promptAnim(changeText) {
     this.prompt.text = changeText;
     let promptTweenIn = this.tweens.add({
       targets: this.prompt,
-      alpha:{from:0, to: 1},
+      alpha: { from: 0, to: 1 },
       duration: 3000,
-      yoyo:true,
+      yoyo: true,
       hold: 1000,
     })
   }
