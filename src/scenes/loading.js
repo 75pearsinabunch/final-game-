@@ -41,8 +41,8 @@ class Loading extends Phaser.Scene {
 
     update() {
         this.remainText.text = timeLeft;
-        //originally 52
-        if(timeLeft == 59){
+
+        if(timeLeft == 54){
             
             this.scene.start('tableScene');
         }
