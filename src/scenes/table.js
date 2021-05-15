@@ -122,14 +122,15 @@ class Table extends Phaser.Scene {
     this.hand = [];
     //instantiating 5 cards
     //for (let i = 0; i < 5; i++)
-    for(let i = 0; i < 1; i++)
+    for (let i = 0; i < 1; i++) {//SET TO 1 FOR TRIE TESTING
       this.cards = new PlayingCard(
         this,//scene 
         (100 * i + 50), //x
         (gameConfig.height - 100), //y
         this.iC //input controller
       );
-    this.hand.push(this.cards);
+      this.hand.push(this.cards);
+    }
 
     //---------PRESS SPACE INSTRUCTIONS-----------
     this.textConfig = {
@@ -209,7 +210,7 @@ class Table extends Phaser.Scene {
 
   update() {
     if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
-      this.iC.processSelection(this.deck);
+      this.iC.processSelection(this.hand[0]);//MORE NUANCED LATER
     }
   }
 }

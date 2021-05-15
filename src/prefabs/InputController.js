@@ -39,9 +39,9 @@ class InputController {
     }
   }
 
-  processSelection(deck){
-    //run a sort
-    
+  processSelection(card){
+    //TODOrun a sort
+      this.performAction(card, Phaser.Math.Between(0,2));
   }
 
   //checks for the given subset of cards within the hands list
@@ -54,20 +54,17 @@ class InputController {
 
   //causes an actor to perform the action assigned
   //in its respective stimulus object
-  performAction(sI) {
-    let stim = this.stimuli[sI];//ONLY USE IN THIS CONTEXT
-    console.log("InputController, performAction");
-
+  performAction(stim,  sI) {
     //figure out how to react
-    switch (stim.response) {
+    switch (sI) {
       case (this.responseTypes.good):
-        stim.subject.approve();
+        stim.approve();
         break;
       case (this.responseTypes.bad):
-        stim.subject.disapprove();
+        stim.disapprove();
         break;
       case (this.responseTypes.vague):
-        stim.subject.vague();
+        stim.vague();
       default:
         //Does nothing
         console.log("InputController, performAction, Nothing selected as performance")
