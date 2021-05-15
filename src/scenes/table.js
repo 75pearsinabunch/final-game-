@@ -10,7 +10,7 @@ class Table extends Phaser.Scene {
     this.load.image('green_left-cap', 'barHorizontal_green_left.png');
     this.load.image('green_middle', 'barHorizontal_green_mid.png');
     this.load.image('green_right-cap', 'barHorizontal_green_right.png');
-    
+
     this.load.image('blue_left-cap', 'barHorizontal_blue_left.png');
     this.load.image('blue_middle', 'barHorizontal_blue_mid.png');
     this.load.image('blue_right-cap', 'barHorizontal_blue_right.png');
@@ -40,19 +40,7 @@ class Table extends Phaser.Scene {
     //using event system from prof Altice's example
     //https://newdocs.phaser.io/docs/3.54.0/Phaser.Input.Events
     this.mouse = this.input.activePointer;
-
-    //-----PROMPTS-----
-    //sets up text at upper right of the screen
-    this.prompt = this.add.text(gameConfig.width - 10, 100, '', { color: '#FFF' }).setOrigin(1);
-
-    //-----INPUT LOGGER DATA STRUCTURE----
-    this.iC = new InputController(this);
-
-    //-----INPUT TO RECIEVE CLICK ACTIONS---
-    this.input.on('gameobjectdown', (pointer, gameObject, event) => {
-      //records input to input logger
-      this.iC.determineResult(pointer, gameObject, event);
-    }, this);
+    this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
     //-----AUDIO-----
     let musicConfig = {
@@ -66,19 +54,33 @@ class Table extends Phaser.Scene {
     }
     let music = this.sound.add('music', musicConfig);
     music.play();
-    
-    //-----PlayingCardS------
-    //Deck of cards
-    this.deck = this.add.group();
-    //instantiating 5 cards
-    for(let i = 0; i<5; i++)
-    this.cards = new PlayingCard(
-      this,//scene 
-      (50*i + 150), //x
-      (gameConfig.height - 100), //y
-      this.iC //input controller
-    );
 
+    //-----PROMPT TEXT-----
+    //sets up text at upper right of the screen
+    this.prompt = this.add.text(gameConfig.width - 10, 100, '', { color: '#FFF' }).setOrigin(1);
+
+    //-----INPUT LOGGER DATA STRUCTURE----
+    this.iC = new InputController(this);
+
+    //-----INPUT TO RECIEVE CLICK ACTIONS---
+    this.input.on('gameobjectdown', (pointer, gameObject, event) => {
+      //records input to input logger
+      this.iC.recieveClick(pointer, gameObject, event);
+    }, this);
+
+
+    //-----PLAYING CARDS------
+    //Deck of cards
+    this.hand = [];
+    //instantiating 5 cards
+    for (let i = 0; i < 5; i++)
+      this.cards = new PlayingCard(
+        this,//scene 
+        (50 * i + 150), //x
+        (gameConfig.height - 100), //y
+        this.iC //input controller
+      );
+      this.hand.push(this.cards);
     //-----health bar/status bar
     //pre-plans the bar changes 
     const green_y = 25;
@@ -97,14 +99,14 @@ class Table extends Phaser.Scene {
     this.barFill = .5;
     this.setMeterPercentage(this.barFill);
 
-    // const blue_leftShadowCap = this.add.image(x, blue_y, 'left-cap-shadow').setOrigin(0, 0.5);
-    // const blue_middleShaddowCap = this.add.image(blue_leftShadowCap.x + blue_leftShadowCap.width2, blue_y, 'middle-shadow').setOrigin(0, 0.5);
-    // blue_middleShaddowCap.displayWidth = this.fullWidth;
-    // this.add.image(blue_middleShaddowCap.x + blue_middleShaddowCap.displayWidth2, blue_y, 'right-cap-shadow').setOrigin(0, 0.5);
-    // this.blue_leftCap = this.add.image(x, blue_y, 'blue_left-cap').setOrigin(0, 0.5);
-    // this.blue_middle = this.add.image(this.blue_leftCap.x + this.blue_leftCap.width2, blue_y, 'blue_middle').setOrigin(0, 0.5);
-    // this.blue_rightCap = this.add.image(this.blue_middle.x + this.blue_middle.displayWidth2, blue_y, 'blue_right-cap').setOrigin(0, 0.5)
-    // this.setMeterPercentage(blue_value);
+     const blue_leftShadowCap = this.add.image(x, blue_y, 'left-cap-shadow').setOrigin(0, 0.5);
+     const blue_middleShaddowCap = this.add.image(blue_leftShadowCap.x + blue_leftShadowCap.width2, blue_y, 'middle-shadow').setOrigin(0, 0.5);
+     blue_middleShaddowCap.displayWidth = this.fullWidth;
+     this.add.image(blue_middleShaddowCap.x + blue_middleShaddowCap.displayWidth2, blue_y, 'right-cap-shadow').setOrigin(0, 0.5);
+     this.blue_leftCap = this.add.image(x, blue_y, 'blue_left-cap').setOrigin(0, 0.5);
+     this.blue_middle = this.add.image(this.blue_leftCap.x + this.blue_leftCap.width2, blue_y, 'blue_middle').setOrigin(0, 0.5);
+     this.blue_rightCap = this.add.image(this.blue_middle.x + this.blue_middle.displayWidth2, blue_y, 'blue_right-cap').setOrigin(0, 0.5)
+     this.setMeterPercentage(blue_value);
 
     this.timing = this.time.addEvent({
       delay: 5000, // time in ms
@@ -113,12 +115,12 @@ class Table extends Phaser.Scene {
       paused: false,
       callback: () => {
         // add one to score
-        if(green_value > 1 ){
+        if (green_value > 1) {
           this.setMeterPercentage(green_value);
           this.timing.paused = true;
           console.log(green_value);
-        } 
-        if(green_value < 1){
+        }
+        if (green_value < 1) {
           this.timing.paused = false;
           this.setMeterPercentage(green_value);
           green_value += 0.1;
@@ -126,6 +128,24 @@ class Table extends Phaser.Scene {
         }
       }
     });
+
+    //---------PRESS SPACE INSTRUCTIONS-----------
+
+    let textConfig = {
+      fontFamily: 'Courier',
+      fontSize: '22px',
+      backgroundColor: '#FFF',
+      color: '#cc3300',
+      align: 'center',
+      padding: {
+        top: 1,
+        bottom: 1,
+      },
+      fixedWidth: 0
+    }
+
+    this.spaceText = this.add.text(game.config.width / 2, game.config.height-50, 'Press Space to Try', textConfig).setOrigin(0.5);
+    
   }
 
   //-------METER FUNCTIONS--------
@@ -176,12 +196,18 @@ class Table extends Phaser.Scene {
   //shows prompt for a short time, then removes text
   promptAnim(changeText) {
     this.prompt.text = changeText;
-    let promptTweenIn = this.tweens.add({
+    this.tweens.add({
       targets: this.prompt,
       alpha: { from: 0, to: 1 },
       duration: 3000,
       yoyo: true,
       hold: 1000,
     });
+  }
+
+  update(){
+    if(Phaser.Input.Keyboard.JustDown(this.spacebar)){
+      this.iC.processSelection(this.deck);
+    }
   }
 }

@@ -22,41 +22,35 @@ class InputController {
     this.actors.push(actor);
   }
 
-  determineResult(pointer, gameObject, event) {
+  //Controlls response of all card elements controlled by this controller
+  recieveClick(pointer, gameObject, event) {
     //guarentee we're recieving an actor
-    if (gameObject.tag == undefined) {
-      console.warn("InputController.determineResult: Tag not found, Actor not passed in");
+    if (gameObject.constructor.name != "PlayingCard") {
+      console.warn("InputController.reieveClick: Tag not found, Actor not passed in");
       return;
     }
 
-    console.log("InputController, determineResult");
-    if (this.stimuli.length > 0) {
-      let sI = this.stimuli.findIndex((element) => { return gameObject.tag == element.key; });
-      this.performAction(sI);
-    } else {//if nothing was found
-      this.generateStimulus(gameObject);
+    //highlights selected cards
+    gameObject.isSelected = !gameObject.isSelected;
+    if(gameObject.isSelected){
+      gameObject.setAlpha(1);
+    }else{
+      gameObject.setAlpha(.8);
     }
   }
 
-  //Selects an actor at random to determine what happens to it
-  generateStimulus(gameObject) {
-    console.log("InputController, generateStimulus");
-    //Find random actor
-    this.i = Phaser.Math.Between(0, (this.actors.length - 1));
-    this.currActor = this.actors[this.i];
+  processSelection(deck){
+    //run a sort
     
-
-    //stimulus object which holds information about results of functions
-    let stimulus = {//this Can be const
-      key: gameObject.tag, //the game object which was clicked
-      subject: this.currActor, //a game object generated below
-      response: Phaser.Math.Between(0, 2), //responseType enum generated
-      uses: 2//probably make a function to generate this
-    }
-    console.log("InputController, generateStimulus, stimulus: " + stimulus.response);
-    this.stimuli.push(stimulus);
-    this.performAction(this.stimuli.length - 1);//just pushed so last element on array
   }
+
+  //checks for the given subset of cards within the hands list
+  checkForSet(deck){
+    //make a subest of all selected cards in the deck. 
+  }
+
+  //TO DO: Stand alone function for determinining success based on game progression
+
 
   //causes an actor to perform the action assigned
   //in its respective stimulus object
