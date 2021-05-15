@@ -59,28 +59,6 @@ class Table extends Phaser.Scene {
     //sets up text at upper right of the screen
     this.prompt = this.add.text(gameConfig.width - 10, 100, '', { color: '#FFF' }).setOrigin(1);
 
-    //-----INPUT LOGGER DATA STRUCTURE----
-    this.iC = new InputController(this);
-
-    //-----INPUT TO RECIEVE CLICK ACTIONS---
-    this.input.on('gameobjectdown', (pointer, gameObject, event) => {
-      //records input to input logger
-      this.iC.recieveClick(pointer, gameObject, event);
-    }, this);
-
-
-    //-----PLAYING CARDS------
-    //Deck of cards
-    this.hand = [];
-    //instantiating 5 cards
-    for (let i = 0; i < 5; i++)
-      this.cards = new PlayingCard(
-        this,//scene 
-        (50 * i + 150), //x
-        (gameConfig.height - 100), //y
-        this.iC //input controller
-      );
-      this.hand.push(this.cards);
     //-----health bar/status bar
     //pre-plans the bar changes 
     const green_y = 25;
@@ -98,7 +76,7 @@ class Table extends Phaser.Scene {
     //Temp meter fill
     this.barFill = .5;
     this.setMeterPercentage(this.barFill);
-
+    /*
      const blue_leftShadowCap = this.add.image(x, blue_y, 'left-cap-shadow').setOrigin(0, 0.5);
      const blue_middleShaddowCap = this.add.image(blue_leftShadowCap.x + blue_leftShadowCap.width2, blue_y, 'middle-shadow').setOrigin(0, 0.5);
      blue_middleShaddowCap.displayWidth = this.fullWidth;
@@ -107,7 +85,7 @@ class Table extends Phaser.Scene {
      this.blue_middle = this.add.image(this.blue_leftCap.x + this.blue_leftCap.width2, blue_y, 'blue_middle').setOrigin(0, 0.5);
      this.blue_rightCap = this.add.image(this.blue_middle.x + this.blue_middle.displayWidth2, blue_y, 'blue_right-cap').setOrigin(0, 0.5)
      this.setMeterPercentage(blue_value);
-
+*/
     this.timing = this.time.addEvent({
       delay: 5000, // time in ms
       paused: false, // timer continues even when clicked off if set to false
@@ -129,9 +107,32 @@ class Table extends Phaser.Scene {
       }
     });
 
-    //---------PRESS SPACE INSTRUCTIONS-----------
 
-    let textConfig = {
+    //-----INPUT LOGGER DATA STRUCTURE----
+    this.iC = new InputController(this);
+
+    //-----INPUT TO RECIEVE CLICK ACTIONS---
+    this.input.on('gameobjectdown', (pointer, gameObject, event) => {
+      //records input to input logger
+      this.iC.recieveClick(pointer, gameObject, event);
+    }, this);
+
+    //-----PLAYING CARDS------
+    //Deck of cards
+    this.hand = [];
+    //instantiating 5 cards
+    //for (let i = 0; i < 5; i++)
+    for(let i = 0; i < 1; i++)
+      this.cards = new PlayingCard(
+        this,//scene 
+        (100 * i + 50), //x
+        (gameConfig.height - 100), //y
+        this.iC //input controller
+      );
+    this.hand.push(this.cards);
+
+    //---------PRESS SPACE INSTRUCTIONS-----------
+    this.textConfig = {
       fontFamily: 'Courier',
       fontSize: '22px',
       backgroundColor: '#FFF',
@@ -144,8 +145,8 @@ class Table extends Phaser.Scene {
       fixedWidth: 0
     }
 
-    this.spaceText = this.add.text(game.config.width / 2, game.config.height-50, 'Press Space to Try', textConfig).setOrigin(0.5);
-    
+    this.spaceText = this.add.text(game.config.width / 2, game.config.height - 50, 'Press Space to Try', this.textConfig).setOrigin(0.5);
+
   }
 
   //-------METER FUNCTIONS--------
@@ -173,6 +174,7 @@ class Table extends Phaser.Scene {
 
       }
     })
+
   }
 
   //The base of the data structure that will take in
@@ -205,8 +207,8 @@ class Table extends Phaser.Scene {
     });
   }
 
-  update(){
-    if(Phaser.Input.Keyboard.JustDown(this.spacebar)){
+  update() {
+    if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
       this.iC.processSelection(this.deck);
     }
   }
