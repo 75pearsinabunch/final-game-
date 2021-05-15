@@ -9,6 +9,8 @@ let suits = [
 
 class PlayingCard extends Phaser.GameObjects.Sprite {
   constructor(scene, posX, posY, controller) {
+    //TODO: DRAW ANIMATION
+    console.log(" scene "+scene+" posX "+posX+" posY "+posY+ " controller "+controller);
     const value = Phaser.Math.Between(1, 13);//randomizes card value
     const suit = suits[Phaser.Math.Between(0, 3)];//chooses random suit from list
     const texture = (value + suit); //creates texture name from random generation
@@ -22,6 +24,8 @@ class PlayingCard extends Phaser.GameObjects.Sprite {
     //variables from constructor
     this.value = value;
     this.suit = suit;
+    this.posX = posX;
+    this.posY = posY;
     this.scene = scene;
     this.tag = texture;
     this.controller = controller;

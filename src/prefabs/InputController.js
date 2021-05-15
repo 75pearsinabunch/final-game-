@@ -3,8 +3,8 @@
 class InputController {
   constructor(scene) {
     //Variables
-    this.actions = [];//used to store actions
-    this.actors = [];
+    //this.actions = [];//used to store actions
+    //this.actors = [];
     this.scene = scene;
 
     //setting up the response type enum
@@ -19,12 +19,6 @@ class InputController {
     this.valuePattern = new PatternTrie();
   }
 
-  //pushes a newly made action onto the list
-  //called in every actor's consturctor phase
-  pushActor(actor) {
-    this.actors.push(actor);
-  }
-
   //Controlls response of all card elements controlled by this controller
   recieveClick(pointer, gameObject, event) {
     //guarentee we're recieving an actor
@@ -35,20 +29,43 @@ class InputController {
 
     //highlights selected cards
     gameObject.isSelected = !gameObject.isSelected;
-    if(gameObject.isSelected){
+    if (gameObject.isSelected) {
       gameObject.setAlpha(1);
-    }else{
+    } else {
       gameObject.setAlpha(.8);
     }
   }
 
-  processSelection(card){
-    //TODOrun a sort
-      this.performAction(card, Phaser.Math.Between(0,2));
+  //takes a hand object of cards
+  processSelection(hand) {
+    //TO DO: Check to make sure hand items are cards
+
+    //instantiate to holders of copies of cards
+    this.hcS = [];//copy of Suits
+    this.hcV = [];//coby of Values
+    //find cards selected
+    for (let i = 0; i < hand.length; i++) {
+      if (hand[i].isSelected) {
+        console.log("card: " + i + " is selected");
+        this.hcS.push(hand[i].suit);
+        this.hcV.push(hand[i].value);
+        //removes card from scene completely
+        this.replaceCard = new PlayingCard(
+          hand[i].scene,
+          hand[i].posX,
+          hand[i].posY,
+          hand[i].controller
+        );
+        hand[i].remove();
+        hand[i] = this.replaceCard;
+      }
+    }
+    console.log(this.hcS);
+    console.log(this.hcV);
   }
 
   //checks for the given subset of cards within the hands list
-  checkForSet(deck){
+  checkForSet(deck) {
     //make a subest of all selected cards in the deck. 
   }
 
@@ -57,7 +74,7 @@ class InputController {
 
   //causes an actor to perform the action assigned
   //in its respective stimulus object
-  performAction(stim,  sI) {
+  performAction(stim, sI) {
     //figure out how to react
     switch (sI) {
       case (this.responseTypes.good):
@@ -82,16 +99,18 @@ class InputController {
     }
   }
 
-  //---PRINT STATEMENTS FOR TESTING
-  printActors() {
-    this.actors.forEach(function (action) {
-      console.log(action);
-    })
-  }
-
-  printActionList() {
-    this.actions.forEach(function (action) {
-      console.log(action);
-    })
-  }
+  /*
+    //---PRINT STATEMENTS FOR TESTING
+    printActors() {
+      this.actors.forEach(function (action) {
+        console.log(action);
+      })
+    }
+  
+    printActionList() {
+      this.actions.forEach(function (action) {
+        console.log(action);
+      })
+    }
+    */
 }

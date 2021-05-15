@@ -184,8 +184,8 @@ class Table extends Phaser.Scene {
   //gameObject: The object pressed
   //event:???
   recordInput(pointer, gameObject, event) {
-    this.iC.pushAction({ pointer, gameObject, event });
-    console.log("recordInput(pointer, gameObject, event)<card collision>");//just to see if card collision is detected 
+    //this.iC.pushAction({ pointer, gameObject, event });
+    //console.log("recordInput(pointer, gameObject, event)<card collision>");//just to see if card collision is detected 
     //if statements that stops the bar from hitting 0
     if (green_value > 0.1) {
       green_value = green_value - 0.1;
@@ -209,7 +209,7 @@ class Table extends Phaser.Scene {
 
   update() {
     if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
-      this.iC.processSelection(this.hand[0]);//MORE NUANCED LATER
+      this.iC.processSelection(this.hand);//MORE NUANCED LATER
     }
   }
 }
