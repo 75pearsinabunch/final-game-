@@ -13,18 +13,17 @@ class PlayingCard extends Phaser.GameObjects.Sprite {
     const suit = suits[Phaser.Math.Between(0, 3)];//chooses random suit from list
     const texture = (value + suit); //creates texture name from random generation
     super(scene, posX, posY, '1back');//CHANGE 1back TO texture ONCE TEXTURES ARE IN
-    scene.add.text(posX, (posY - 30), texture).setOrigin(0.5);//TEMPORARY TO SEE CARD VALUES
+    this.text = scene.add.text(posX, (posY - 30), texture).setOrigin(0.5);//TEMPORARY TO SEE CARD VALUES
     scene.add.existing(this);//places in the world
     //Set interactivity
     this.setInteractive();//allows for clicking
     //Store actor in list of actors in input controller
-    controller.pushActor(this);
-
+  
     //variables from constructor
     this.value = value;
     this.suit = suit;
     this.scene = scene;
-    this.tag = texture;//PUT BACK WHEN WE GET CARD FACES
+    this.tag = texture;
     this.controller = controller;
     this.isSelected = false;
     this.setAlpha(.8);
@@ -45,5 +44,10 @@ class PlayingCard extends Phaser.GameObjects.Sprite {
 
   vague() {
     this.scene.promptAnim("No Effect");
+  }
+
+  remove(){
+    this.text.destroy();
+    this.destroy();
   }
 }
