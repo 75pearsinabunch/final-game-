@@ -46,7 +46,6 @@ class InputController {
     //find cards selected
     for (let i = 0; i < hand.length; i++) {
       if (hand[i].isSelected) {
-        console.log("card: " + i + " is selected");
         this.hcS.push(hand[i].suit);
         this.hcV.push(hand[i].value);
         //removes card from scene completely
@@ -60,8 +59,8 @@ class InputController {
         hand[i] = this.replaceCard;
       }
     }
-    console.log(this.hcS);
-    console.log(this.hcV);
+    //console.log(this.hcS);
+    //console.log(this.hcV);
   }
 
   //checks for the given subset of cards within the hands list
