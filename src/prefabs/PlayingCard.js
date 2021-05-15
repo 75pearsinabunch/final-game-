@@ -1,6 +1,6 @@
 //An actor is one of the characters in our scene
 //they are automatically instantiated to be interactive
-class Actor extends Phaser.GameObjects.Sprite {
+class PlayingCard extends Phaser.GameObjects.Sprite {
   //constructor(scene, posX, posY, texture, controller) {
   constructor(scene, posX, posY, controller) {
     //Add to scene

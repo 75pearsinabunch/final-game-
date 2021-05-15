@@ -67,13 +67,15 @@ class Table extends Phaser.Scene {
     let music = this.sound.add('music', musicConfig);
     music.play();
     
-    //-----ACTORS------
+    //-----PlayingCardS------
     //Deck of cards
-    this.cards = new Actor(
+    this.deck = this.add.group();
+    //instantiating 5 cards
+    for(let i = 0; i<5; i++)
+    this.cards = new PlayingCard(
       this,//scene 
-      gameConfig.width / 2, //x
-      gameConfig.height / 2, //y
-      //'cards', //texture
+      (50*i + 150), //x
+      (gameConfig.height - 100), //y
       this.iC //input controller
     );
 
