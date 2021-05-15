@@ -76,16 +76,16 @@ class Table extends Phaser.Scene {
     //Temp meter fill
     this.barFill = .5;
     this.setMeterPercentage(this.barFill);
-    /*
-     const blue_leftShadowCap = this.add.image(x, blue_y, 'left-cap-shadow').setOrigin(0, 0.5);
-     const blue_middleShaddowCap = this.add.image(blue_leftShadowCap.x + blue_leftShadowCap.width2, blue_y, 'middle-shadow').setOrigin(0, 0.5);
-     blue_middleShaddowCap.displayWidth = this.fullWidth;
-     this.add.image(blue_middleShaddowCap.x + blue_middleShaddowCap.displayWidth2, blue_y, 'right-cap-shadow').setOrigin(0, 0.5);
-     this.blue_leftCap = this.add.image(x, blue_y, 'blue_left-cap').setOrigin(0, 0.5);
-     this.blue_middle = this.add.image(this.blue_leftCap.x + this.blue_leftCap.width2, blue_y, 'blue_middle').setOrigin(0, 0.5);
-     this.blue_rightCap = this.add.image(this.blue_middle.x + this.blue_middle.displayWidth2, blue_y, 'blue_right-cap').setOrigin(0, 0.5)
-     this.setMeterPercentage(blue_value);
-*/
+
+    const blue_leftShadowCap = this.add.image(x, blue_y, 'left-cap-shadow').setOrigin(0, 0.5);
+    const blue_middleShaddowCap = this.add.image(blue_leftShadowCap.x + blue_leftShadowCap.width2, blue_y, 'middle-shadow').setOrigin(0, 0.5);
+    blue_middleShaddowCap.displayWidth = this.fullWidth;
+    this.add.image(blue_middleShaddowCap.x + blue_middleShaddowCap.displayWidth2, blue_y, 'right-cap-shadow').setOrigin(0, 0.5);
+    this.blue_leftCap = this.add.image(x, blue_y, 'blue_left-cap').setOrigin(0, 0.5);
+    this.blue_middle = this.add.image(this.blue_leftCap.x + this.blue_leftCap.width2, blue_y, 'blue_middle').setOrigin(0, 0.5);
+    this.blue_rightCap = this.add.image(this.blue_middle.x + this.blue_middle.displayWidth2, blue_y, 'blue_right-cap').setOrigin(0, 0.5)
+    this.setMeterPercentage(blue_value);
+
     this.timing = this.time.addEvent({
       delay: 5000, // time in ms
       paused: false, // timer continues even when clicked off if set to false
@@ -121,8 +121,7 @@ class Table extends Phaser.Scene {
     //Deck of cards
     this.hand = [];
     //instantiating 5 cards
-    //for (let i = 0; i < 5; i++)
-    for (let i = 0; i < 1; i++) {//SET TO 1 FOR TRIE TESTING
+    for (let i = 0; i < 5; i++) {
       this.cards = new PlayingCard(
         this,//scene 
         (100 * i + 50), //x

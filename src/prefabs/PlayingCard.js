@@ -28,9 +28,6 @@ class PlayingCard extends Phaser.GameObjects.Sprite {
     this.controller = controller;
     this.isSelected = false;
     this.setAlpha(.8);
-
-    //Setting up pattern tries
-    this.suitPattern = new PatternTrie();
   }
 
   //States a message of approval

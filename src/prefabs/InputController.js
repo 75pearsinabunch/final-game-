@@ -13,7 +13,10 @@ class InputController {
       bad: 1,
       vague: 2
     };
-    this.stimuli = [];
+
+    //Setting up pattern tries
+    this.suitPattern = new PatternTrie();
+    this.valuePattern = new PatternTrie();
   }
 
   //pushes a newly made action onto the list
