@@ -66,10 +66,7 @@ class InputController {
     console.log(this.hcV)
     console.log(this.hcS);
 
-    if(!this.suitPattern.checkPattern(this.hcS)){
-      console.log("Input Controller, process selection: pattern not found");
-      this.suitPattern.addPattern(this.hcS);
-    }
+   
   }
 
   //checks for the given subset of cards within the hands list
