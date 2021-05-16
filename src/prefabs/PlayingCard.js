@@ -31,26 +31,4 @@ class PlayingCard extends Phaser.GameObjects.Sprite {
     this.isSelected = false;
     this.setAlpha(.8);
   }
-
-  //States a message of approval
-  approve() {
-    this.scene.barFill += .1;
-    this.scene.setMeterPercentage(this.scene.barFill);//TODO: should probably randomize
-    this.scene.promptAnim("The Tower Grows");
-  }
-
-  disapprove() {
-    this.scene.barFill -= .1;
-    this.scene.setMeterPercentage(this.scene.barFill);//TODO: should probably randomize
-    this.scene.promptAnim("The Tower Diminishes");
-  }
-
-  vague() {
-    this.scene.promptAnim("No Effect");
-  }
-
-  remove(){
-    this.text.destroy();
-    this.destroy();
-  }
 }

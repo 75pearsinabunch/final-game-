@@ -61,6 +61,27 @@ class PatternTrie {
     //this.printTrie(this.root);
   }
 
+  removePattern() {
+    console.log("PatternTrie, removePattern: starting");
+    this.currRoot = this.root;//doing it iteratively, nothing fancy
+    this.tempRoot = undefined;
+    for (let i = 0; i < hand.length; i++) {
+      this.chI = this.getChildIndex(hand[i]);
+      this.tempRoot = this.currRoot.children[this.chI];//check for existance
+      if (this.tempRoot == undefined) {
+        console.log("PatternTrie, removePattern: patttern never existed")
+        return;
+      }
+      this.currRoot = this.tempRoot;
+    }
+
+    //checks to see if this is a valid stopping point
+    this.currRoot.children[this.stopI] = false;
+
+    console.log("PatternTrie, removePattern: ended");
+    //this.printTrie(this.root);
+  }
+
   //determines the index a node's child should be based on the kind 
   //of input recieved
   getChildIndex(card) {
@@ -79,4 +100,5 @@ class PatternTrie {
       }
     }
   }
+
 }

@@ -65,17 +65,9 @@ class InputController {
     this.hcS.sort();
     console.log(this.hcV)
     console.log(this.hcS);
-
-   
-  }
-
-  //checks for the given subset of cards within the hands list
-  checkForSet(deck) {
-    //make a subest of all selected cards in the deck. 
   }
 
   //TO DO: Stand alone function for determinining success based on game progression
-
 
   //causes an actor to perform the action assigned
   //in its respective stimulus object
@@ -104,18 +96,25 @@ class InputController {
     }
   }
 
-  /*
-    //---PRINT STATEMENTS FOR TESTING
-    printActors() {
-      this.actors.forEach(function (action) {
-        console.log(action);
-      })
-    }
-  
-    printActionList() {
-      this.actions.forEach(function (action) {
-        console.log(action);
-      })
-    }
-    */
+    //States a message of approval
+  approve() {
+    this.scene.barFill += .1;
+    this.scene.setMeterPercentage(this.scene.barFill);//TODO: should probably randomize
+    this.scene.promptAnim("The Tower Grows");
+  }
+
+  disapprove() {
+    this.scene.barFill -= .1;
+    this.scene.setMeterPercentage(this.scene.barFill);//TODO: should probably randomize
+    this.scene.promptAnim("The Tower Diminishes");
+  }
+
+  vague() {
+    this.scene.promptAnim("No Effect");
+  }
+
+  remove(){
+    this.text.destroy();
+    this.destroy();
+  }
 }
