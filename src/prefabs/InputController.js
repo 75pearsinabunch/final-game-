@@ -15,8 +15,8 @@ class InputController {
     };
 
     //Setting up pattern tries
-    this.suitPattern = new PatternTrie();
-    this.valuePattern = new PatternTrie();
+    this.suitPattern = new PatternTrie(4);
+    this.valuePattern = new PatternTrie(13);
   }
 
   //Controlls response of all card elements controlled by this controller
@@ -41,13 +41,15 @@ class InputController {
     //TO DO: Check to make sure hand items are cards
 
     //instantiate to holders of copies of cards
+    this.hcV = []//copy of hand
     this.hcS = [];//copy of Suits
-    this.hcV = [];//coby of Values
+    //don't need more than this b/c you never check if you have a value
+    //AND it's on a certain color, you just check colors and values separately
     //find cards selected
     for (let i = 0; i < hand.length; i++) {
       if (hand[i].isSelected) {
-        this.hcS.push(hand[i].suit);
         this.hcV.push(hand[i].value);
+        this.hcS.push(hand[i].suit);
         //removes card from scene completely
         this.replaceCard = new PlayingCard(
           hand[i].scene,
@@ -59,8 +61,15 @@ class InputController {
         hand[i] = this.replaceCard;
       }
     }
-    //console.log(this.hcS);
-    //console.log(this.hcV);
+    this.hcV.sort((l,r)=>{return (l-r)});
+    this.hcS.sort();
+    console.log(this.hcV)
+    console.log(this.hcS);
+
+    if(!this.suitPattern.checkPattern(this.hcS)){
+      console.log("Input Controller, process selection: pattern not found");
+      this.suitPattern.addPattern(this.hcS);
+    }
   }
 
   //checks for the given subset of cards within the hands list
