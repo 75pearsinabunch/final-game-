@@ -19,7 +19,7 @@ class PlayingCard extends Phaser.GameObjects.Sprite {
     //Set interactivity
     this.setInteractive();//allows for clicking
     //Store actor in list of actors in input controller
-  
+
     //variables from constructor
     this.value = value;
     this.suit = suit;
@@ -30,5 +30,10 @@ class PlayingCard extends Phaser.GameObjects.Sprite {
     this.controller = controller;
     this.isSelected = false;
     this.setAlpha(.8);
+  }
+
+  remove() {
+    this.text.destroy();
+    this.destroy();
   }
 }
