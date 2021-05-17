@@ -1,7 +1,7 @@
 'use strict';
 
 let gameConfig = {
-  type: Phaser.AUTO, //auto render
+  type: Phaser.AUTO,
   width: 500,
   height: 500,
   scene: [Loading, Table], //scenes

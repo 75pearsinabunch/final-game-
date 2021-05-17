@@ -3,8 +3,8 @@
 class InputController {
   constructor(scene) {
     //Variables
-    this.actions = [];//used to store actions
-    this.actors = [];
+    //this.actions = [];//used to store actions
+    //this.actors = [];
     this.scene = scene;
 
     //setting up the response type enum
@@ -15,14 +15,8 @@ class InputController {
     };
 
     //Setting up pattern tries
-    this.suitPattern = new PatternTrie();
-    this.valuePattern = new PatternTrie();
-  }
-
-  //pushes a newly made action onto the list
-  //called in every actor's consturctor phase
-  pushActor(actor) {
-    this.actors.push(actor);
+    this.suitPattern = new PatternTrie(4);
+    this.valuePattern = new PatternTrie(13);
   }
 
   //Controlls response of all card elements controlled by this controller
@@ -35,29 +29,49 @@ class InputController {
 
     //highlights selected cards
     gameObject.isSelected = !gameObject.isSelected;
-    if(gameObject.isSelected){
+    if (gameObject.isSelected) {
       gameObject.setAlpha(1);
-    }else{
+    } else {
       gameObject.setAlpha(.8);
     }
   }
 
-  processSelection(card){
-    //TODOrun a sort
-      this.performAction(card, Phaser.Math.Between(0,2));
-  }
+  //takes a hand object of cards
+  processSelection(hand) {
+    //TO DO: Check to make sure hand items are cards
 
-  //checks for the given subset of cards within the hands list
-  checkForSet(deck){
-    //make a subest of all selected cards in the deck. 
+    //instantiate to holders of copies of cards
+    this.hcV = []//copy of hand
+    this.hcS = [];//copy of Suits
+    //don't need more than this b/c you never check if you have a value
+    //AND it's on a certain color, you just check colors and values separately
+    //find cards selected
+    for (let i = 0; i < hand.length; i++) {
+      if (hand[i].isSelected) {
+        this.hcV.push(hand[i].value);
+        this.hcS.push(hand[i].suit);
+        //removes card from scene completely
+        this.replaceCard = new PlayingCard(
+          hand[i].scene,
+          hand[i].posX,
+          hand[i].posY,
+          hand[i].controller
+        );
+        hand[i].remove();
+        hand[i] = this.replaceCard;
+      }
+    }
+    this.hcV.sort((l,r)=>{return (l-r)});
+    this.hcS.sort();
+    console.log(this.hcV)
+    console.log(this.hcS);
   }
 
   //TO DO: Stand alone function for determinining success based on game progression
 
-
   //causes an actor to perform the action assigned
   //in its respective stimulus object
-  performAction(stim,  sI) {
+  performAction(stim, sI) {
     //figure out how to react
     switch (sI) {
       case (this.responseTypes.good):
@@ -82,16 +96,25 @@ class InputController {
     }
   }
 
-  //---PRINT STATEMENTS FOR TESTING
-  printActors() {
-    this.actors.forEach(function (action) {
-      console.log(action);
-    })
+    //States a message of approval
+  approve() {
+    this.scene.barFill += .1;
+    this.scene.setMeterPercentage(this.scene.barFill);//TODO: should probably randomize
+    this.scene.promptAnim("The Tower Grows");
   }
 
-  printActionList() {
-    this.actions.forEach(function (action) {
-      console.log(action);
-    })
+  disapprove() {
+    this.scene.barFill -= .1;
+    this.scene.setMeterPercentage(this.scene.barFill);//TODO: should probably randomize
+    this.scene.promptAnim("The Tower Diminishes");
+  }
+
+  vague() {
+    this.scene.promptAnim("No Effect");
+  }
+
+  remove(){
+    this.text.destroy();
+    this.destroy();
   }
 }
