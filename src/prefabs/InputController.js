@@ -15,9 +15,6 @@ class InputController {
     //Setting up pattern tries
     this.suitPattern = new PatternTrie(4);
     this.valuePattern = new PatternTrie(13);
-
-    //setting up combination logic
-
   }
 
   //Controlls response of all card elements controlled by this controller

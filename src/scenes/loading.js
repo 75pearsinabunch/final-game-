@@ -32,9 +32,7 @@ class Loading extends Phaser.Scene {
             paused: false, // timer continues even when clicked off if set to false
             loop: true, // repeats
             callback:()=> {
-                // add one to score
                 timeLeft -= 1;
-                //console.log(score); // debugging check
             }
         });
     }
@@ -42,7 +40,7 @@ class Loading extends Phaser.Scene {
     update() {
         this.remainText.text = timeLeft;
 
-        if(timeLeft == 59){
+        if(timeLeft == 54){
             this.scene.start('tableScene');
         }
     }
