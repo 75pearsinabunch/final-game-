@@ -32,9 +32,7 @@ class Loading extends Phaser.Scene {
             paused: false, // timer continues even when clicked off if set to false
             loop: true, // repeats
             callback:()=> {
-                // add one to score
                 timeLeft -= 1;
-                //console.log(score); // debugging check
             }
         });
     }

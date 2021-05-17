@@ -77,6 +77,7 @@ class Table extends Phaser.Scene {
     this.barFill = .5;
     this.setMeterPercentage(this.barFill);
 
+    //bar currently does nothing
     const blue_leftShadowCap = this.add.image(x, blue_y, 'left-cap-shadow').setOrigin(0, 0.5);
     const blue_middleShaddowCap = this.add.image(blue_leftShadowCap.x + blue_leftShadowCap.width2, blue_y, 'middle-shadow').setOrigin(0, 0.5);
     blue_middleShaddowCap.displayWidth = this.fullWidth;

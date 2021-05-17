@@ -61,7 +61,7 @@ class PatternTrie {
     //this.printTrie(this.root);
   }
 
-  removePattern() {
+  removePattern(hand) {
     console.log("PatternTrie, removePattern: starting");
     this.currRoot = this.root;//doing it iteratively, nothing fancy
     this.tempRoot = undefined;

@@ -3,8 +3,6 @@
 class InputController {
   constructor(scene) {
     //Variables
-    //this.actions = [];//used to store actions
-    //this.actors = [];
     this.scene = scene;
 
     //setting up the response type enum
@@ -61,60 +59,55 @@ class InputController {
         hand[i] = this.replaceCard;
       }
     }
-    this.hcV.sort((l,r)=>{return (l-r)});
+    this.hcV.sort((l, r) => { return (l - r) });
     this.hcS.sort();
-    console.log(this.hcV)
-    console.log(this.hcS);
+    //console.log(this.hcV);
+    //console.log(this.hcS);
+    this.determineOutcome(this.hcS, this.hcV);
   }
 
   //TO DO: Stand alone function for determinining success based on game progression
+  determineOutcome(hcS, hcV) {
+    switch (Phaser.Math.Between(0,2)) {
 
-  //causes an actor to perform the action assigned
-  //in its respective stimulus object
-  performAction(stim, sI) {
-    //figure out how to react
-    switch (sI) {
-      case (this.responseTypes.good):
-        stim.approve();
+      case (0)://checks if exists
+        if (this.suitPattern.checkPattern(hcS) || this.valuePattern.checkPattern(hcV)) {
+          console.log("InputController, determineOutcome: Found pattern");
+          this.approve();
+        } else {
+          console.log("InputController, determineOutcome: Did not find pattern");
+          this.disapprove();
+        }
         break;
-      case (this.responseTypes.bad):
-        stim.disapprove();
+      case (1)://creates pattern
+        console.log("InputController, determineOutcome: Created Pattern");
+        this.suitPattern.addPattern(hcS);
+        this.valuePattern.addPattern(hcV);
+        this.approve();
         break;
-      case (this.responseTypes.vague):
-        stim.vague();
-      default:
-        //Does nothing
-        console.log("InputController, performAction, Nothing selected as performance")
-        this.response = null;
+      case (2)://destorys pattern
+        console.log("InputController, determineOutcome: Destroyed pattern");
+        this.suitPattern.removePattern(hcS);
+        this.valuePattern.removePattern(hcV);
+        this.disapprove();
         break;
-    }
-    stim.uses--;
-    if (stim.uses <= 0) {
-      this.stimuli.splice(sI, 1);//remove element
-      console.log("InputController, performAction: removed stimulus: " + this.stimuli);
 
     }
   }
 
-    //States a message of approval
+  //States a message of approval
+  //currently increases tower bar
   approve() {
     this.scene.barFill += .1;
     this.scene.setMeterPercentage(this.scene.barFill);//TODO: should probably randomize
     this.scene.promptAnim("The Tower Grows");
   }
 
+  //States a message of disapproval
+  //currently lowers tower bar
   disapprove() {
     this.scene.barFill -= .1;
     this.scene.setMeterPercentage(this.scene.barFill);//TODO: should probably randomize
     this.scene.promptAnim("The Tower Diminishes");
-  }
-
-  vague() {
-    this.scene.promptAnim("No Effect");
-  }
-
-  remove(){
-    this.text.destroy();
-    this.destroy();
   }
 }
