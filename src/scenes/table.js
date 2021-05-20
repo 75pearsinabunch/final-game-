@@ -73,38 +73,19 @@ class Table extends Phaser.Scene {
     this.green_middle = this.add.image(this.green_leftCap.x + this.green_leftCap.width, green_y, 'green_middle').setOrigin(0, 0.5);
     this.green_rightCap = this.add.image(this.green_middle.x + this.green_middle.displayWidth, green_y, 'green_right-cap').setOrigin(0, 0.5)
     this.setMeterPercentage(green_value);
+
+    //--------------TIMING/CLOCK---------------
     //Temp meter fill
     this.barFill = .5;
     this.setMeterPercentage(this.barFill);
-
-    //bar currently does nothing
-    const blue_leftShadowCap = this.add.image(x, blue_y, 'left-cap-shadow').setOrigin(0, 0.5);
-    const blue_middleShaddowCap = this.add.image(blue_leftShadowCap.x + blue_leftShadowCap.width2, blue_y, 'middle-shadow').setOrigin(0, 0.5);
-    blue_middleShaddowCap.displayWidth = this.fullWidth;
-    this.add.image(blue_middleShaddowCap.x + blue_middleShaddowCap.displayWidth2, blue_y, 'right-cap-shadow').setOrigin(0, 0.5);
-    this.blue_leftCap = this.add.image(x, blue_y, 'blue_left-cap').setOrigin(0, 0.5);
-    this.blue_middle = this.add.image(this.blue_leftCap.x + this.blue_leftCap.width2, blue_y, 'blue_middle').setOrigin(0, 0.5);
-    this.blue_rightCap = this.add.image(this.blue_middle.x + this.blue_middle.displayWidth2, blue_y, 'blue_right-cap').setOrigin(0, 0.5)
-    this.setMeterPercentage(blue_value);
-
+    this.gameTime = 0;//number of seconds
+    this.totalTime = 60;//number of seconds in a game
     this.timing = this.time.addEvent({
-      delay: 5000, // time in ms
+      delay: 1000, // time in ms
       paused: false, // timer continues even when clicked off if set to false
       loop: true, // repeats
-      paused: false,
       callback: () => {
-        // add one to score
-        if (green_value > 1) {
-          this.setMeterPercentage(green_value);
-          this.timing.paused = true;
-          console.log(green_value);
-        }
-        if (green_value < 1) {
-          this.timing.paused = false;
-          this.setMeterPercentage(green_value);
-          green_value += 0.1;
-          console.log(green_value);
-        }
+        this.gameTime++;//increments every second
       }
     });
 
@@ -210,7 +191,43 @@ class Table extends Phaser.Scene {
 
   update() {
     if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
-      this.iC.processSelection(this.hand);//MORE NUANCED LATER
+      let cardCount = 0;
+      for (let i = 0; i < this.hand.length; i++) {
+        if (this.hand[i].isSelected) {
+          cardCount++;
+        }
+      }
+      if (cardCount == 3) {
+        this.iC.processSelection(this.hand);//MORE NUANCED LATER
+      }else{
+        console.log("Please Draw 3");
+      }
     }
   }
 }
+/*
+Graveyard
+    //bar currently does nothing
+    const blue_leftShadowCap = this.add.image(x, blue_y, 'left-cap-shadow').setOrigin(0, 0.5);
+    const blue_middleShaddowCap = this.add.image(blue_leftShadowCap.x + blue_leftShadowCap.width2, blue_y, 'middle-shadow').setOrigin(0, 0.5);
+    blue_middleShaddowCap.displayWidth = this.fullWidth;
+    this.add.image(blue_middleShaddowCap.x + blue_middleShaddowCap.displayWidth2, blue_y, 'right-cap-shadow').setOrigin(0, 0.5);
+    this.blue_leftCap = this.add.image(x, blue_y, 'blue_left-cap').setOrigin(0, 0.5);
+    this.blue_middle = this.add.image(this.blue_leftCap.x + this.blue_leftCap.width2, blue_y, 'blue_middle').setOrigin(0, 0.5);
+    this.blue_rightCap = this.add.image(this.blue_middle.x + this.blue_middle.displayWidth2, blue_y, 'blue_right-cap').setOrigin(0, 0.5)
+    this.setMeterPercentage(blue_value);
+
+prev in timer's callback
+// add one to score
+        if (green_value > 1) {
+          this.setMeterPercentage(green_value);
+          this.timing.paused = true;
+          console.log(green_value);
+        }
+        if (green_value < 1) {
+          this.timing.paused = false;
+          this.setMeterPercentage(green_value);
+          green_value += 0.1;
+          console.log(green_value);
+        }
+*/

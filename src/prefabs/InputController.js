@@ -13,8 +13,9 @@ class InputController {
     };
 
     //Setting up pattern tries
-    this.suitPattern = new PatternTrie(4);
-    this.valuePattern = new PatternTrie(13);
+    this.suitPattern = new PatternTrie(4,this, this.scene);
+    this.valuePattern = new PatternTrie(13,this, this.scene);
+    this.timesTried = 0;
   }
 
   //Controlls response of all card elements controlled by this controller
@@ -37,7 +38,12 @@ class InputController {
   //takes a hand object of cards
   processSelection(hand) {
     //TO DO: Check to make sure hand items are cards
+    if(hand == undefined || hand[0] == undefined){
+      console.warn("Wasn't even given a hand");
+      return;
+    }
 
+    this.timesTried++;
     //instantiate to holders of copies of cards
     this.hcV = []//copy of hand
     this.hcS = [];//copy of Suits
@@ -63,35 +69,14 @@ class InputController {
     this.hcS.sort();
     //console.log(this.hcV);
     //console.log(this.hcS);
-    this.determineOutcome(this.hcS, this.hcV);
-  }
+    //throw player a bone every third try
 
-  //TO DO: Stand alone function for determinining success based on game progression
-  determineOutcome(hcS, hcV) {
-    switch (Phaser.Math.Between(0,2)) {
-
-      case (0)://checks if exists
-        if (this.suitPattern.checkPattern(hcS) || this.valuePattern.checkPattern(hcV)) {
-          console.log("InputController, determineOutcome: Found pattern");
-          this.approve();
-        } else {
-          console.log("InputController, determineOutcome: Did not find pattern");
-          this.disapprove();
-        }
-        break;
-      case (1)://creates pattern
-        console.log("InputController, determineOutcome: Created Pattern");
-        this.suitPattern.addPattern(hcS);
-        this.valuePattern.addPattern(hcV);
-        this.approve();
-        break;
-      case (2)://destorys pattern
-        console.log("InputController, determineOutcome: Destroyed pattern");
-        this.suitPattern.removePattern(hcS);
-        this.valuePattern.removePattern(hcV);
-        this.disapprove();
-        break;
-
+    if(this.suitPattern.checkPattern(this.hcS) || this.valuePattern.checkPattern(this.hcV)){
+      console.log("Approved");
+      this.approve();
+    }else{
+      console.log("Disapproved");
+      this.disapprove();
     }
   }
 
