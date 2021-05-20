@@ -31,7 +31,7 @@ class PatternTrie {
       }
       this.currRoot = this.tempRoot;
     }
-    this.currRoot.children[this.stopI] = true;
+    this.currRoot.children[this.stopI] = true;//PROBLEM LINE
     //console.log("PatternTrie, addPatern: ended");
     //this.printTrie(this.root);
   }
