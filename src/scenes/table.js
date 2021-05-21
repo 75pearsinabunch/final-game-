@@ -137,7 +137,7 @@ class Table extends Phaser.Scene {
     //---------GAME TIMER------
     this.gameOver = false;
     this.gOEvent = this.time.addEvent({
-      delay: 1000,//54000,
+      delay: 56000,
       callback: () => {
         this.gameOver = true;
         console.log("Game over!");
@@ -172,7 +172,6 @@ class Table extends Phaser.Scene {
         this.green_rightCap.visible = this.green_middle.displayWidth > 0;
       }
     })
-
   }
 
   //puts tarot card and ends the game
@@ -220,7 +219,6 @@ class Table extends Phaser.Scene {
     if (this.gameOver) {
       return;
     }
-
     if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
       let cardCount = 0;
       for (let i = 0; i < this.hand.length; i++) {
@@ -229,12 +227,12 @@ class Table extends Phaser.Scene {
         }
       }
       if (cardCount == 3) {
-        this.iC.processSelection(this.hand);//MORE NUANCED LATER
+        this.iC.processSelection(this.hand);
       } else {
+        this.promptAnim("Please Select 3");
         for (let i = 0; i < this.hand.length; i++) {
           this.hand[i].isSelected = false;
           this.hand[i].setAlpha(.8);
-          this.promptAnim("Please Draw 3");
         }
       }
     }
