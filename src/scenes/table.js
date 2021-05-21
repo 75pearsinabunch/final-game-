@@ -24,7 +24,16 @@ class Table extends Phaser.Scene {
     this.load.image('right-cap-shadow', 'barHorizontal_shadow_right.png');
 
     //audio
-    this.load.audio('music', 'Ambience.mp3');
+    this.load.audio('music', 'audio/Ambience.mp3');
+    this.load.audio('cDraw1', 'audio/CardDraw-01.wav');
+    this.load.audio('cDraw2', 'audio/CardDraw-02.wav');
+    this.load.audio('cDraw3', 'audio/CardDraw-03.wav');
+    this.load.audio('cDraw4', 'audio/CardDraw-04.wav');
+    this.load.audio('cDraw5', 'audio/CardDraw-05.wav');
+    this.load.audio('cShuffle1', 'audio/CardShuffle-01.wav');
+    this.load.audio('cShuffle2', 'audio/CardShuffle-02.wav');
+    this.load.audio('cShuffle3', 'audio/CardShuffle-03.wav');
+    this.load.audio('cShuffle4', 'audio/CardShuffle-04.wav');
   }
 
   init() {
@@ -49,11 +58,30 @@ class Table extends Phaser.Scene {
       rate: 1,
       detune: 0,
       seek: 0,
-      loop: false,
+      loop: true,
       delay: 0
     }
     let music = this.sound.add('music', musicConfig);
     music.play();
+
+    let sfxConfig = {
+      mute: false,
+      volume: 0.2,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0
+    } 
+    let cDraw1 = this.sound.add('cDraw1', sfxConfig);
+    let cDraw2 = this.sound.add('cDraw2', sfxConfig);
+    let cDraw3 = this.sound.add('cDraw3', sfxConfig);
+    let cDraw4 = this.sound.add('cDraw4', sfxConfig);
+    let cDraw5 = this.sound.add('cDraw5', sfxConfig);
+    let cShuffle1 = this.sound.add('cShuffle1', sfxConfig);
+    let cShuffle2 = this.sound.add('cShuffle2', sfxConfig);
+    let cShuffle3 = this.sound.add('cShuffle3', sfxConfig);
+    let cShuffle4 = this.sound.add('cShuffle4', sfxConfig);
 
     //-----PROMPT TEXT-----
     //sets up text at upper right of the screen
