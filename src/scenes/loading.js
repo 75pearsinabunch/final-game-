@@ -5,8 +5,9 @@ class Loading extends Phaser.Scene {
         super("loadingScene");
     }
     preload() {
-        this.load.image('1back','assets/cardBack.png')
-        this.load.image('timer', 'assets/loading.png')
+        this.load.image('1back','assets/cardBack.png');
+        this.load.image('timer', 'assets/loading.png');
+        this.load.atlas('cards','assets/cardSheet.png', 'assets/cardSheet.json');
         this.load.bitmapFont('digital', 'assets/font/digital-7.ttf');
     }
     create() {

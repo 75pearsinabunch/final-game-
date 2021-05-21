@@ -126,8 +126,19 @@ class Table extends Phaser.Scene {
       },
       fixedWidth: 0
     }
-
+    this.spaceText = this.add.text(game.config.width / 2, game.config.height - 200, 'Which 3 Cards Fit the Pattern?', this.textConfig).setOrigin(0.5);
     this.spaceText = this.add.text(game.config.width / 2, game.config.height - 50, 'Press Space to Try', this.textConfig).setOrigin(0.5);
+
+
+    //---------Game Timer------
+    this.gameOver = false;
+    this.gOEvent = this.time.addEvent({
+      delay: 54000,
+      callback: () => {
+        this.gameOver = true;
+        console.log("Game over!");
+      },
+    })
 
   }
 
@@ -190,6 +201,11 @@ class Table extends Phaser.Scene {
   }
 
   update() {
+    //game over check
+    if (this.gameOver) {
+      return;
+    }
+
     if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
       let cardCount = 0;
       for (let i = 0; i < this.hand.length; i++) {
@@ -199,35 +215,14 @@ class Table extends Phaser.Scene {
       }
       if (cardCount == 3) {
         this.iC.processSelection(this.hand);//MORE NUANCED LATER
-      }else{
-        console.log("Please Draw 3");
+      } else {
+        for (let i = 0; i < this.hand.length; i++) {
+          this.hand.isSelected[i] = false;
+          this.setAlpha(.8);
+          changeText("Please Draw 3");
+        }
       }
     }
   }
 }
-/*
-Graveyard
-    //bar currently does nothing
-    const blue_leftShadowCap = this.add.image(x, blue_y, 'left-cap-shadow').setOrigin(0, 0.5);
-    const blue_middleShaddowCap = this.add.image(blue_leftShadowCap.x + blue_leftShadowCap.width2, blue_y, 'middle-shadow').setOrigin(0, 0.5);
-    blue_middleShaddowCap.displayWidth = this.fullWidth;
-    this.add.image(blue_middleShaddowCap.x + blue_middleShaddowCap.displayWidth2, blue_y, 'right-cap-shadow').setOrigin(0, 0.5);
-    this.blue_leftCap = this.add.image(x, blue_y, 'blue_left-cap').setOrigin(0, 0.5);
-    this.blue_middle = this.add.image(this.blue_leftCap.x + this.blue_leftCap.width2, blue_y, 'blue_middle').setOrigin(0, 0.5);
-    this.blue_rightCap = this.add.image(this.blue_middle.x + this.blue_middle.displayWidth2, blue_y, 'blue_right-cap').setOrigin(0, 0.5)
-    this.setMeterPercentage(blue_value);
 
-prev in timer's callback
-// add one to score
-        if (green_value > 1) {
-          this.setMeterPercentage(green_value);
-          this.timing.paused = true;
-          console.log(green_value);
-        }
-        if (green_value < 1) {
-          this.timing.paused = false;
-          this.setMeterPercentage(green_value);
-          green_value += 0.1;
-          console.log(green_value);
-        }
-*/

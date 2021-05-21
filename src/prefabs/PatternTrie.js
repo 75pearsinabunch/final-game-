@@ -42,13 +42,12 @@ class PatternTrie {
 
   decider(root, i, hand = undefined){
     //highest possible chance
-    //Time may be too forgiving
     let cap = 100;
     let allowence = .95;//percentage that must be cleared
-    //time quotient
+    //try quotient
     let tQ = (this.scene.gameTime*Math.PI/this.scene.totalTime*2);
     let currChance = (Math.sin(tQ)*cap);
-    if(Phaser.Math.Between(currChance, cap)>cap*allowence || this.iC.timesTried%3 == 0){
+    if(Phaser.Math.Between(currChance, cap)>cap*allowence){// || this.iC.timesTried%3 == 0){
     //decide whather to help or not
     //if hand was passed, only addPattern would need it
       if(hand == undefined){
