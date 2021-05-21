@@ -126,19 +126,25 @@ class Table extends Phaser.Scene {
       },
       fixedWidth: 0
     }
-    this.spaceText = this.add.text(game.config.width / 2, game.config.height - 200, 'Which 3 Cards Fit the Pattern?', this.textConfig).setOrigin(0.5);
+    this.promptText = this.add.text(game.config.width / 2, game.config.height - 200, 'Which 3 Cards Fit the Pattern?', this.textConfig).setOrigin(0.5);
     this.spaceText = this.add.text(game.config.width / 2, game.config.height - 50, 'Press Space to Try', this.textConfig).setOrigin(0.5);
 
+    //---------ENDING CARD------
+    this.flip = 180 * Phaser.Math.Between(0, 1);
+    this.tCard = Phaser.Math.Between(0, 21);
 
-    //---------Game Timer------
+
+    //---------GAME TIMER------
     this.gameOver = false;
     this.gOEvent = this.time.addEvent({
-      delay: 54000,
+      delay: 1000,//54000,
       callback: () => {
         this.gameOver = true;
         console.log("Game over!");
+        this.finish();
       },
     })
+
 
   }
 
@@ -164,10 +170,21 @@ class Table extends Phaser.Scene {
         this.green_leftCap.visible = this.green_middle.displayWidth > 0;
         this.green_middle.visible = this.green_middle.displayWidth > 0;
         this.green_rightCap.visible = this.green_middle.displayWidth > 0;
-
       }
     })
 
+  }
+
+  //puts tarot card and ends the game
+  finish() {
+    this.tarot = this.add.sprite(game.config.width / 2, game.config.height / 2, 'cards', `${this.tCard}`).setOrigin(.5,.5);
+    this.tarot.angle = this.flip;
+    for (let i = 0; i < this.hand.length; i++) {
+      this.hand[i].remove();
+    }
+    this.promptText.destroy();
+    this.spaceText.destroy();
+    this.endText = this.add.text(game.config.width / 2, game.config.height - 150, 'The Future your Choices Sew', this.textConfig).setOrigin(0.5);
   }
 
   //The base of the data structure that will take in
@@ -177,8 +194,6 @@ class Table extends Phaser.Scene {
   //gameObject: The object pressed
   //event:???
   recordInput(pointer, gameObject, event) {
-    //this.iC.pushAction({ pointer, gameObject, event });
-    //console.log("recordInput(pointer, gameObject, event)<card collision>");//just to see if card collision is detected 
     //if statements that stops the bar from hitting 0
     if (green_value > 0.1) {
       green_value = green_value - 0.1;
@@ -217,9 +232,9 @@ class Table extends Phaser.Scene {
         this.iC.processSelection(this.hand);//MORE NUANCED LATER
       } else {
         for (let i = 0; i < this.hand.length; i++) {
-          this.hand.isSelected[i] = false;
-          this.setAlpha(.8);
-          changeText("Please Draw 3");
+          this.hand[i].isSelected = false;
+          this.hand[i].setAlpha(.8);
+          this.promptAnim("Please Draw 3");
         }
       }
     }
