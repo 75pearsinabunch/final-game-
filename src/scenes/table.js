@@ -51,7 +51,7 @@ class Table extends Phaser.Scene {
     this.mouse = this.input.activePointer;
     this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
-    //-----AUDIO-----
+    //-----MUSIC-----
     let musicConfig = {
       mute: false,
       volume: 0.3,
@@ -63,26 +63,7 @@ class Table extends Phaser.Scene {
     }
     let music = this.sound.add('music', musicConfig);
     music.play();
-
-    let sfxConfig = {
-      mute: false,
-      volume: 0.2,
-      rate: 1,
-      detune: 0,
-      seek: 0,
-      loop: false,
-      delay: 0
-    } 
-    let cDraw1 = this.sound.add('cDraw1', sfxConfig);
-    let cDraw2 = this.sound.add('cDraw2', sfxConfig);
-    let cDraw3 = this.sound.add('cDraw3', sfxConfig);
-    let cDraw4 = this.sound.add('cDraw4', sfxConfig);
-    let cDraw5 = this.sound.add('cDraw5', sfxConfig);
-    let cShuffle1 = this.sound.add('cShuffle1', sfxConfig);
-    let cShuffle2 = this.sound.add('cShuffle2', sfxConfig);
-    let cShuffle3 = this.sound.add('cShuffle3', sfxConfig);
-    let cShuffle4 = this.sound.add('cShuffle4', sfxConfig);
-
+    
     //-----PROMPT TEXT-----
     //sets up text at upper right of the screen
     this.prompt = this.add.text(gameConfig.width - 10, 100, '', { color: '#FFF' }).setOrigin(1);
@@ -247,6 +228,27 @@ class Table extends Phaser.Scene {
     if (this.gameOver) {
       return;
     }
+    
+    //sfx init
+    let sfxConfig = {
+      mute: false,
+      volume: 0.2,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0
+    } 
+    let cDraw1 = this.sound.add('cDraw1', sfxConfig);
+    let cDraw2 = this.sound.add('cDraw2', sfxConfig);
+    let cDraw3 = this.sound.add('cDraw3', sfxConfig);
+    let cDraw4 = this.sound.add('cDraw4', sfxConfig);
+    let cDraw5 = this.sound.add('cDraw5', sfxConfig);
+    let cShuffle1 = this.sound.add('cShuffle1', sfxConfig);
+    let cShuffle2 = this.sound.add('cShuffle2', sfxConfig);
+    let cShuffle3 = this.sound.add('cShuffle3', sfxConfig);
+    let cShuffle4 = this.sound.add('cShuffle4', sfxConfig);
+
     if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
       let cardCount = 0;
       for (let i = 0; i < this.hand.length; i++) {
@@ -256,6 +258,21 @@ class Table extends Phaser.Scene {
       }
       if (cardCount == 3) {
         this.iC.processSelection(this.hand);
+        let sfxVar = Math.floor(Math.random() * 4);
+        //play sound
+        if (sfxVar == 0) {
+          cShuffle1.play();
+          console.log('sound1');
+        } else if (sfxVar == 1) {
+          cShuffle2.play();
+          console.log('sound2');
+        } else if (sfxVar == 2) {
+          cShuffle3.play();
+          console.log('sound3');
+        } else if (sfxVar == 3) {
+          cShuffle4.play();
+          console.log('sound4');
+        }
       } else {
         this.promptAnim("Please Select 3");
         for (let i = 0; i < this.hand.length; i++) {
