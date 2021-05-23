@@ -176,6 +176,7 @@ class Table extends Phaser.Scene {
 
   //puts tarot card and ends the game
   finish() {
+    //FINISH GAME SOUND (♪)
     this.tarot = this.add.sprite(game.config.width / 2, game.config.height / 2, 'cards', `${this.tCard}`).setOrigin(.5,.5);
     this.tarot.angle = this.flip;
     for (let i = 0; i < this.hand.length; i++) {
