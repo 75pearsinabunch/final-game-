@@ -30,10 +30,10 @@ class InputController {
     gameObject.isSelected = !gameObject.isSelected;
     if (gameObject.isSelected) {
       //SELECTING CARD (♪)
-      gameObject.setAlpha(1);
+      gameObject.activeColoration();
     } else {
       //DESELECTING CARD (♪)
-      gameObject.setAlpha(.8);
+      gameObject.deactiveColoration();
     }
   }
 

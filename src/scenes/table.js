@@ -124,8 +124,8 @@ class Table extends Phaser.Scene {
     for (let i = 0; i < 5; i++) {
       this.cards = new PlayingCard(
         this,//scene 
-        (100 * i + 50), //x
-        (gameConfig.height - 100), //y
+        (55 * i + 133), //x
+        (gameConfig.height - 190), //y
         this.iC //input controller
       );
       this.hand.push(this.cards);
@@ -195,14 +195,15 @@ class Table extends Phaser.Scene {
   //puts tarot card and ends the game
   finish() {
     //FINISH GAME SOUND (♪)
-    this.tarot = this.add.sprite(game.config.width / 2, game.config.height / 2, 'cards', `${this.tCard}`).setOrigin(.5, .5);
+    this.tarot = this.add.sprite(game.config.width / 2 - 10, game.config.height- 70, 'cards', `${this.tCard}`).setOrigin(.5);
+    this.tarot.setScale(.9,.9);
     this.tarot.angle = this.flip;
     for (let i = 0; i < this.hand.length; i++) {
       this.hand[i].remove();
     }
-    this.promptText.destroy();
-    this.spaceText.destroy();
-    this.endText = this.add.text(game.config.width / 2, game.config.height - 150, 'The Future your Choices Sew', this.textConfig).setOrigin(0.5);
+    //this.promptText.destroy();
+    //this.spaceText.destroy();
+    this.endText = this.add.text(game.config.width / 2, game.config.height - 160, 'The Future your Choices Sew', this.textConfig).setOrigin(.5);
   }
 
   //The base of the data structure that will take in
@@ -287,7 +288,7 @@ class Table extends Phaser.Scene {
         this.promptAnim("Please Select 3");
         for (let i = 0; i < this.hand.length; i++) {
           this.hand[i].isSelected = false;
-          this.hand[i].setAlpha(.8);
+          this.hand[i].deactiveColoration();
         }
       }
     }
