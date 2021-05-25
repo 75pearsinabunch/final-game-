@@ -17,8 +17,6 @@ class PatternTrie {
 
   //Traverses a given pattern. If it's interrupted decider determines result
   checkPattern(hand) {
-
-    //console.log("PatternTrie, checkPattern: starting");
     this.currRoot = this.root;//doing it iteratively, nothing fancy
     this.tempRoot = undefined;
     for (let i = 0; i < hand.length; i++) {
@@ -30,7 +28,6 @@ class PatternTrie {
         this.tempRoot = new TrieNode(this.slots);
         this.tempRoot.children[this.stopI] = false;
         return this.sprout(this.currRoot, (i - 3));//credit the remaining to make a tree
-
       }
 
       this.currRoot = this.tempRoot;//continue iteration
@@ -42,8 +39,9 @@ class PatternTrie {
     return true;
   }
 
+  //generates a node structure based off of given input
+  //node: the last node reached before termination
   sprout(node, credits = 0) {
-    console.log(node)
     let avNodes = node.children;
     for (let i = 0; i < credits; i++) {
       for (let j = 0; i < avNodes.length; i++) {
@@ -52,7 +50,6 @@ class PatternTrie {
         }
       }
       let ind = Phaser.Math.Between[0, avNodes.length - 1];
-
       avNodes[ind] = new TrieNode(this.slots);
     }
 
@@ -74,7 +71,6 @@ class PatternTrie {
 
   //A testing function to determine the structure of a trie
   printTrie(node) {
-    console.log(node.children);
     for (let i = 0; i < node.children.length; i++) {
       if (node.children[i] != undefined) {
         this.printTrie(node.children[i]);
