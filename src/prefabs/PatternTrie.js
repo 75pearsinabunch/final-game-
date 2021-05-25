@@ -22,16 +22,17 @@ class PatternTrie {
     this.tempRoot = undefined;
     for (let i = 0; i < hand.length; i++) {
       this.chI = this.getChildIndex(hand[i]);
-      this.tempRoot = this.currRoot.children[this.chI];//check for existance
+      this.tempRoot = this.currRoot.children[this.chI];
+      //check for existance
       if (this.tempRoot == undefined) {
-        return this.decider(this.currRoot, i, hand);
+        //return this.decider(this.currRoot, i, hand);MUST BE FILLED IN
       }
 
       if(!this.tempRoot.children[this.chI]){
-        return this.decider(this.currRoot, i);
+        //return this.decider(this.currRoot, i);MUST BE FILLED IN
       }
 
-      this.currRoot = this.tempRoot;
+      this.currRoot = this.tempRoot;//continue iteration
     }
     //close off this path
     this.currRoot.children[this.chI] = false;
@@ -112,7 +113,7 @@ class PatternTrie {
   //of input recieved
   getChildIndex(card) {
     if (typeof (card) == 'string') {
-      return suits.indexOf(card);//returns index based on place in global index
+      return suits.indexOf(card-1);//returns index based on place in global index
     }
     return (card - 1);//just return the value
   }
