@@ -1,6 +1,6 @@
 //Input logger serves to store player input and hold it as a repository
 //for use across all objects. 
-class InputController {
+class InputController{
   constructor(scene) {
     //Variables
     this.scene = scene;
@@ -18,22 +18,84 @@ class InputController {
     this.timesTried = 0;
   }
 
+  // preload() {
+  //   this.load.path = 'assets/';
+    
+  //   this.load.audio('cDraw1', 'audio/CardDraw-01.wav');
+  //   this.load.audio('cDraw2', 'audio/CardDraw-02.wav');
+  //   this.load.audio('cDraw3', 'audio/CardDraw-03.wav');
+  //   this.load.audio('cDraw4', 'audio/CardDraw-04.wav');
+  //   this.load.audio('cDraw5', 'audio/CardDraw-05.wav');
+
+  //   this.load.audio('cShuffle1', 'audio/CardShuffle-01.wav');
+  //   this.load.audio('cShuffle2', 'audio/CardShuffle-02.wav');
+  //   this.load.audio('cShuffle3', 'audio/CardShuffle-03.wav');
+  //   this.load.audio('cShuffle4', 'audio/CardShuffle-04.wav');
+  // }
+
+  // create() {
+  //   //Init sound
+  //   let cDraw1 = this.sound.add('cDraw1');
+  //   let cDraw2 = this.sound.add('cDraw2');
+  //   let cDraw3 = this.sound.add('cDraw3');
+  //   let cDraw4 = this.sound.add('cDraw4');
+  //   let cDraw5 = this.sound.add('cDraw5');
+  //   let cShuffle1 = this.sound.add('cShuffle1');
+  //   let cShuffle2 = this.sound.add('cShuffle2');
+  //   let cShuffle3 = this.sound.add('cShuffle3');
+  //   let cShuffle4 = this.sound.add('cShuffle4');
+  // }
+
   //Controlls response of all card elements controlled by this controller
   recieveClick(pointer, gameObject, event) {
+    // let sfxConfig = {
+    //   mute: false,
+    //   volume: 0.2,
+    //   rate: 1,
+    //   detune: 0,
+    //   seek: 0,
+    //   loop: false,
+    //   delay: 0
+    // }
+    
     //guarentee we're recieving an actor
     if (gameObject.constructor.name != "PlayingCard") {
       console.warn("InputController.reieveClick: Tag not found, Actor not passed in");
       return;
     }
-
+    
     //highlights selected cards
     gameObject.isSelected = !gameObject.isSelected;
     if (gameObject.isSelected) {
-      //SELECTING CARD (♪)
       gameObject.activeColoration();
+      //SELECTING CARD (♪)
+      // let sfxVar = Math.floor(Math.random() * 5);
+      // if (sfxVar == 0) {
+      //   this.sound.play('cDraw1');
+      // } else if (sfxVar == 1) {
+      //   this.sound.play('cDraw2');
+      // } else if (sfxVar == 2) {
+      //   this.sound.play('cDraw3');
+      // } else if (sfxVar == 3) {
+      //   this.sound.play('cDraw4');
+      // } else if (sfxVar == 4) {
+      //   this.sound.play('cDraw5');
+      // }
     } else {
-      //DESELECTING CARD (♪)
       gameObject.deactiveColoration();
+      //DESELECTING CARD (♪)
+      // let sfxVar = Math.floor(Math.random() * 5);
+      // if (sfxVar == 0) {
+      //   this.sound.play('cDraw1');
+      // } else if (sfxVar == 1) {
+      //   this.sound.play('cDraw2');
+      // } else if (sfxVar == 2) {
+      //   this.sound.play('cDraw3');
+      // } else if (sfxVar == 3) {
+      //   this.sound.play('cDraw4');
+      // } else if (sfxVar == 4) {
+      //   this.sound.play('cDraw5');
+      // }
     }
   }
 
