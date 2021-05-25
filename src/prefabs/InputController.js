@@ -29,15 +29,16 @@ class InputController {
     //highlights selected cards
     gameObject.isSelected = !gameObject.isSelected;
     if (gameObject.isSelected) {
-      gameObject.setAlpha(1);
+      //SELECTING CARD (♪)
+      gameObject.activeColoration();
     } else {
-      gameObject.setAlpha(.8);
+      //DESELECTING CARD (♪)
+      gameObject.deactiveColoration();
     }
   }
 
   //takes a hand object of cards
   processSelection(hand) {
-    //TO DO: Check to make sure hand items are cards
     if(hand == undefined || hand[0] == undefined){
       console.warn("Wasn't even given a hand");
       return;
@@ -67,9 +68,6 @@ class InputController {
     }
     this.hcV.sort((l, r) => { return (l - r) });
     this.hcS.sort();
-    //console.log(this.hcV);
-    //console.log(this.hcS);
-    //throw player a bone every third try
 
     if(this.suitPattern.checkPattern(this.hcS) || this.valuePattern.checkPattern(this.hcV)){
       console.log("Approved");
@@ -83,6 +81,7 @@ class InputController {
   //States a message of approval
   //currently increases tower bar
   approve() {
+    //HAND APPROVED, PLAYER PROGRESSES (♪)
     this.scene.barFill += .1;
     this.scene.setMeterPercentage(this.scene.barFill);//TODO: should probably randomize
     this.scene.promptAnim("The Tower Grows");
@@ -91,6 +90,7 @@ class InputController {
   //States a message of disapproval
   //currently lowers tower bar
   disapprove() {
+    //HAND DISAPPROVED, PLAYER REGRESSES (♪)
     this.scene.barFill -= .1;
     this.scene.setMeterPercentage(this.scene.barFill);//TODO: should probably randomize
     this.scene.promptAnim("The Tower Diminishes");

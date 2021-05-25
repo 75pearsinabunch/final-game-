@@ -15,7 +15,7 @@ class PlayingCard extends Phaser.GameObjects.Sprite {
     const texture = (`${value} ${suit}`); //creates texture name from random generation
     const suitTranslate = (suits[suit-1]);
     super(scene, posX, posY, 'cards', texture, 0);//CHANGE 1back TO texture ONCE TEXTURES ARE IN
-    this.text = scene.add.text(posX, (posY - 30), suitTranslate).setOrigin(0.5);//TEMPORARY TO SEE CARD VALUES
+    //this.text = scene.add.text(posX, (posY - 30), suitTranslate).setOrigin(0.5);//TEMPORARY TO SEE CARD VALUES
     scene.add.existing(this);//places in the world
     //Set interactivity
     this.setInteractive();//allows for clicking
@@ -30,11 +30,21 @@ class PlayingCard extends Phaser.GameObjects.Sprite {
     this.tag = texture;
     this.controller = controller;
     this.isSelected = false;
-    this.setAlpha(.8);
+    this.setAlpha(1);
+    this.deactiveColoration();
+    this.setScale(1.2,1.2);
+  }
+
+  activeColoration(){
+    this.setTint('0xfff000')
+  }
+
+  deactiveColoration(){
+    this.setTint('0xffffcc')
   }
 
   remove() {
-    this.text.destroy();
+    //this.text.destroy();
     this.destroy();
   }
 }

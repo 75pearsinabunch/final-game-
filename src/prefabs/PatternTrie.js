@@ -17,7 +17,7 @@ class PatternTrie {
 
   //Traverses a given pattern. If it's interrupted decider determines result
   checkPattern(hand) {
-    console.log("PatternTrie, checkPattern: starting");
+    //console.log("PatternTrie, checkPattern: starting");
     this.currRoot = this.root;//doing it iteratively, nothing fancy
     this.tempRoot = undefined;
     for (let i = 0; i < hand.length; i++) {
@@ -43,11 +43,11 @@ class PatternTrie {
   decider(root, i, hand = undefined){
     //highest possible chance
     let cap = 100;
-    let allowence = .95;//percentage that must be cleared
+    let allowence = .80;//percentage that must be cleared
     //try quotient
     let tQ = (this.scene.gameTime*Math.PI/this.scene.totalTime*2);
     let currChance = (Math.sin(tQ)*cap);
-    if(Phaser.Math.Between(currChance, cap)>cap*allowence){// || this.iC.timesTried%3 == 0){
+    if(Phaser.Math.Between(currChance, cap)>cap*allowence|| this.iC.timesTried%3 == 0){
     //decide whather to help or not
     //if hand was passed, only addPattern would need it
       if(hand == undefined){
