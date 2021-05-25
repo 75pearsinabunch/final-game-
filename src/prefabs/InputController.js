@@ -1,6 +1,6 @@
 //Input logger serves to store player input and hold it as a repository
 //for use across all objects. 
-class InputController{
+class InputController {
   constructor(scene) {
     //Variables
     this.scene = scene;
@@ -35,15 +35,24 @@ class InputController{
 
   // create() {
   //   //Init sound
-  //   let cDraw1 = this.sound.add('cDraw1');
-  //   let cDraw2 = this.sound.add('cDraw2');
-  //   let cDraw3 = this.sound.add('cDraw3');
-  //   let cDraw4 = this.sound.add('cDraw4');
-  //   let cDraw5 = this.sound.add('cDraw5');
-  //   let cShuffle1 = this.sound.add('cShuffle1');
-  //   let cShuffle2 = this.sound.add('cShuffle2');
-  //   let cShuffle3 = this.sound.add('cShuffle3');
-  //   let cShuffle4 = this.sound.add('cShuffle4');
+  //   // let sfxConfig = {
+  //   //   mute: false,
+  //   //   volume: 0.2,
+  //   //   rate: 1,
+  //   //   detune: 0,
+  //   //   seek: 0,
+  //   //   loop: false,
+  //   //   delay: 0
+  //   // }
+  //   let cDraw1 = this.sound.add('cDraw1', sfxConfig);
+  //   let cDraw2 = this.sound.add('cDraw2', sfxConfig);
+  //   let cDraw3 = this.sound.add('cDraw3', sfxConfig);
+  //   let cDraw4 = this.sound.add('cDraw4', sfxConfig);
+  //   let cDraw5 = this.sound.add('cDraw5', sfxConfig);
+  //   let cShuffle1 = this.sound.add('cShuffle1', sfxConfig);
+  //   let cShuffle2 = this.sound.add('cShuffle2', sfxConfig);
+  //   let cShuffle3 = this.sound.add('cShuffle3', sfxConfig);
+  //   let cShuffle4 = this.sound.add('cShuffle4', sfxConfig);
   // }
 
   //Controlls response of all card elements controlled by this controller
@@ -71,30 +80,30 @@ class InputController{
       //SELECTING CARD (♪)
       // let sfxVar = Math.floor(Math.random() * 5);
       // if (sfxVar == 0) {
-      //   this.sound.play('cDraw1');
+      //   cDraw1.play(sfxConfig);
       // } else if (sfxVar == 1) {
-      //   this.sound.play('cDraw2');
+      //   cDraw2.play(sfxConfig);
       // } else if (sfxVar == 2) {
-      //   this.sound.play('cDraw3');
+      //   cDraw3.play(sfxConfig);
       // } else if (sfxVar == 3) {
-      //   this.sound.play('cDraw4');
+      //   cDraw4.play(sfxConfig);
       // } else if (sfxVar == 4) {
-      //   this.sound.play('cDraw5');
+      //   cDraw5.play(sfxConfig);
       // }
     } else {
       gameObject.deactiveColoration();
       //DESELECTING CARD (♪)
       // let sfxVar = Math.floor(Math.random() * 5);
       // if (sfxVar == 0) {
-      //   this.sound.play('cDraw1');
+      //   cDraw1.play(sfxConfig);
       // } else if (sfxVar == 1) {
-      //   this.sound.play('cDraw2');
+      //   cDraw2.play(sfxConfig);
       // } else if (sfxVar == 2) {
-      //   this.sound.play('cDraw3');
+      //   cDraw3.play(sfxConfig);
       // } else if (sfxVar == 3) {
-      //   this.sound.play('cDraw4');
+      //   cDraw4.play(sfxConfig);
       // } else if (sfxVar == 4) {
-      //   this.sound.play('cDraw5');
+      //   cDraw5.play(sfxConfig);
       // }
     }
   }
