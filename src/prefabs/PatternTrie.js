@@ -25,11 +25,11 @@ class PatternTrie {
       this.tempRoot = this.currRoot.children[this.chI];
       //check for existance
       if (this.tempRoot == undefined) {
-        //return this.decider(this.currRoot, i, hand);MUST BE FILLED IN
+        return this.decider(this.currRoot, i, hand);
       }
 
       if(!this.tempRoot.children[this.chI]){
-        //return this.decider(this.currRoot, i);MUST BE FILLED IN
+        return this.decider(this.currRoot, i); 
       }
 
       this.currRoot = this.tempRoot;//continue iteration
