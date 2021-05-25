@@ -35,6 +35,7 @@ class Loading extends Phaser.Scene {
                 timeLeft -= 1;
             }
         });
+
     }
 
     update() {
