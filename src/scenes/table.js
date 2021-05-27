@@ -65,6 +65,10 @@ class Table extends Phaser.Scene {
 
     //-----LEVER IMAGE AND SETUP------
     this.lever = this.add.image(0, 0, 'lever').setOrigin(0);
+    this.leverIgnitePoint = -210;//the point at which the lever activates the mechanism
+    this.leverResetPoint = -2;
+    this.leverSpeed = 0;
+    this.leverMovable = true;
     this.lever.setInteractive({
       draggable: true,
       clickable: false,
@@ -78,10 +82,19 @@ class Table extends Phaser.Scene {
       loop: true,
       delay: 0
     }
-    let leverDrag = this.sound.add('leverDrag', leverConfig);
-       //-----LEVER CONTROL-----
+
+    //try out with let later
+    this.leverDrag = this.sound.add('leverDrag', leverConfig);
+    //-----LEVER CONTROL LISTENER-----
     this.lever.on('drag', (pointer, dragX, dragY) => {
-      console.log(dragX);
+      //console.log(dragX);
+      if (this.gameOver || !this.leverMovable) {
+        return;
+      }
+      //sets a small area the player can use
+      if (pointer.y > (gameConfig.height / 2) || pointer.y < 100) {
+        return;
+      }
       this.lever.x = dragX;//moves the lever along with the pointer
       // if (!this.leverDrag.isPlaying) {
       //   leverDrag.play();
@@ -301,7 +314,7 @@ class Table extends Phaser.Scene {
     let cShuffle1 = this.sound.add('cShuffle1', shuffleConfig);
     let cShuffle2 = this.sound.add('cShuffle2', shuffleConfig);
     let cShuffle3 = this.sound.add('cShuffle3', shuffleConfig);
-    let cShuffle4 = this.sound.add('cShuffle4', shuffleConfig); 
+    let cShuffle4 = this.sound.add('cShuffle4', shuffleConfig);
 
     let sfxVar = Math.floor(Math.random() * 4);
     if (sfxVar == 0) {
@@ -349,7 +362,27 @@ class Table extends Phaser.Scene {
       return;
     }
 
-    if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
+    //sets a reset point that resets all lever values
+    if (this.lever.x > this.leverResetPoint) {
+      this.leverSpeed = 0;
+      this.leverMovable = true;
+    }
+
+
+
+    //LEVER MOTION
+    this.lever.x = Phaser.Math.Clamp(this.lever.x, -222, 0);
+
+    if (this.leverMovable) {
+      this.leverSpeed = (0 - this.lever.x)/50;//its resistance increases as player pulls
+    }
+    //always move a little in the speed direction
+    this.lever.x += this.leverSpeed;
+
+    //INPUT CONTROLS (SOON TO BE DEPRICATED BY LEVER)
+    //if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
+    if ((this.lever.x < this.leverIgnitePoint) && this.leverMovable) {
+      this.leverMovable = false;
       let cardCount = 0;
       for (let i = 0; i < this.hand.length; i++) {
         if (this.hand[i].isSelected) {
@@ -358,7 +391,7 @@ class Table extends Phaser.Scene {
       }
       if (cardCount == 3) {
         this.iC.processSelection(this.hand);
-          
+
       } else {
         this.promptAnim("Please Select 3");
         for (let i = 0; i < this.hand.length; i++) {
