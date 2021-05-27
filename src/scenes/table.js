@@ -62,6 +62,11 @@ class Table extends Phaser.Scene {
       draggable: true,
       clickable: false,
     });
+       //-----LEVER CONTROL-----
+    this.lever.on('drag', (pointer, dragX, dragY) => {
+      console.log(dragX);
+      this.lever.x = dragX;//moves the lever along with the pointer
+    });
 
     //-----CARD SLOTS IMAGE--------
     this.slots = this.add.image(0, 0, 'slots').setOrigin(0);
@@ -139,10 +144,7 @@ class Table extends Phaser.Scene {
     //-----INPUT LOGGER DATA STRUCTURE----
     this.iC = new InputController(this);
 
-    //-----LEVER CONTROL-----
-    this.input.on('drag', (pointer, dragX, dragY) => {
-      this.lever.x = dragX;//moves the lever along with the pointer
-    });
+ 
 
 
     //-----PLAYING CARDS------
