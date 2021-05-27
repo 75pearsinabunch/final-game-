@@ -44,7 +44,10 @@ class Table extends Phaser.Scene {
     this.load.audio('cShuffle3', 'audio/CardShuffle-03.wav');
     this.load.audio('cShuffle4', 'audio/CardShuffle-04.wav');
 
-    this.load.audio('tGrow1', 'audio/TGrow-1.mp3');
+    this.load.audio('tGrow1', 'audio/Rumble-01.wav');
+    this.load.audio('tGrow2', 'audio/Rumble-02.wav');
+    this.load.audio('tGrow3', 'audio/Rumble-03.wav');
+    this.load.audio('tGrow4', 'audio/Rumble-04.wav');
   }
 
   init() {
@@ -303,7 +306,7 @@ class Table extends Phaser.Scene {
     //---GROWTH AUDIO---
     let growthConfig = {
       mute: false,
-      volume: 0.3,
+      volume: 1,
       rate: 1,
       detune: 0,
       seek: 0,
@@ -311,15 +314,19 @@ class Table extends Phaser.Scene {
       delay: 0
     }
     let tGrow1 = this.sound.add('tGrow1', growthConfig);
+    let tGrow2 = this.sound.add('tGrow2', growthConfig);
+    let tGrow3 = this.sound.add('tGrow3', growthConfig);
+    let tGrow4 = this.sound.add('tGrow4', growthConfig);
+
     let sfxVar = Math.floor(Math.random() * 4);
     if (sfxVar == 0) {
       tGrow1.play();
     } else if (sfxVar == 1) {
-      tGrow1.play();
+      tGrow2.play();
     } else if (sfxVar == 2) {
-      tGrow1.play();
+      tGrow3.play();
     } else if (sfxVar == 3) {
-      tGrow1.play();
+      tGrow4.play();
     }
   }
 
