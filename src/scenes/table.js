@@ -272,7 +272,7 @@ class Table extends Phaser.Scene {
         //---SHUFFLE AUDIO---
         let sfxConfig = {
           mute: false,
-          volume: 0.3,
+          volume: 1,
           rate: 1,
           detune: 0,
           seek: 0,
@@ -283,6 +283,7 @@ class Table extends Phaser.Scene {
         let cShuffle2 = this.sound.add('cShuffle2', sfxConfig);
         let cShuffle3 = this.sound.add('cShuffle3', sfxConfig);
         let cShuffle4 = this.sound.add('cShuffle4', sfxConfig);
+        
         let sfxVar = Math.floor(Math.random() * 4);
         if (sfxVar == 0) {
           cShuffle1.play();
