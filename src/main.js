@@ -4,7 +4,7 @@ let gameConfig = {
   type: Phaser.AUTO,
   width: 500,
   height: 500,
-  scene: [Loading, Table], //scenes
+  scene: [Title, Intro, Attic, Loading, Table], //scenes
 };
 
 let game = new Phaser.Game(gameConfig);//instantiate game
@@ -19,3 +19,5 @@ let green_value = 1;
 let blue_value = 0.5;
 
 let timeLeft = 59;
+
+let cursors = null; 
