@@ -15,7 +15,6 @@ class PlayingCard extends Phaser.GameObjects.Sprite {
     const texture = (`${value} ${suit}`); //creates texture name from random generation
     const suitTranslate = (suits[suit-1]);
     super(scene, posX, posY, 'cards', texture, 0);//CHANGE 1back TO texture ONCE TEXTURES ARE IN
-    //this.text = scene.add.text(posX, (posY - 30), suitTranslate).setOrigin(0.5);//TEMPORARY TO SEE CARD VALUES
     scene.add.existing(this);//places in the world
     //Set interactivity
     this.setInteractive();//allows for clicking

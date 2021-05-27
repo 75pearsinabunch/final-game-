@@ -50,7 +50,6 @@ class Table extends Phaser.Scene {
   create() {
     //-------CAMERA---------
     //this.cameras.main.setBackgroundColor('#FFF');
-    console.log("scene started");
 
     //------MACHINE IMAGE---------
     this.machine = this.add.image(0,0,'machine').setOrigin(0);
@@ -173,9 +172,7 @@ class Table extends Phaser.Scene {
       },
       fixedWidth: 0
     }
-    //this.promptText = this.add.text(game.config.width / 2, game.config.height - 200, 'Which 3 Cards Fit the Pattern?', this.textConfig).setOrigin(0.5);
-    //this.spaceText = this.add.text(game.config.width / 2, game.config.height - 50, 'Press Space to Try', this.textConfig).setOrigin(0.5);
-
+    
     //---------ENDING CARD------
     this.flip = 180 * Phaser.Math.Between(0, 1);
     this.tCard = Phaser.Math.Between(0, 21);
@@ -187,7 +184,6 @@ class Table extends Phaser.Scene {
       delay: 56000,
       callback: () => {
         this.gameOver = true;
-        console.log("Game over!");
         this.finish();
         music.stop();
         goMusic.setLoop(false);
@@ -231,18 +227,11 @@ class Table extends Phaser.Scene {
     for (let i = 0; i < this.hand.length; i++) {
       this.hand[i].remove();
     }
-    //this.promptText.destroy();
-    //this.spaceText.destroy();
     this.endText = this.add.text(game.config.width / 2, game.config.height - 160, 'The Future your Choices Sew', this.textConfig).setOrigin(.5);
   }
 
-  //The base of the data structure that will take in
-  //information about what was pressed and store it,
-  //just a function in its current iteration
-  //pointer: The pointer that pressed the object
-  //gameObject: The object pressed
-  //event:???
-  recordInput(pointer, gameObject, event) {
+  //used just for bar values
+  recordInput() {
     //if statements that stops the bar from hitting 0
     if (green_value > 0.1) {
       green_value = green_value - 0.1;
