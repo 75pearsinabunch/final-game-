@@ -1,0 +1,17 @@
+[
+	[
+		{
+			"speaker" : "",
+			"dialog" : "Hey, my uncle left the attic open.",
+			"newSpeaker" : "true"
+		},
+		{
+			"speaker" : "",
+			"dialog" : "He never leaves it open."
+		},
+		{	
+			"speaker" : "",
+			"dialog" : "I wonder what's up there?"
+		}
+	]
+]
