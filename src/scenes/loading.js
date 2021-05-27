@@ -22,6 +22,7 @@ class Loading extends Phaser.Scene {
         };
         this.timer = this.add.image(game.config.width / 2, game.config.height / 2, 'timer');
         this.timer.setDisplaySize(game.config.width, game.config.height);
+        console.log("loading scene");
 
         this.timeText = this.add.text(gameConfig.width/2-110, gameConfig.height/2-50, '0:',timeConfig);
         timeLeft = 59;
@@ -35,13 +36,12 @@ class Loading extends Phaser.Scene {
                 timeLeft -= 1;
             }
         });
-
     }
 
     update() {
         this.remainText.text = timeLeft;
 
-        if(timeLeft == 59){
+        if(timeLeft == 56){
             this.scene.start('tableScene');
         }
     }
