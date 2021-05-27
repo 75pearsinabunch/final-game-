@@ -22,7 +22,7 @@ class PlayingCard extends Phaser.GameObjects.Sprite {
       useHandCursor: true,
     });
 
-    this.on('pointerdown', ()=>{
+    this.on('pointerdown', () => {
       //records input to input logger
       controller.recieveClick(this);
       scene.playDraw();
@@ -40,12 +40,6 @@ class PlayingCard extends Phaser.GameObjects.Sprite {
     this.setAlpha(.7);
     this.deactiveColoration();
     this.setScale(1.2, 1.2);
-    this.pulse = scene.tweens.add({//one tween for Prof Smith
-      targets: this,
-      alpha:{value: 1,duration: 1000, ease: 'Power1'},
-      yoyo: true,
-      loop: -1,
-    })
   }
 
   activeColoration() {
@@ -55,7 +49,13 @@ class PlayingCard extends Phaser.GameObjects.Sprite {
   }
 
   deactiveColoration() {
-    this.setAlpha(.7)
+    this.setAlpha(.7);
+    this.pulse = this.scene.tweens.add({//one tween for Prof Smith
+      targets: this,
+      alpha: { value: 1, duration: Phaser.Math.Between(1000,3000), ease: 'Power1' },
+      yoyo: true,
+      loop: -1,
+    })
     this.setTint('0xffffcc')
   }
 

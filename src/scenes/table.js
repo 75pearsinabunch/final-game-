@@ -73,6 +73,7 @@ class Table extends Phaser.Scene {
       draggable: true,
       clickable: false,
     });
+
     let leverConfig = {
       mute: false,
       volume: 0.05,
@@ -85,6 +86,7 @@ class Table extends Phaser.Scene {
 
     //try out with let later
     this.leverDrag = this.sound.add('leverDrag', leverConfig);
+    this.lockpoint = -30;
     //-----LEVER CONTROL LISTENER-----
     this.lever.on('drag', (pointer, dragX, dragY) => {
       //console.log(dragX);
@@ -354,12 +356,32 @@ class Table extends Phaser.Scene {
     }
   }
 
+  //Called whenever the lever is pulled, determines whether or not
+  //the card conditions permit the lever to move
+  checkCardCount() {
+    if(!this.leverMovable){
+      return;
+    }
+    let cardCount = 0;
+    for (let i = 0; i < this.hand.length; i++) {
+      if (this.hand[i].isSelected) {
+        cardCount++;
+      }
+    }
+    if (cardCount == 3) {
+      this.lockpoint = -222;
+    } else {
+      this.lockpoint = -30;
+    }
+  }
+
   update() {
     //game over check
     if (this.gameOver) {
       return;
     }
 
+    this.checkCardCount();
     //sets a reset point that resets all lever values
     if (this.lever.x > this.leverResetPoint) {
       this.leverSpeed = 0;
@@ -367,10 +389,11 @@ class Table extends Phaser.Scene {
     }
 
     //LEVER MOTION
-    this.lever.x = Phaser.Math.Clamp(this.lever.x, -222, 0);
+    //max -222
+    this.lever.x = Phaser.Math.Clamp(this.lever.x, this.lockpoint, 0);
 
     if (this.leverMovable) {
-      this.leverSpeed = (0 - this.lever.x)/50;//its resistance increases as player pulls
+      this.leverSpeed = (0 - this.lever.x) / 50;//its resistance increases as player pulls
     }
     //always move a little in the speed direction
     this.lever.x += this.leverSpeed;
@@ -378,22 +401,7 @@ class Table extends Phaser.Scene {
     //INPUT CONTROLS 
     if ((this.lever.x < this.leverIgnitePoint) && this.leverMovable) {
       this.leverMovable = false;
-      let cardCount = 0;
-      for (let i = 0; i < this.hand.length; i++) {
-        if (this.hand[i].isSelected) {
-          cardCount++;
-        }
-      }
-      if (cardCount == 3) {
-        this.iC.processSelection(this.hand);
-
-      } else {
-        this.promptAnim("Please Select 3");
-        for (let i = 0; i < this.hand.length; i++) {
-          this.hand[i].isSelected = false;
-          this.hand[i].deactiveColoration();
-        }
-      }
+      this.iC.processSelection(this.hand);
     }
   }
 }
