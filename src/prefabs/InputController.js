@@ -19,20 +19,18 @@ class InputController {
   }
 
   //Controlls response of all card elements controlled by this controller
-  recieveClick(pointer, gameObject, event) {
-    
+  recieveClick(card) {
     //guarentee we're recieving an actor
-    if (gameObject.constructor.name != "PlayingCard") {
+    if (card.constructor.name != "PlayingCard") {
       console.warn("InputController.reieveClick: Tag not found, Actor not passed in");
       return;
     }
-    
     //highlights selected cards
-    gameObject.isSelected = !gameObject.isSelected;
-    if (gameObject.isSelected) {
-      gameObject.activeColoration();
+    card.isSelected = !card.isSelected;
+    if (card.isSelected) {
+      card.activeColoration();
     } else {
-      gameObject.deactiveColoration();
+      card.deactiveColoration();
     }
   }
 
