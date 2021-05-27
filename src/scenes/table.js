@@ -43,6 +43,8 @@ class Table extends Phaser.Scene {
     this.load.audio('cShuffle2', 'audio/CardShuffle-02.wav');
     this.load.audio('cShuffle3', 'audio/CardShuffle-03.wav');
     this.load.audio('cShuffle4', 'audio/CardShuffle-04.wav');
+
+    this.load.audio('tGrow1', 'audio/TGrow-1.mp3');
   }
 
   init() {
@@ -270,6 +272,57 @@ class Table extends Phaser.Scene {
     }
   }
 
+  playShuffle() {
+    let shuffleConfig = {
+      mute: false,
+      volume: 1,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0
+    }
+    let cShuffle1 = this.sound.add('cShuffle1', shuffleConfig);
+    let cShuffle2 = this.sound.add('cShuffle2', shuffleConfig);
+    let cShuffle3 = this.sound.add('cShuffle3', shuffleConfig);
+    let cShuffle4 = this.sound.add('cShuffle4', shuffleConfig); 
+
+    let sfxVar = Math.floor(Math.random() * 4);
+    if (sfxVar == 0) {
+      cShuffle1.play();
+    } else if (sfxVar == 1) {
+      cShuffle2.play();
+    } else if (sfxVar == 2) {
+      cShuffle3.play();
+    } else if (sfxVar == 3) {
+      cShuffle4.play();
+    }
+  }
+
+  playGrowth() {
+    //---GROWTH AUDIO---
+    let growthConfig = {
+      mute: false,
+      volume: 0.3,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0
+    }
+    let tGrow1 = this.sound.add('tGrow1', growthConfig);
+    let sfxVar = Math.floor(Math.random() * 4);
+    if (sfxVar == 0) {
+      tGrow1.play();
+    } else if (sfxVar == 1) {
+      tGrow1.play();
+    } else if (sfxVar == 2) {
+      tGrow1.play();
+    } else if (sfxVar == 3) {
+      tGrow1.play();
+    }
+  }
+
   update() {
     //game over check
     if (this.gameOver) {
@@ -285,33 +338,7 @@ class Table extends Phaser.Scene {
       }
       if (cardCount == 3) {
         this.iC.processSelection(this.hand);
-
-        //---SHUFFLE AUDIO---
-        let sfxConfig = {
-          mute: false,
-          volume: 1,
-          rate: 1,
-          detune: 0,
-          seek: 0,
-          loop: false,
-          delay: 0
-        }
-        let cShuffle1 = this.sound.add('cShuffle1', sfxConfig);
-        let cShuffle2 = this.sound.add('cShuffle2', sfxConfig);
-        let cShuffle3 = this.sound.add('cShuffle3', sfxConfig);
-        let cShuffle4 = this.sound.add('cShuffle4', sfxConfig);
-        
-        let sfxVar = Math.floor(Math.random() * 4);
-        if (sfxVar == 0) {
-          cShuffle1.play();
-        } else if (sfxVar == 1) {
-          cShuffle2.play();
-        } else if (sfxVar == 2) {
-          cShuffle3.play();
-        } else if (sfxVar == 3) {
-          cShuffle4.play();
-        }
-        
+          
       } else {
         this.promptAnim("Please Select 3");
         for (let i = 0; i < this.hand.length; i++) {

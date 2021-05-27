@@ -82,6 +82,7 @@ class InputController {
     this.scene.barFill += .1;
     this.scene.setMeterPercentage(this.scene.barFill);//TODO: should probably randomize
     this.scene.promptAnim("The Tower Grows");
+    this.scene.playGrowth();
   }
 
   //States a message of disapproval
@@ -91,5 +92,6 @@ class InputController {
     this.scene.barFill -= .1;
     this.scene.setMeterPercentage(this.scene.barFill);//TODO: should probably randomize
     this.scene.promptAnim("The Tower Diminishes");
+    this.scene.playShuffle();
   }
 }
