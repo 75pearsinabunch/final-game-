@@ -164,9 +164,6 @@ class Table extends Phaser.Scene {
     //-----INPUT LOGGER DATA STRUCTURE----
     this.iC = new InputController(this);
 
- 
-
-
     //-----PLAYING CARDS------
     //Deck of cards
     this.hand = [];
