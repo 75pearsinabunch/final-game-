@@ -4,7 +4,9 @@ class Table extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('machine', 'blender/machine.png')//main machine done before path
+    this.load.image('machine', 'blender/machine.png');//main machine done before path
+    this.load.image('lever', 'blender/lever.png');
+    this.load.image('slots', 'blender/slots.png');
 
     this.load.path = 'assets/';//shortens future path names
     this.load.image('cards', 'cardBack.png');
@@ -52,7 +54,22 @@ class Table extends Phaser.Scene {
     //this.cameras.main.setBackgroundColor('#FFF');
 
     //------MACHINE IMAGE---------
-    this.machine = this.add.image(0,0,'machine').setOrigin(0);
+    this.machine = this.add.image(0, 0, 'machine').setOrigin(0);
+
+    //-----LEVER IMAGE AND SETUP------
+    this.lever = this.add.image(0, 0, 'lever').setOrigin(0);
+    this.lever.setInteractive({
+      draggable: true,
+      clickable: false,
+    });
+       //-----LEVER CONTROL-----
+    this.lever.on('drag', (pointer, dragX, dragY) => {
+      console.log(dragX);
+      this.lever.x = dragX;//moves the lever along with the pointer
+    });
+
+    //-----CARD SLOTS IMAGE--------
+    this.slots = this.add.image(0, 0, 'slots').setOrigin(0);
 
     //-------INPUT OBJECTS------
     //using event system from prof Altice's example
@@ -83,11 +100,11 @@ class Table extends Phaser.Scene {
       loop: false,
       delay: 0
     }
-    let cDraw1 = this.sound.add('cDraw1', sfxConfig);
-    let cDraw2 = this.sound.add('cDraw2', sfxConfig);
-    let cDraw3 = this.sound.add('cDraw3', sfxConfig);
-    let cDraw4 = this.sound.add('cDraw4', sfxConfig);
-    let cDraw5 = this.sound.add('cDraw5', sfxConfig);
+    this.cDraw1 = this.sound.add('cDraw1', sfxConfig);
+    this.cDraw2 = this.sound.add('cDraw2', sfxConfig);
+    this.cDraw3 = this.sound.add('cDraw3', sfxConfig);
+    this.cDraw4 = this.sound.add('cDraw4', sfxConfig);
+    this.cDraw5 = this.sound.add('cDraw5', sfxConfig);
 
     //-----PROMPT TEXT-----
     //sets up text at upper right of the screen
@@ -127,23 +144,8 @@ class Table extends Phaser.Scene {
     //-----INPUT LOGGER DATA STRUCTURE----
     this.iC = new InputController(this);
 
-    //-----INPUT TO RECIEVE CLICK ACTIONS---
-    this.input.on('gameobjectdown', (pointer, gameObject, event) => {
-      //records input to input logger
-      this.iC.recieveClick(pointer, gameObject, event);
-      let sfxVar = Math.floor(Math.random() * 5);
-      if (sfxVar == 0) {
-        cDraw1.play();
-      } else if (sfxVar == 1) {
-        cDraw2.play();
-      } else if (sfxVar == 2) {
-        cDraw3.play();
-      } else if (sfxVar == 3) {
-        cDraw4.play();
-      } else if (sfxVar == 4) {
-        cDraw5.play();
-      }
-    }, this);
+ 
+
 
     //-----PLAYING CARDS------
     //Deck of cards
@@ -172,7 +174,7 @@ class Table extends Phaser.Scene {
       },
       fixedWidth: 0
     }
-    
+
     //---------ENDING CARD------
     this.flip = 180 * Phaser.Math.Between(0, 1);
     this.tCard = Phaser.Math.Between(0, 21);
@@ -221,8 +223,8 @@ class Table extends Phaser.Scene {
 
   //puts tarot card and ends the game
   finish() {
-    this.tarot = this.add.sprite(game.config.width / 2 - 10, game.config.height- 70, 'cards', `${this.tCard}`).setOrigin(.5);
-    this.tarot.setScale(.9,.9);
+    this.tarot = this.add.sprite(game.config.width / 2 - 10, game.config.height - 70, 'cards', `${this.tCard}`).setOrigin(.5);
+    this.tarot.setScale(.9, .9);
     this.tarot.angle = this.flip;
     for (let i = 0; i < this.hand.length; i++) {
       this.hand[i].remove();
@@ -253,6 +255,21 @@ class Table extends Phaser.Scene {
     });
   }
 
+  playDraw() {
+    let sfxVar = Math.floor(Math.random() * 5);
+    if (sfxVar == 0) {
+      this.cDraw1.play();
+    } else if (sfxVar == 1) {
+      this.cDraw2.play();
+    } else if (sfxVar == 2) {
+      this.cDraw3.play();
+    } else if (sfxVar == 3) {
+      this.cDraw4.play();
+    } else if (sfxVar == 4) {
+      this.cDraw5.play();
+    }
+  }
+
   update() {
     //game over check
     if (this.gameOver) {
@@ -268,7 +285,7 @@ class Table extends Phaser.Scene {
       }
       if (cardCount == 3) {
         this.iC.processSelection(this.hand);
-        
+
         //---SHUFFLE AUDIO---
         let sfxConfig = {
           mute: false,
