@@ -37,16 +37,25 @@ class PlayingCard extends Phaser.GameObjects.Sprite {
     this.tag = texture;
     this.controller = controller;
     this.isSelected = false;
-    this.setAlpha(1);
+    this.setAlpha(.7);
     this.deactiveColoration();
     this.setScale(1.2, 1.2);
+    this.pulse = scene.tweens.add({//one tween for Prof Smith
+      targets: this,
+      alpha:{value: 1,duration: 1000, ease: 'Power1'},
+      yoyo: true,
+      loop: -1,
+    })
   }
 
   activeColoration() {
+    this.setAlpha(1)
     this.setTint('0xfff000')
+    this.pulse.stop();
   }
 
   deactiveColoration() {
+    this.setAlpha(.7)
     this.setTint('0xffffcc')
   }
 

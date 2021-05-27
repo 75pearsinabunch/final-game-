@@ -9,7 +9,7 @@ class Table extends Phaser.Scene {
     this.load.image('slots', 'blender/slots.png');
 
     this.load.path = 'assets/';//shortens future path names
-    this.load.image('cards', 'cardBack.png');
+    //this.load.image('cards', 'cardBack.png');
     //health bar/ status bar assets
     this.load.image('green_left-cap', 'barHorizontal_green_left.png');
     this.load.image('green_middle', 'barHorizontal_green_mid.png');
@@ -173,7 +173,6 @@ class Table extends Phaser.Scene {
       }
     });
 
-
     //-----INPUT LOGGER DATA STRUCTURE----
     this.iC = new InputController(this);
 
@@ -208,7 +207,6 @@ class Table extends Phaser.Scene {
     //---------ENDING CARD------
     this.flip = 180 * Phaser.Math.Between(0, 1);
     this.tCard = Phaser.Math.Between(0, 21);
-
 
     //---------GAME TIMER------
     this.gameOver = false;
@@ -368,8 +366,6 @@ class Table extends Phaser.Scene {
       this.leverMovable = true;
     }
 
-
-
     //LEVER MOTION
     this.lever.x = Phaser.Math.Clamp(this.lever.x, -222, 0);
 
@@ -379,8 +375,7 @@ class Table extends Phaser.Scene {
     //always move a little in the speed direction
     this.lever.x += this.leverSpeed;
 
-    //INPUT CONTROLS (SOON TO BE DEPRICATED BY LEVER)
-    //if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
+    //INPUT CONTROLS 
     if ((this.lever.x < this.leverIgnitePoint) && this.leverMovable) {
       this.leverMovable = false;
       let cardCount = 0;
