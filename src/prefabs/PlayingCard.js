@@ -13,12 +13,20 @@ class PlayingCard extends Phaser.GameObjects.Sprite {
     const value = Phaser.Math.Between(1, 13);//randomizes card value
     const suit = Phaser.Math.Between(1, 4);//chooses random suit from list
     const texture = (`${value} ${suit}`); //creates texture name from random generation
-    const suitTranslate = (suits[suit-1]);
+    const suitTranslate = (suits[suit - 1]);
     super(scene, posX, posY, 'cards', texture, 0);//CHANGE 1back TO texture ONCE TEXTURES ARE IN
     scene.add.existing(this);//places in the world
     //Set interactivity
-    this.setInteractive();//allows for clicking
-    //Store actor in list of actors in input controller
+    this.setInteractive({
+      draggable: false,
+      useHandCursor: true,
+    });
+
+    this.on('pointerdown', ()=>{
+      //records input to input logger
+      controller.recieveClick(this);
+      scene.playDraw();
+    });
 
     //variables from constructor
     this.value = value;
@@ -31,14 +39,14 @@ class PlayingCard extends Phaser.GameObjects.Sprite {
     this.isSelected = false;
     this.setAlpha(1);
     this.deactiveColoration();
-    this.setScale(1.2,1.2);
+    this.setScale(1.2, 1.2);
   }
 
-  activeColoration(){
+  activeColoration() {
     this.setTint('0xfff000')
   }
 
-  deactiveColoration(){
+  deactiveColoration() {
     this.setTint('0xffffcc')
   }
 
