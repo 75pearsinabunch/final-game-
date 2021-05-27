@@ -48,6 +48,8 @@ class Table extends Phaser.Scene {
     this.load.audio('tGrow2', 'audio/Rumble-02.wav');
     this.load.audio('tGrow3', 'audio/Rumble-03.wav');
     this.load.audio('tGrow4', 'audio/Rumble-04.wav');
+
+    this.load.audio('leverDrag', 'audio/LeverDrag.wav');
   }
 
   init() {
@@ -67,10 +69,23 @@ class Table extends Phaser.Scene {
       draggable: true,
       clickable: false,
     });
+    let leverConfig = {
+      mute: false,
+      volume: 0.05,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: true,
+      delay: 0
+    }
+    let leverDrag = this.sound.add('leverDrag', leverConfig);
        //-----LEVER CONTROL-----
     this.lever.on('drag', (pointer, dragX, dragY) => {
       console.log(dragX);
       this.lever.x = dragX;//moves the lever along with the pointer
+      // if (!this.leverDrag.isPlaying) {
+      //   leverDrag.play();
+      // }
     });
 
     //-----CARD SLOTS IMAGE--------
@@ -276,6 +291,7 @@ class Table extends Phaser.Scene {
   }
 
   playShuffle() {
+    //---DISAPPROVE AUDIO---
     let shuffleConfig = {
       mute: false,
       volume: 1,
@@ -303,7 +319,7 @@ class Table extends Phaser.Scene {
   }
 
   playGrowth() {
-    //---GROWTH AUDIO---
+    //---APPROVE AUDIO---
     let growthConfig = {
       mute: false,
       volume: 0.7,
