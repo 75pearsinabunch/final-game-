@@ -306,7 +306,7 @@ class Table extends Phaser.Scene {
     //---GROWTH AUDIO---
     let growthConfig = {
       mute: false,
-      volume: 1,
+      volume: 0.7,
       rate: 1,
       detune: 0,
       seek: 0,
