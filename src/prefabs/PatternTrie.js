@@ -7,7 +7,7 @@ class TrieNode {
 
 class PatternTrie {
   //slots: the number of elements tracked by nodes
-  constructor(slots,controller, scene) {
+  constructor(slots, controller, scene) {
     this.root = new TrieNode(slots);//1 space for stopper
     this.slots = slots;//for use in other functions
     this.stopI = slots;
@@ -17,110 +17,60 @@ class PatternTrie {
 
   //Traverses a given pattern. If it's interrupted decider determines result
   checkPattern(hand) {
-    //console.log("PatternTrie, checkPattern: starting");
     this.currRoot = this.root;//doing it iteratively, nothing fancy
     this.tempRoot = undefined;
     for (let i = 0; i < hand.length; i++) {
       this.chI = this.getChildIndex(hand[i]);
       this.tempRoot = this.currRoot.children[this.chI];
       //check for existance
-      if (this.tempRoot == undefined) {
-        return this.decider(this.currRoot, i, hand);
-      }
-
-      if(!this.tempRoot.children[this.chI]){
-        return this.decider(this.currRoot, i); 
+      if (this.tempRoot == undefined || !this.tempRoot.children[this.chI]) {
+        //make the thing we tried to land on not an option for continuity
+        this.tempRoot = new TrieNode(this.slots);
+        this.tempRoot.children[this.stopI] = false;
+        return this.sprout(this.currRoot, (i - 3));//credit the remaining to make a tree
       }
 
       this.currRoot = this.tempRoot;//continue iteration
     }
     //close off this path
-    this.currRoot.children[this.chI] = false;
+    this.currRoot.children[this.stopI] = false;
 
     //checks to see if this is a valid stopping point
     return true;
   }
 
-  decider(root, i, hand = undefined){
-    //highest possible chance
-    let cap = 100;
-    let allowence = .80;//percentage that must be cleared
-    //try quotient
-    let tQ = (this.scene.gameTime*Math.PI/this.scene.totalTime*2);
-    let currChance = (Math.sin(tQ)*cap);
-    if(Phaser.Math.Between(currChance, cap)>cap*allowence|| this.iC.timesTried%3 == 0){
-    //decide whather to help or not
-    //if hand was passed, only addPattern would need it
-      if(hand == undefined){
-        {
-          this.addPattern(root, i, hand);
-        }
-      }else{
-        {
-          this.branch(root, i);
+  //generates a node structure based off of given input
+  //node: the last node reached before termination
+  sprout(node, credits = 0) {
+    let avNodes = node.children;
+    for (let i = 0; i < credits; i++) {
+      for (let j = 0; i < avNodes.length; i++) {
+        if (avNodes[this.stopI]) {
+          avNodes.splice(j, 1);//remove from list of possiblilites
         }
       }
+      let ind = Phaser.Math.Between[0, avNodes.length - 1];
+      avNodes[ind] = new TrieNode(this.slots);
+    }
+
+    //num to right of 0 is magic, empirically decided
+    if (Phaser.Math.Between(0,3) == 0) {
       return true;
     }
     return false;
-  }
-
-  //creates a new full branch off the slot just before a terminated point
-  //used whenever a node not found or successfully found
-  branch(node, currInd) {
-    console.log("Branching out")
-    this.currRoot = node;
-
-    for (let i = currInd; i < 5; i++) {//iterate at max 5 times
-      //set the possible slots array
-      this.tempRoot = this.currRoot.children[Phaser.Math.Between(0, this.slots)];
-
-      //player had better hope we find space
-      if (this.tempRoot == undefined) {
-        this.tempRoot = new TrieNode(this.slots);//create a new successful trie in its space
-        this.currRoot = this.tempRoot;
-      }
-
-      //in the case of landing on a valid pre-existing path:
-      if(this.tempRoot[this.stopI]){
-        this.currRoot = this.tempRoot;//continue down that path
-      }
-    }
-  }
-
-
-  //supports player by adding their selection to the list of given nodes
-  //much like branch(), but moves with the player
-  //node must be a valid node
-  addPattern(node, currInd, hand) {
-    console.log("Adding Pattern");
-    this.currRoot = node;//doing it iteratively, nothing fancy
-    this.tempRoot = undefined;
-    for (let i = currInd; i < hand.length; i++) {
-      this.chI = this.getChildIndex(hand[i]);
-      this.tempRoot = this.currRoot.children[this.chI];//check for existance
-      
-      if (this.tempRoot == undefined) {//create a new one if doesn't exist
-        this.currRoot.children[this.chI] = new TrieNode(this.slots);
-        this.tempRoot = this.currRoot.children[this.chI];
-      }
-      this.currRoot = this.tempRoot;
-    }
-    this.currRoot.children[this.stopI] = false;//still sets last node to false
   }
 
   //determines the index a node's child should be based on the kind 
   //of input recieved
   getChildIndex(card) {
     if (typeof (card) == 'string') {
-      return suits.indexOf(card-1);//returns index based on place in global index
+      return suits.indexOf(card - 1);//returns index based on place in global index
     }
     return (card - 1);//just return the value
   }
 
   //A testing function to determine the structure of a trie
   printTrie(node) {
-    console.log(node.children);
     for (let i = 0; i < node.children.length; i++) {
       if (node.children[i] != undefined) {
         this.printTrie(node.children[i]);
