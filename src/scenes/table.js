@@ -305,7 +305,6 @@ class Table extends Phaser.Scene {
           cShuffle4.play();
         }
         
-        
       } else {
         this.promptAnim("Please Select 3");
         for (let i = 0; i < this.hand.length; i++) {
