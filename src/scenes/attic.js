@@ -24,11 +24,11 @@ class Attic extends Phaser.Scene{
     }
     preload(){
         this.load.image('attic', 'assets/attic.png');
-        this.load.image('machine', 'assets/blender/machine.png');
+        this.load.image('machine', 'blender/machine.png');
     }
     create(){
         this.attic = this.add.sprite(0, 0, 'attic').setOrigin(0, 0);
-        this.machine = this.add.sprite(0, 0, 'machine').setOrigin(0, 0);
+        this.machine = this.add.sprite(gameConfig.width/2, 160, 'machine').setOrigin(0, 0).setScale(0.5,0.5);
         this.talk = this.cache.json.get('talk');
         this.dialogbox = this.add.sprite(this.DBOX_X - 100, this.DBOX_Y, 'dialogbox').setOrigin(0);
         this.talkText = this.add.bitmapText(this.TEXT_X, this.TEXT_Y, this.DBOX_FONT, '', this.TEXT_SIZE);
