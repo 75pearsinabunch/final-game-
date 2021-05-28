@@ -74,18 +74,18 @@ class Table extends Phaser.Scene {
       clickable: false,
     });
 
-    let leverConfig = {
-      mute: false,
-      volume: 0.05,
-      rate: 1,
-      detune: 0,
-      seek: 0,
-      loop: true,
-      delay: 0
-    }
+    // let leverConfig = {
+    //   mute: false,
+    //   volume: 0.05,
+    //   rate: 1,
+    //   detune: 0,
+    //   seek: 0,
+    //   loop: false,
+    //   delay: 0
+    // }
 
-    //try out with let later
-    this.leverDrag = this.sound.add('leverDrag', leverConfig);
+    // let leverDrag = this.sound.add('leverDrag', leverConfig);
+
     this.lockpoint = -30;
     //-----LEVER CONTROL LISTENER-----
     this.lever.on('drag', (pointer, dragX, dragY) => {
@@ -98,8 +98,9 @@ class Table extends Phaser.Scene {
         return;
       }
       this.lever.x = dragX;//moves the lever along with the pointer
-      // if (!this.leverDrag.isPlaying) {
-      //   leverDrag.play();
+      // leverDrag.play();
+      // if (leverDrag.isPLaying) {
+      //   leverDrag.stop();
       // }
     });
 
@@ -332,7 +333,7 @@ class Table extends Phaser.Scene {
     //---APPROVE AUDIO---
     let growthConfig = {
       mute: false,
-      volume: 0.7,
+      volume: 0.5,
       rate: 1,
       detune: 0,
       seek: 0,
@@ -399,9 +400,21 @@ class Table extends Phaser.Scene {
     this.lever.x += this.leverSpeed;
 
     //INPUT CONTROLS 
+    let leverConfig = {
+      mute: false,
+      volume: 0.05,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0
+    }
+
+    let leverDrag = this.sound.add('leverDrag', leverConfig);
     if ((this.lever.x < this.leverIgnitePoint) && this.leverMovable) {
       this.leverMovable = false;
       this.iC.processSelection(this.hand);
+      leverDrag.play();
     }
   }
 }
