@@ -8,6 +8,11 @@ class Table extends Phaser.Scene {
     this.load.image('lever', 'blender/lever.png');
     this.load.image('slots', 'blender/slots.png');
 
+    this.load.image('1back','assets/cardBack.png');
+    this.load.image('timer', 'assets/loading.png');
+    this.load.atlas('cards','assets/cardSheet.png', 'assets/cardSheet.json');
+    this.load.bitmapFont('digital', 'assets/font/digital-7.ttf');
+    
     this.load.path = 'assets/';//shortens future path names
     //this.load.image('cards', 'cardBack.png');
     //health bar/ status bar assets
