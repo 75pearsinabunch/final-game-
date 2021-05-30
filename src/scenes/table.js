@@ -440,7 +440,7 @@ class Table extends Phaser.Scene {
     if ((this.leverBoundary.x < this.leverIgnitePoint) && this.leverMovable) {
       this.leverMovable = false;
       this.iC.processSelection(this.hand);
-    //  leverDrag.play();
+      leverDrag.play();
     }
   }
 }
