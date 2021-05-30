@@ -70,14 +70,11 @@ class Table extends Phaser.Scene {
 
 
     //------MACHINE IMAGE---------
-    //this.machine = this.add.image(0, 0, 'machine').setOrigin(0);
     this.machine = this.add.sprite(0, 0, 'animachine', "0001").setOrigin(0);
-    //this.machine.play('machanim');
      //an invisible "hitbox" for the lever animation
     this.leverBoundary = this.add.rectangle(0,200,gameConfig.width*3,200)
     
     //-----LEVER IMAGE AND SETUP------
-    //this.lever = this.add.image(0, 0, 'lever').setOrigin(0);
     this.leverIgnitePoint = -210;//the point at which the lever activates the mechanism
     this.leverResetPoint = -2;
     this.leverSpeed = 0;
@@ -106,10 +103,7 @@ class Table extends Phaser.Scene {
       if (this.gameOver || !this.leverMovable) {
         return;
       }
-      //sets a small area the player can use
-      //if (pointer.y > (gameConfig.height / 2) || pointer.y < 100) {
-      //  return;
-      //}
+
       this.leverBoundary.x = dragX;//moves the lever along with the pointer
       // leverDrag.play();
       // if (leverDrag.isPLaying) {
@@ -389,6 +383,8 @@ class Table extends Phaser.Scene {
   }
 
   //used based on user InfinitesLoop from stack overflow
+  //formats a given number to have leading zeroes
+  //used to convert positional data to animation frames
   formatNum(num){
     num = num.toString();
     while(num.length<4){
@@ -422,7 +418,6 @@ class Table extends Phaser.Scene {
     this.leverBoundary.x += this.leverSpeed;
 
     this.boundInt = Phaser.Math.Snap.Ceil((0-this.leverBoundary.x+1),1);
-    //console.log(this.boundInt);
     this.machine.setFrame(this.formatNum(this.boundInt));
     //INPUT CONTROLS 
     let leverConfig = {
