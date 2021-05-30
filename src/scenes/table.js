@@ -87,17 +87,6 @@ class Table extends Phaser.Scene {
       draggable: true,
       clickable: false,
     });
-    
-    // let leverConfig = {
-    //   mute: false,
-    //   volume: 0.05,
-    //   rate: 1,
-    //   detune: 0,
-    //   seek: 0,
-    //   loop: false,
-    //   delay: 0
-    // }
-    // let leverDrag = this.sound.add('leverDrag', leverConfig);
 
     this.lockpoint = -30;
     //-----LEVER CONTROL LISTENER-----
@@ -108,10 +97,6 @@ class Table extends Phaser.Scene {
       }
 
       this.leverBoundary.x = dragX;//moves the lever along with the pointer
-      // leverDrag.play();
-      // if (leverDrag.isPLaying) {
-      //   leverDrag.stop();
-      // }
     });
 
     //-----CARD SLOTS IMAGE--------
