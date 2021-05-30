@@ -61,18 +61,21 @@ class Table extends Phaser.Scene {
     //this.cameras.main.setBackgroundColor('#FFF');
 
     //top secret machine animation
-    this.anims.create({
+    this.machineAnim = this.anims.create({
       key: 'machanim',
       frames: this.anims.generateFrameNames('animachine', { prefix: '', start: 1, end: 220, zeroPad: 4 }),
       repeat: -1,
     });
 
+
+
     //------MACHINE IMAGE---------
     //this.machine = this.add.image(0, 0, 'machine').setOrigin(0);
     this.machine = this.add.sprite(0, 0, 'animachine', "0001").setOrigin(0);
-    this.machine.play('machanim');
+    //this.machine.play('machanim');
      //an invisible "hitbox" for the lever animation
     this.leverBoundary = this.add.rectangle(0,200,gameConfig.width*3,200)
+    
     //-----LEVER IMAGE AND SETUP------
     //this.lever = this.add.image(0, 0, 'lever').setOrigin(0);
     this.leverIgnitePoint = -210;//the point at which the lever activates the mechanism
@@ -385,6 +388,15 @@ class Table extends Phaser.Scene {
     }
   }
 
+  //used based on user InfinitesLoop from stack overflow
+  formatNum(num){
+    num = num.toString();
+    while(num.length<4){
+      num = "0"+num;
+    }
+    return num;
+  }
+
   update() {
     //game over check
     if (this.gameOver) {
@@ -409,9 +421,9 @@ class Table extends Phaser.Scene {
     //always move a little in the speed direction
     this.leverBoundary.x += this.leverSpeed;
 
-    this.boundInt = Phaser.Math.Snap.Floor((0-this.leverBoundary.x),1);
-    console.log(this.boundInt);
-    //this.machine.setFrame(this.boundInt);
+    this.boundInt = Phaser.Math.Snap.Ceil((0-this.leverBoundary.x+1),1);
+    //console.log(this.boundInt);
+    this.machine.setFrame(this.formatNum(this.boundInt));
     //INPUT CONTROLS 
     let leverConfig = {
       mute: false,
