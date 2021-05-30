@@ -65,20 +65,31 @@ class Table extends Phaser.Scene {
     //-------CAMERA---------
     //this.cameras.main.setBackgroundColor('#FFF');
 
-    //------MACHINE IMAGE---------
-    this.machine = this.add.image(0, 0, 'machine').setOrigin(0);
+    //top secret machine animation
+    this.machineAnim = this.anims.create({
+      key: 'machanim',
+      frames: this.anims.generateFrameNames('animachine', { prefix: '', start: 1, end: 220, zeroPad: 4 }),
+      repeat: -1,
+    });
 
+
+
+    //------MACHINE IMAGE---------
+    this.machine = this.add.sprite(0, 0, 'animachine', "0001").setOrigin(0);
+     //an invisible "hitbox" for the lever animation
+    this.leverBoundary = this.add.rectangle(0,200,gameConfig.width*3,200)
+    
     //-----LEVER IMAGE AND SETUP------
-    this.lever = this.add.image(0, 0, 'lever').setOrigin(0);
     this.leverIgnitePoint = -210;//the point at which the lever activates the mechanism
     this.leverResetPoint = -2;
     this.leverSpeed = 0;
     this.leverMovable = true;
-    this.lever.setInteractive({
+    
+    this.leverBoundary.setInteractive({
       draggable: true,
       clickable: false,
     });
-
+    
     // let leverConfig = {
     //   mute: false,
     //   volume: 0.05,
@@ -88,21 +99,17 @@ class Table extends Phaser.Scene {
     //   loop: false,
     //   delay: 0
     // }
-
     // let leverDrag = this.sound.add('leverDrag', leverConfig);
 
     this.lockpoint = -30;
     //-----LEVER CONTROL LISTENER-----
-    this.lever.on('drag', (pointer, dragX, dragY) => {
-      //console.log(dragX);
+    this.leverBoundary.on('drag', (pointer, dragX, dragY) => {
+      //console.log(this.leverBoundary.x);
       if (this.gameOver || !this.leverMovable) {
         return;
       }
-      //sets a small area the player can use
-      if (pointer.y > (gameConfig.height / 2) || pointer.y < 100) {
-        return;
-      }
-      this.lever.x = dragX;//moves the lever along with the pointer
+
+      this.leverBoundary.x = dragX;//moves the lever along with the pointer
       // leverDrag.play();
       // if (leverDrag.isPLaying) {
       //   leverDrag.stop();
@@ -237,7 +244,6 @@ class Table extends Phaser.Scene {
     const width = this.fullWidth * percent;
     this.green_middle.displayWidth = width;
     this.green_rightCap.x = this.green_middle.x + this.green_middle.displayWidth;
-
   }
 
   //handles updating the animation of the bar
@@ -365,7 +371,7 @@ class Table extends Phaser.Scene {
   //Called whenever the lever is pulled, determines whether or not
   //the card conditions permit the lever to move
   checkCardCount() {
-    if(!this.leverMovable){
+    if (!this.leverMovable) {
       return;
     }
     let cardCount = 0;
@@ -381,6 +387,17 @@ class Table extends Phaser.Scene {
     }
   }
 
+  //used based on user InfinitesLoop from stack overflow
+  //formats a given number to have leading zeroes
+  //used to convert positional data to animation frames
+  formatNum(num){
+    num = num.toString();
+    while(num.length<4){
+      num = "0"+num;
+    }
+    return num;
+  }
+
   update() {
     //game over check
     if (this.gameOver) {
@@ -389,21 +406,24 @@ class Table extends Phaser.Scene {
 
     this.checkCardCount();
     //sets a reset point that resets all lever values
-    if (this.lever.x > this.leverResetPoint) {
+    if (this.leverBoundary.x > this.leverResetPoint) {
       this.leverSpeed = 0;
       this.leverMovable = true;
     }
 
     //LEVER MOTION
     //max -222
-    this.lever.x = Phaser.Math.Clamp(this.lever.x, this.lockpoint, 0);
+    this.leverBoundary.x = Phaser.Math.Clamp(this.leverBoundary.x, this.lockpoint, 0);
 
     if (this.leverMovable) {
-      this.leverSpeed = (0 - this.lever.x) / 50;//its resistance increases as player pulls
+      this.leverSpeed = (0 - this.leverBoundary.x) / 50;//its resistance increases as player pulls
     }
-    //always move a little in the speed direction
-    this.lever.x += this.leverSpeed;
 
+    //always move a little in the speed direction
+    this.leverBoundary.x += this.leverSpeed;
+
+    this.boundInt = Phaser.Math.Snap.Ceil((0-this.leverBoundary.x+1),1);
+    this.machine.setFrame(this.formatNum(this.boundInt));
     //INPUT CONTROLS 
     let leverConfig = {
       mute: false,
@@ -416,10 +436,10 @@ class Table extends Phaser.Scene {
     }
 
     let leverDrag = this.sound.add('leverDrag', leverConfig);
-    if ((this.lever.x < this.leverIgnitePoint) && this.leverMovable) {
+    if ((this.leverBoundary.x < this.leverIgnitePoint) && this.leverMovable) {
       this.leverMovable = false;
       this.iC.processSelection(this.hand);
-      leverDrag.play();
+    //  leverDrag.play();
     }
   }
 }
