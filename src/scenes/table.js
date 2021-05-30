@@ -11,7 +11,7 @@ class Table extends Phaser.Scene {
     this.load.image('1back','assets/cardBack.png');
     this.load.image('timer', 'assets/loading.png');
     this.load.atlas('cards','assets/cardSheet.png', 'assets/cardSheet.json');
-    this.load.bitmapFont('digital', 'assets/font/digital-7.ttf');
+    //this.load.bitmapFont('digital', 'assets/font/digital-7.ttf');
     
     this.load.path = 'assets/';//shortens future path names
     //this.load.image('cards', 'cardBack.png');
@@ -71,8 +71,6 @@ class Table extends Phaser.Scene {
       frames: this.anims.generateFrameNames('animachine', { prefix: '', start: 1, end: 220, zeroPad: 4 }),
       repeat: -1,
     });
-
-
 
     //------MACHINE IMAGE---------
     this.machine = this.add.sprite(0, 0, 'animachine', "0001").setOrigin(0);
@@ -416,14 +414,17 @@ class Table extends Phaser.Scene {
     this.leverBoundary.x = Phaser.Math.Clamp(this.leverBoundary.x, this.lockpoint, 0);
 
     if (this.leverMovable) {
-      this.leverSpeed = (0 - this.leverBoundary.x) / 50;//its resistance increases as player pulls
+      this.leverSpeed = 2+((0 - this.leverBoundary.x) / 50);//its resistance increases as player pulls
     }
 
     //always move a little in the speed direction
     this.leverBoundary.x += this.leverSpeed;
 
-    this.boundInt = Phaser.Math.Snap.Ceil((0-this.leverBoundary.x+1),1);
-    this.machine.setFrame(this.formatNum(this.boundInt));
+    this.boundInt = Phaser.Math.Snap.Ceil((0-this.leverBoundary.x),1);
+    //console.log(this.boundInt);
+    if(this.boundInt >0){
+      this.machine.setFrame(this.formatNum(this.boundInt));
+    }
     //INPUT CONTROLS 
     let leverConfig = {
       mute: false,

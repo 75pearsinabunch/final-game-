@@ -4,7 +4,8 @@ let gameConfig = {
   type: Phaser.AUTO,
   width: 500,
   height: 500,
-  scene: [Loading, Table]//[Title, Intro, Attic, Loading, Table]
+  //scene: [Title, Intro, Attic, Loading, Table]
+  scene:[Loading, Table]
 };
 
 let game = new Phaser.Game(gameConfig);//instantiate game

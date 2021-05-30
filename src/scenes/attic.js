@@ -69,7 +69,7 @@ class Attic extends Phaser.Scene {
             this.talkLine = 0;
             this.talkConvo++;
             console.log("to title scene");
-            this.scene.start("tableScene");
+            this.scene.start("loadingScene");
         }
 
         if (this.talkConvo >= this.talk.length) {
