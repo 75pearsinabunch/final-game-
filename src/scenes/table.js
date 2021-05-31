@@ -12,7 +12,7 @@ class Table extends Phaser.Scene {
     this.load.image('timer', 'assets/loading.png');
     this.load.atlas('cards', 'assets/cardSheet.png', 'assets/cardSheet.json');
     //this.load.bitmapFont('digital', 'assets/font/digital-7.ttf');
-
+    this.load.image('big', 'assets/big_hand.png');
     this.load.path = 'assets/';//shortens future path names
     //this.load.image('cards', 'cardBack.png');
     //health bar/ status bar assets
@@ -55,6 +55,8 @@ class Table extends Phaser.Scene {
     this.load.audio('tGrow4', 'audio/Rumble-04.wav');
 
     this.load.audio('leverDrag', 'audio/LeverDrag.wav');
+
+
   }
 
   init() {
@@ -175,16 +177,6 @@ class Table extends Phaser.Scene {
     //Temp meter fill
     this.barFill = .5;
     this.setMeterPercentage(this.barFill);
-    this.gameTime = 0;//number of seconds
-    this.totalTime = 60;//number of seconds in a game
-    this.timing = this.time.addEvent({
-      delay: 1000, // time in ms
-      paused: false, // timer continues even when clicked off if set to false
-      loop: true, // repeats
-      callback: () => {
-        this.gameTime++;//increments every second
-      }
-    });
 
     //-----INPUT LOGGER DATA STRUCTURE----
     this.iC = new InputController(this);
@@ -224,9 +216,10 @@ class Table extends Phaser.Scene {
     this.tarot.setScale(.9, .9);
 
     //---------GAME TIMER------
+    this.totalTime = 60*1000;
     this.gameOver = false;
     this.gOEvent = this.time.addEvent({
-      delay: 56000,
+      delay: this.totalTime,
       callback: () => {
         this.gameOver = true;
         this.finish();
@@ -236,6 +229,33 @@ class Table extends Phaser.Scene {
         goMusic.play();
       },
     })
+
+    //Visual Timer Stuff
+
+    
+    var circle = new Phaser.Geom.Circle(340, 425, 30);//  Create a large circle, then draw the angles on it
+    var graphics = this.add.graphics();
+    graphics.lineStyle(1, 0xFFFFFF, 1); // white lines
+    var r1 = this.add.circle(340, 425, 5, 0x000000);
+    graphics.strokeCircleShape(circle);// make the circle
+    graphics.beginPath();
+    for (var a = 0; a < 360; a += 22.5) {
+      graphics.moveTo(340, 425);
+      var p = Phaser.Geom.Circle.CircumferencePoint(circle, Phaser.Math.DegToRad(a));
+      graphics.lineTo(p.x, p.y);
+    }
+    graphics.strokePath(); // lines visiblity
+    this.big = this.add.sprite(340, 425, 'big').setOrigin(.5, 1).setScale(0.15, 0.15);
+    this.tweens.addCounter({
+      from: 0,
+      to: 360,
+      duration: this.totalTime,
+      onUpdate: (tween) => {
+        this.big.setAngle(tween.getValue())
+      },
+      repeat: 0,
+    });
+    
   }
 
   //-------METER FUNCTIONS--------
@@ -272,8 +292,8 @@ class Table extends Phaser.Scene {
       to: 0,
       duration: 100,
       onUpdate: (tween) => {
-        card.scaleX = (tween.getValue()/card.width)*originalScaleX;
-        if(tween.getValue()==0){
+        card.scaleX = (tween.getValue() / card.width) * originalScaleX;
+        if (tween.getValue() == 0) {
           card.setTexture(`${set}`, `${image}`);
         }
       },
