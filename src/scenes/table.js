@@ -270,7 +270,7 @@ class Table extends Phaser.Scene {
     let flipTween = this.tweens.addCounter({
       from: card.width,
       to: 0,
-      duration: 300,
+      duration: 100,
       onUpdate: (tween) => {
         card.scaleX = (tween.getValue()/card.width)*originalScaleX;
         if(tween.getValue()==0){

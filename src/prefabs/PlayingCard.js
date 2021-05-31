@@ -54,7 +54,7 @@ class PlayingCard extends Phaser.GameObjects.Sprite {
 
   deactiveColoration() {
     this.setAlpha(.7);
-    this.pulse = this.scene.tweens.add({//one tween for Prof Smith
+    this.pulse = this.scene.tweens.add({
       targets: this,
       alpha: { value: 1, duration: Phaser.Math.Between(1000,3000), ease: 'Power1' },
       yoyo: true,
@@ -64,7 +64,6 @@ class PlayingCard extends Phaser.GameObjects.Sprite {
   }
 
   remove() {
-    //this.text.destroy();
     this.destroy();
   }
 }
