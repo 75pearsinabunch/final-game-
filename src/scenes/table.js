@@ -4,8 +4,17 @@ class Table extends Phaser.Scene {
   }
 
   preload() {
+    this.load.image('machine', 'blender/machine.png');//main machine done before path
+    this.load.image('lever', 'blender/lever.png');
+    this.load.image('slots', 'blender/slots.png');
+
+    this.load.image('1back', 'assets/cardBack.png');
+    this.load.image('timer', 'assets/loading.png');
+    this.load.atlas('cards', 'assets/cardSheet.png', 'assets/cardSheet.json');
+    //this.load.bitmapFont('digital', 'assets/font/digital-7.ttf');
+    this.load.image('big', 'assets/big_hand.png');
     this.load.path = 'assets/';//shortens future path names
-    this.load.image('cards', 'cardBack.png');
+    //this.load.image('cards', 'cardBack.png');
     //health bar/ status bar assets
     this.load.image('green_left-cap', 'barHorizontal_green_left.png');
     this.load.image('green_middle', 'barHorizontal_green_mid.png');
@@ -23,17 +32,31 @@ class Table extends Phaser.Scene {
     this.load.image('middle-shadow', 'barHorizontal_shadow_mid.png');
     this.load.image('right-cap-shadow', 'barHorizontal_shadow_right.png');
 
+
+
     //audio
     this.load.audio('music', 'audio/Ambience.mp3');
+    this.load.audio('goMusic', 'audio/GameOverAmbience.mp3');
+
     this.load.audio('cDraw1', 'audio/CardDraw-01.wav');
     this.load.audio('cDraw2', 'audio/CardDraw-02.wav');
     this.load.audio('cDraw3', 'audio/CardDraw-03.wav');
     this.load.audio('cDraw4', 'audio/CardDraw-04.wav');
     this.load.audio('cDraw5', 'audio/CardDraw-05.wav');
+
     this.load.audio('cShuffle1', 'audio/CardShuffle-01.wav');
     this.load.audio('cShuffle2', 'audio/CardShuffle-02.wav');
     this.load.audio('cShuffle3', 'audio/CardShuffle-03.wav');
     this.load.audio('cShuffle4', 'audio/CardShuffle-04.wav');
+
+    this.load.audio('tGrow1', 'audio/Rumble-01.wav');
+    this.load.audio('tGrow2', 'audio/Rumble-02.wav');
+    this.load.audio('tGrow3', 'audio/Rumble-03.wav');
+    this.load.audio('tGrow4', 'audio/Rumble-04.wav');
+
+    this.load.audio('leverDrag', 'audio/LeverDrag.wav');
+
+
   }
 
   init() {
@@ -43,7 +66,58 @@ class Table extends Phaser.Scene {
   create() {
     //-------CAMERA---------
     //this.cameras.main.setBackgroundColor('#FFF');
-    console.log("scene started");
+
+    //top secret machine animation
+    this.machineAnim = this.anims.create({
+      key: 'machanim',
+      frames: this.anims.generateFrameNames('animachine', { prefix: '', start: 1, end: 220, zeroPad: 4 }),
+      repeat: -1,
+    });
+
+    //------MACHINE IMAGE---------
+    this.machine = this.add.sprite(0, 0, 'animachine', "0001").setOrigin(0);
+    //an invisible "hitbox" for the lever animation
+    this.leverBoundary = this.add.rectangle(0, 200, gameConfig.width * 3, 200)
+
+    //-----LEVER IMAGE AND SETUP------
+    this.leverIgnitePoint = -210;//the point at which the lever activates the mechanism
+    this.leverResetPoint = -2;
+    this.leverSpeed = 0;
+    this.leverMovable = true;
+
+    this.leverBoundary.setInteractive({
+      draggable: true,
+      clickable: false,
+    });
+
+    // let leverConfig = {
+    //   mute: false,
+    //   volume: 0.05,
+    //   rate: 1,
+    //   detune: 0,
+    //   seek: 0,
+    //   loop: false,
+    //   delay: 0
+    // }
+    // let leverDrag = this.sound.add('leverDrag', leverConfig);
+
+    this.lockpoint = -30;
+    //-----LEVER CONTROL LISTENER-----
+    this.leverBoundary.on('drag', (pointer, dragX, dragY) => {
+      //console.log(this.leverBoundary.x);
+      if (this.gameOver || !this.leverMovable) {
+        return;
+      }
+
+      this.leverBoundary.x = dragX;//moves the lever along with the pointer
+      // leverDrag.play();
+      // if (leverDrag.isPLaying) {
+      //   leverDrag.stop();
+      // }
+    });
+
+    //-----CARD SLOTS IMAGE--------
+    this.slots = this.add.image(0, 0, 'slots').setOrigin(0);
 
     //-------INPUT OBJECTS------
     //using event system from prof Altice's example
@@ -51,10 +125,10 @@ class Table extends Phaser.Scene {
     this.mouse = this.input.activePointer;
     this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
-    //-----MUSIC-----
+    //-----AUDIO-----
     let musicConfig = {
       mute: false,
-      volume: 0.3,
+      volume: 0.1,
       rate: 1,
       detune: 0,
       seek: 0,
@@ -63,7 +137,23 @@ class Table extends Phaser.Scene {
     }
     let music = this.sound.add('music', musicConfig);
     music.play();
-    
+    let goMusic = this.sound.add('goMusic', musicConfig);
+
+    let sfxConfig = {
+      mute: false,
+      volume: 0.3,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0
+    }
+    this.cDraw1 = this.sound.add('cDraw1', sfxConfig);
+    this.cDraw2 = this.sound.add('cDraw2', sfxConfig);
+    this.cDraw3 = this.sound.add('cDraw3', sfxConfig);
+    this.cDraw4 = this.sound.add('cDraw4', sfxConfig);
+    this.cDraw5 = this.sound.add('cDraw5', sfxConfig);
+
     //-----PROMPT TEXT-----
     //sets up text at upper right of the screen
     this.prompt = this.add.text(gameConfig.width - 10, 100, '', { color: '#FFF' }).setOrigin(1);
@@ -87,26 +177,9 @@ class Table extends Phaser.Scene {
     //Temp meter fill
     this.barFill = .5;
     this.setMeterPercentage(this.barFill);
-    this.gameTime = 0;//number of seconds
-    this.totalTime = 60;//number of seconds in a game
-    this.timing = this.time.addEvent({
-      delay: 1000, // time in ms
-      paused: false, // timer continues even when clicked off if set to false
-      loop: true, // repeats
-      callback: () => {
-        this.gameTime++;//increments every second
-      }
-    });
-
 
     //-----INPUT LOGGER DATA STRUCTURE----
     this.iC = new InputController(this);
-
-    //-----INPUT TO RECIEVE CLICK ACTIONS---
-    this.input.on('gameobjectdown', (pointer, gameObject, event) => {
-      //records input to input logger
-      this.iC.recieveClick(pointer, gameObject, event);
-    }, this);
 
     //-----PLAYING CARDS------
     //Deck of cards
@@ -115,8 +188,8 @@ class Table extends Phaser.Scene {
     for (let i = 0; i < 5; i++) {
       this.cards = new PlayingCard(
         this,//scene 
-        (100 * i + 50), //x
-        (gameConfig.height - 100), //y
+        (55 * i + 133), //x
+        (gameConfig.height - 190), //y
         this.iC //input controller
       );
       this.hand.push(this.cards);
@@ -135,26 +208,54 @@ class Table extends Phaser.Scene {
       },
       fixedWidth: 0
     }
-    this.promptText = this.add.text(game.config.width / 2, game.config.height - 200, 'Which 3 Cards Fit the Pattern?', this.textConfig).setOrigin(0.5);
-    this.spaceText = this.add.text(game.config.width / 2, game.config.height - 50, 'Press Space to Try', this.textConfig).setOrigin(0.5);
 
     //---------ENDING CARD------
     this.flip = 180 * Phaser.Math.Between(0, 1);
     this.tCard = Phaser.Math.Between(0, 21);
-
+    this.tarot = this.add.sprite(game.config.width / 2 - 10, game.config.height - 70, 'cards', `backCard`).setOrigin(.5);
+    this.tarot.setScale(.9, .9);
 
     //---------GAME TIMER------
+    this.totalTime = 60*1000;
     this.gameOver = false;
     this.gOEvent = this.time.addEvent({
-      delay: 56000,
+      delay: this.totalTime,
       callback: () => {
         this.gameOver = true;
-        console.log("Game over!");
         this.finish();
+        music.stop();
+        goMusic.setLoop(false);
+        goMusic.setVolume(0.025);
+        goMusic.play();
       },
     })
 
+    //Visual Timer Stuff
 
+    
+    var circle = new Phaser.Geom.Circle(340, 425, 30);//  Create a large circle, then draw the angles on it
+    var graphics = this.add.graphics();
+    graphics.lineStyle(1, 0xFFFFFF, 1); // white lines
+    var r1 = this.add.circle(340, 425, 5, 0x000000);
+    graphics.strokeCircleShape(circle);// make the circle
+    graphics.beginPath();
+    for (var a = 0; a < 360; a += 22.5) {
+      graphics.moveTo(340, 425);
+      var p = Phaser.Geom.Circle.CircumferencePoint(circle, Phaser.Math.DegToRad(a));
+      graphics.lineTo(p.x, p.y);
+    }
+    graphics.strokePath(); // lines visiblity
+    this.big = this.add.sprite(340, 425, 'big').setOrigin(.5, 1).setScale(0.15, 0.15);
+    this.tweens.addCounter({
+      from: 0,
+      to: 360,
+      duration: this.totalTime,
+      onUpdate: (tween) => {
+        this.big.setAngle(tween.getValue())
+      },
+      repeat: 0,
+    });
+    
   }
 
   //-------METER FUNCTIONS--------
@@ -163,7 +264,6 @@ class Table extends Phaser.Scene {
     const width = this.fullWidth * percent;
     this.green_middle.displayWidth = width;
     this.green_rightCap.x = this.green_middle.x + this.green_middle.displayWidth;
-
   }
 
   //handles updating the animation of the bar
@@ -183,25 +283,39 @@ class Table extends Phaser.Scene {
     })
   }
 
+  //Creates the illusion of a card flipping by shrinking in the X direction
+  //and replacing the sprite's texture
+  flipCard(card, set, image) {
+    let originalScaleX = card.scaleX;
+    let flipTween = this.tweens.addCounter({
+      from: card.width,
+      to: 0,
+      duration: 100,
+      onUpdate: (tween) => {
+        card.scaleX = (tween.getValue() / card.width) * originalScaleX;
+        if (tween.getValue() == 0) {
+          card.setTexture(`${set}`, `${image}`);
+        }
+      },
+      yoyo: true,
+      repeat: 0,
+      //TODO: FIGURE OUT EASING
+    });
+    return flipTween;
+  }
+
   //puts tarot card and ends the game
   finish() {
-    this.tarot = this.add.sprite(game.config.width / 2, game.config.height / 2, 'cards', `${this.tCard}`).setOrigin(.5,.5);
     this.tarot.angle = this.flip;
+    this.flipCard(this.tarot, 'cards', `${this.tCard}`);
     for (let i = 0; i < this.hand.length; i++) {
       this.hand[i].remove();
     }
-    this.promptText.destroy();
-    this.spaceText.destroy();
-    this.endText = this.add.text(game.config.width / 2, game.config.height - 150, 'The Future your Choices Sew', this.textConfig).setOrigin(0.5);
+    this.endText = this.add.text(game.config.width / 2, game.config.height - 160, 'The Future your Choices Sew', this.textConfig).setOrigin(.5);
   }
 
-  //The base of the data structure that will take in
-  //information about what was pressed and store it,
-  //just a function in its current iteration
-  //pointer: The pointer that pressed the object
-  //gameObject: The object pressed
-  //event:???
-  recordInput(pointer, gameObject, event) {
+  //used just for bar values
+  recordInput() {
     //if statements that stops the bar from hitting 0
     if (green_value > 0.1) {
       green_value = green_value - 0.1;
@@ -223,63 +337,152 @@ class Table extends Phaser.Scene {
     });
   }
 
-  update() {
-    //game over check
-    if (this.gameOver) {
-      return;
+  playDraw() {
+    let sfxVar = Math.floor(Math.random() * 5);
+    if (sfxVar == 0) {
+      this.cDraw1.play();
+    } else if (sfxVar == 1) {
+      this.cDraw2.play();
+    } else if (sfxVar == 2) {
+      this.cDraw3.play();
+    } else if (sfxVar == 3) {
+      this.cDraw4.play();
+    } else if (sfxVar == 4) {
+      this.cDraw5.play();
     }
-    
-    //sfx init
-    let sfxConfig = {
+  }
+
+  playShuffle() {
+    //---DISAPPROVE AUDIO---
+    let shuffleConfig = {
       mute: false,
-      volume: 0.2,
+      volume: 1,
       rate: 1,
       detune: 0,
       seek: 0,
       loop: false,
       delay: 0
-    } 
-    let cDraw1 = this.sound.add('cDraw1', sfxConfig);
-    let cDraw2 = this.sound.add('cDraw2', sfxConfig);
-    let cDraw3 = this.sound.add('cDraw3', sfxConfig);
-    let cDraw4 = this.sound.add('cDraw4', sfxConfig);
-    let cDraw5 = this.sound.add('cDraw5', sfxConfig);
-    let cShuffle1 = this.sound.add('cShuffle1', sfxConfig);
-    let cShuffle2 = this.sound.add('cShuffle2', sfxConfig);
-    let cShuffle3 = this.sound.add('cShuffle3', sfxConfig);
-    let cShuffle4 = this.sound.add('cShuffle4', sfxConfig);
+    }
+    let cShuffle1 = this.sound.add('cShuffle1', shuffleConfig);
+    let cShuffle2 = this.sound.add('cShuffle2', shuffleConfig);
+    let cShuffle3 = this.sound.add('cShuffle3', shuffleConfig);
+    let cShuffle4 = this.sound.add('cShuffle4', shuffleConfig);
 
-    if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
-      let cardCount = 0;
-      for (let i = 0; i < this.hand.length; i++) {
-        if (this.hand[i].isSelected) {
-          cardCount++;
-        }
+    let sfxVar = Math.floor(Math.random() * 4);
+    if (sfxVar == 0) {
+      cShuffle1.play();
+    } else if (sfxVar == 1) {
+      cShuffle2.play();
+    } else if (sfxVar == 2) {
+      cShuffle3.play();
+    } else if (sfxVar == 3) {
+      cShuffle4.play();
+    }
+  }
+
+  playGrowth() {
+    //---APPROVE AUDIO---
+    let growthConfig = {
+      mute: false,
+      volume: 0.5,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0
+    }
+    let tGrow1 = this.sound.add('tGrow1', growthConfig);
+    let tGrow2 = this.sound.add('tGrow2', growthConfig);
+    let tGrow3 = this.sound.add('tGrow3', growthConfig);
+    let tGrow4 = this.sound.add('tGrow4', growthConfig);
+
+    let sfxVar = Math.floor(Math.random() * 4);
+    if (sfxVar == 0) {
+      tGrow1.play();
+    } else if (sfxVar == 1) {
+      tGrow2.play();
+    } else if (sfxVar == 2) {
+      tGrow3.play();
+    } else if (sfxVar == 3) {
+      tGrow4.play();
+    }
+  }
+
+  //Called whenever the lever is pulled, determines whether or not
+  //the card conditions permit the lever to move
+  checkCardCount() {
+    if (!this.leverMovable) {
+      return;
+    }
+    let cardCount = 0;
+    for (let i = 0; i < this.hand.length; i++) {
+      if (this.hand[i].isSelected) {
+        cardCount++;
       }
-      if (cardCount == 3) {
-        this.iC.processSelection(this.hand);
-        let sfxVar = Math.floor(Math.random() * 4);
-        //play sound
-        if (sfxVar == 0) {
-          cShuffle1.play();
-          console.log('sound1');
-        } else if (sfxVar == 1) {
-          cShuffle2.play();
-          console.log('sound2');
-        } else if (sfxVar == 2) {
-          cShuffle3.play();
-          console.log('sound3');
-        } else if (sfxVar == 3) {
-          cShuffle4.play();
-          console.log('sound4');
-        }
-      } else {
-        this.promptAnim("Please Select 3");
-        for (let i = 0; i < this.hand.length; i++) {
-          this.hand[i].isSelected = false;
-          this.hand[i].setAlpha(.8);
-        }
-      }
+    }
+    if (cardCount == 3) {
+      this.lockpoint = -222;
+    } else {
+      this.lockpoint = -30;
+    }
+  }
+
+  //used based on user InfinitesLoop from stack overflow
+  //formats a given number to have leading zeroes
+  //used to convert positional data to animation frames
+  formatNum(num) {
+    num = num.toString();
+    while (num.length < 4) {
+      num = "0" + num;
+    }
+    return num;
+  }
+
+  update() {
+    //game over check
+    if (this.gameOver) {
+      return;
+    }
+
+    this.checkCardCount();
+    //sets a reset point that resets all lever values
+    if (this.leverBoundary.x > this.leverResetPoint) {
+      this.leverSpeed = 0;
+      this.leverMovable = true;
+    }
+
+    //LEVER MOTION
+    //max -222
+    this.leverBoundary.x = Phaser.Math.Clamp(this.leverBoundary.x, this.lockpoint, 0);
+
+    if (this.leverMovable) {
+      this.leverSpeed = 2 + ((0 - this.leverBoundary.x) / 50);//its resistance increases as player pulls
+    }
+
+    //always move a little in the speed direction
+    this.leverBoundary.x += this.leverSpeed;
+
+    this.boundInt = Phaser.Math.Snap.Ceil((0 - this.leverBoundary.x), 1);
+    //console.log(this.boundInt);
+    if (this.boundInt > 0) {
+      this.machine.setFrame(this.formatNum(this.boundInt));
+    }
+    //INPUT CONTROLS 
+    let leverConfig = {
+      mute: false,
+      volume: 0.05,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0
+    }
+
+    let leverDrag = this.sound.add('leverDrag', leverConfig);
+    if ((this.leverBoundary.x < this.leverIgnitePoint) && this.leverMovable) {
+      this.leverMovable = false;
+      this.iC.processSelection(this.hand);
+      leverDrag.play();
     }
   }
 }

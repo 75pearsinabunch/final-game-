@@ -19,25 +19,23 @@ class InputController {
   }
 
   //Controlls response of all card elements controlled by this controller
-  recieveClick(pointer, gameObject, event) {
+  recieveClick(card) {
     //guarentee we're recieving an actor
-    if (gameObject.constructor.name != "PlayingCard") {
+    if (card.constructor.name != "PlayingCard") {
       console.warn("InputController.reieveClick: Tag not found, Actor not passed in");
       return;
     }
-
     //highlights selected cards
-    gameObject.isSelected = !gameObject.isSelected;
-    if (gameObject.isSelected) {
-      gameObject.setAlpha(1);
+    card.isSelected = !card.isSelected;
+    if (card.isSelected) {
+      card.activeColoration();
     } else {
-      gameObject.setAlpha(.8);
+      card.deactiveColoration();
     }
   }
 
   //takes a hand object of cards
   processSelection(hand) {
-    //TO DO: Check to make sure hand items are cards
     if(hand == undefined || hand[0] == undefined){
       console.warn("Wasn't even given a hand");
       return;
@@ -54,6 +52,8 @@ class InputController {
       if (hand[i].isSelected) {
         this.hcV.push(hand[i].value);
         this.hcS.push(hand[i].suit);
+        this.flipping = this.scene.flipCard(hand[i], 'cards', 'back');
+        this.flipping.on('complete', (tween, targets)=>{
         //removes card from scene completely
         this.replaceCard = new PlayingCard(
           hand[i].scene,
@@ -63,13 +63,12 @@ class InputController {
         );
         hand[i].remove();
         hand[i] = this.replaceCard;
+        })
+
       }
     }
     this.hcV.sort((l, r) => { return (l - r) });
     this.hcS.sort();
-    //console.log(this.hcV);
-    //console.log(this.hcS);
-    //throw player a bone every third try
 
     if(this.suitPattern.checkPattern(this.hcS) || this.valuePattern.checkPattern(this.hcV)){
       console.log("Approved");
@@ -83,16 +82,20 @@ class InputController {
   //States a message of approval
   //currently increases tower bar
   approve() {
+    //HAND APPROVED, PLAYER PROGRESSES (♪)
     this.scene.barFill += .1;
     this.scene.setMeterPercentage(this.scene.barFill);//TODO: should probably randomize
     this.scene.promptAnim("The Tower Grows");
+    this.scene.playGrowth();
   }
 
   //States a message of disapproval
   //currently lowers tower bar
   disapprove() {
+    //HAND DISAPPROVED, PLAYER REGRESSES (♪)
     this.scene.barFill -= .1;
     this.scene.setMeterPercentage(this.scene.barFill);//TODO: should probably randomize
     this.scene.promptAnim("The Tower Diminishes");
+    this.scene.playShuffle();
   }
 }

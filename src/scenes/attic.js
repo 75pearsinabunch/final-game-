@@ -1,5 +1,5 @@
-class Attic extends Phaser.Scene{
-    constructor(){
+class Attic extends Phaser.Scene {
+    constructor() {
         super("atticScene");
         this.DBOX_X = 0;
         this.DBOX_Y = 400;
@@ -22,18 +22,31 @@ class Attic extends Phaser.Scene{
         this.OFFSCREEN_X = -500;
         this.OFFSCREEN_Y = 1000;
     }
-    preload(){
+    preload() {
         this.load.image('attic', 'assets/attic.png');
         this.load.image('little', 'assets/little_hand.png');
         this.load.image('big', 'assets/big_hand.png');
         this.load.image('machine', 'blender/machine.png');
+        this.load.image('lever', 'blender/lever.png')
     }
-    create(){
+    create() {
         this.attic = this.add.sprite(0, 0, 'attic').setOrigin(0, 0);
-        this.machine = this.add.sprite(gameConfig.width/2, 160, 'machine').setOrigin(0, 0).setScale(0.5,0.5);
-        this.little = this.add.sprite(440, 361, 'little').setOrigin(0, 0).setScale(0.1,0.1).setAngle(90);
-        this.big = this.add.sprite(408, 350, 'big').setOrigin(0, 0).setScale(0.1,0.1);
-
+        this.machine = this.add.sprite(gameConfig.width / 2, 160, 'machine').setOrigin(0, 0).setScale(0.5, 0.5);
+        this.lever = this.add.sprite(gameConfig.width / 2, 135, 'lever').setOrigin(0, 0).setScale(0.5, 0.5);
+        this.big = this.add.sprite(408, 350, 'big').setOrigin(0, 0).setScale(0.1, 0.1);
+        var circle = new Phaser.Geom.Circle(420, 373, 18);//  Create a large circle, then draw the angles on it
+        var graphics = this.add.graphics();
+        graphics.lineStyle(1, 0xFFFFFF, 1); // white lines
+        var r1 = this.add.circle(420, 373, 9, 0x000000);
+        graphics.strokeCircleShape(circle);// make the circle
+        graphics.beginPath();
+        for (var a = 0; a < 360; a += 22.5) {
+            graphics.moveTo(420, 375);
+            var p = Phaser.Geom.Circle.CircumferencePoint(circle, Phaser.Math.DegToRad(a));
+            graphics.lineTo(p.x, p.y);
+        }
+        graphics.strokePath(); // lines visiblity
+        this.little = this.add.sprite(417.5, 353, 'little').setOrigin(0, 0).setScale(0.1, 0.1);
         this.talk = this.cache.json.get('talk');
         this.dialogbox = this.add.sprite(this.DBOX_X - 100, this.DBOX_Y, 'dialogbox').setOrigin(0);
         this.talkText = this.add.bitmapText(this.TEXT_X, this.TEXT_Y, this.DBOX_FONT, '', this.TEXT_SIZE);
