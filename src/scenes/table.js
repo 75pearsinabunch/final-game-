@@ -158,8 +158,8 @@ class Table extends Phaser.Scene {
     //---------ENDING CARD------
     this.flip = 180 * Phaser.Math.Between(0, 1);
     this.tCard = Phaser.Math.Between(0, 21);
-    this.tarot = this.add.sprite(game.config.width / 2 - 10, game.config.height - 70, 'cards', `backCard`).setOrigin(.5);
-    this.tarot.setScale(.9, .9);
+    //this.tarot = this.add.sprite(game.config.width / 2 - 10, game.config.height - 70, 'cards', `backCard`).setOrigin(.5);
+    //this.tarot.setScale(.9, .9);
 
     //---------GAME TIMER------
     this.totalTime = 1*1000;
@@ -191,7 +191,8 @@ class Table extends Phaser.Scene {
       graphics.lineTo(p.x, p.y);
     }
     graphics.strokePath(); // lines visiblity
-    this.big = this.add.sprite(340, 425, 'big').setOrigin(.5, 1).setScale(0.15, 0.15);
+    this.big = this.add.sprite(341, 426, 'big').setOrigin(.5, 1).setScale(0.30, 0.15);
+
     this.tweens.addCounter({
       from: 0,
       to: 360,
@@ -252,13 +253,12 @@ class Table extends Phaser.Scene {
 
   //puts tarot card and ends the game
   finish() {
-    this.tarot.angle = this.flip;
-    this.flipCard(this.tarot, 'cards', `${this.tCard}`);
+    //this.tarot.angle = this.flip;
+    //this.flipCard(this.tarot, 'cards', `${this.tCard}`);
     for (let i = 0; i < this.hand.length; i++) {
-      //this.hand[i].remove();
-      this.flipCard(this.hand[i], 'cards', 'back');
+      this.hand[i].terminate();
     }
-    this.endText = this.add.text(game.config.width / 2, game.config.height - 160, 'The Future your Choices Sew', this.textConfig).setOrigin(.5);
+    //this.endText = this.add.text(game.config.width / 2, game.config.height - 160, 'The Future your Choices Sew', this.textConfig).setOrigin(.5);
   }
 
   //used just for bar values

@@ -26,7 +26,6 @@ class PatternTrie {
       if (this.tempRoot == undefined || !this.tempRoot.children[this.chI]) {
         //make the thing we tried to land on not an option for continuity
         this.tempRoot = new TrieNode(this.slots);
-        this.tempRoot.children[this.stopI] = false;
         return this.sprout(this.currRoot, (i - 3));//credit the remaining to make a tree
       }
 

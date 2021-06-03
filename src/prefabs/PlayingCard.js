@@ -16,7 +16,7 @@ class PlayingCard extends Phaser.GameObjects.Sprite {
     //const suitTranslate = (suits[suit - 1]);
     //super(scene, posX, posY, 'cards', texture, 0);
     super(scene, posX, posY, 'cards', 'back', 0);
-    scene.add.existing(this);//places in the world
+    this.sprite = scene.add.existing(this);//places in the world
     this.setScale(1.2, 1.2);
     scene.flipCard(this, 'cards', texture);
 
@@ -43,7 +43,7 @@ class PlayingCard extends Phaser.GameObjects.Sprite {
     this.isSelected = false;
     this.setAlpha(.7);
     this.deactiveColoration();
-    
+
   }
 
   activeColoration() {
@@ -56,14 +56,18 @@ class PlayingCard extends Phaser.GameObjects.Sprite {
     this.setAlpha(.7);
     this.pulse = this.scene.tweens.add({
       targets: this,
-      alpha: { value: 1, duration: Phaser.Math.Between(1000,3000), ease: 'Power1' },
+      alpha: { value: 1, duration: Phaser.Math.Between(1000, 3000), ease: 'Power1' },
       yoyo: true,
       loop: -1,
     })
     this.setTint('0xffffcc')
   }
 
-  remove() {
-    this.destroy();
+  terminate() {
+    this.scene.flipCard(this, 'cards', 'back');
+    this.disableInteractive();
+    this.setAlpha(.5);
+    this.pulse.stop();
+    this.setTint('0xffffcc');
   }
 }
