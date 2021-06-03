@@ -52,6 +52,8 @@ class InputController {
       if (hand[i].isSelected) {
         this.hcV.push(hand[i].value);
         this.hcS.push(hand[i].suit);
+        this.flipping = this.scene.flipCard(hand[i], 'cards', 'back');
+        this.flipping.on('complete', (tween, targets)=>{
         //removes card from scene completely
         this.replaceCard = new PlayingCard(
           hand[i].scene,
@@ -61,6 +63,8 @@ class InputController {
         );
         hand[i].remove();
         hand[i] = this.replaceCard;
+        })
+
       }
     }
     this.hcV.sort((l, r) => { return (l - r) });

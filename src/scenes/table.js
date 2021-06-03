@@ -8,11 +8,11 @@ class Table extends Phaser.Scene {
     this.load.image('lever', 'blender/lever.png');
     this.load.image('slots', 'blender/slots.png');
 
-    this.load.image('1back','assets/cardBack.png');
+    this.load.image('1back', 'assets/cardBack.png');
     this.load.image('timer', 'assets/loading.png');
-    this.load.atlas('cards','assets/cardSheet.png', 'assets/cardSheet.json');
+    this.load.atlas('cards', 'assets/cardSheet.png', 'assets/cardSheet.json');
     //this.load.bitmapFont('digital', 'assets/font/digital-7.ttf');
-    
+    this.load.image('big', 'assets/big_hand.png');
     this.load.path = 'assets/';//shortens future path names
     //this.load.image('cards', 'cardBack.png');
     //health bar/ status bar assets
@@ -55,6 +55,8 @@ class Table extends Phaser.Scene {
     this.load.audio('tGrow4', 'audio/Rumble-04.wav');
 
     this.load.audio('leverDrag', 'audio/LeverDrag.wav');
+
+
   }
 
   init() {
@@ -74,20 +76,20 @@ class Table extends Phaser.Scene {
 
     //------MACHINE IMAGE---------
     this.machine = this.add.sprite(0, 0, 'animachine', "0001").setOrigin(0);
-     //an invisible "hitbox" for the lever animation
-    this.leverBoundary = this.add.rectangle(0,200,gameConfig.width*3,200)
-    
+    //an invisible "hitbox" for the lever animation
+    this.leverBoundary = this.add.rectangle(0, 200, gameConfig.width * 3, 200)
+
     //-----LEVER IMAGE AND SETUP------
     this.leverIgnitePoint = -210;//the point at which the lever activates the mechanism
     this.leverResetPoint = -2;
     this.leverSpeed = 0;
     this.leverMovable = true;
-    
+
     this.leverBoundary.setInteractive({
       draggable: true,
       clickable: false,
     });
-
+    
     this.lockpoint = -30;
     //-----LEVER CONTROL LISTENER-----
     this.leverBoundary.on('drag', (pointer, dragX, dragY) => {
@@ -160,16 +162,6 @@ class Table extends Phaser.Scene {
     //Temp meter fill
     this.barFill = .5;
     this.setMeterPercentage(this.barFill);
-    this.gameTime = 0;//number of seconds
-    this.totalTime = 60;//number of seconds in a game
-    this.timing = this.time.addEvent({
-      delay: 1000, // time in ms
-      paused: false, // timer continues even when clicked off if set to false
-      loop: true, // repeats
-      callback: () => {
-        this.gameTime++;//increments every second
-      }
-    });
 
     //-----INPUT LOGGER DATA STRUCTURE----
     this.iC = new InputController(this);
@@ -205,11 +197,14 @@ class Table extends Phaser.Scene {
     //---------ENDING CARD------
     this.flip = 180 * Phaser.Math.Between(0, 1);
     this.tCard = Phaser.Math.Between(0, 21);
+    this.tarot = this.add.sprite(game.config.width / 2 - 10, game.config.height - 70, 'cards', `backCard`).setOrigin(.5);
+    this.tarot.setScale(.9, .9);
 
     //---------GAME TIMER------
+    this.totalTime = 60*1000;
     this.gameOver = false;
     this.gOEvent = this.time.addEvent({
-      delay: 56000,
+      delay: this.totalTime,
       callback: () => {
         this.gameOver = true;
         this.finish();
@@ -219,6 +214,33 @@ class Table extends Phaser.Scene {
         goMusic.play();
       },
     })
+
+    //Visual Timer Stuff
+
+    
+    var circle = new Phaser.Geom.Circle(340, 425, 30);//  Create a large circle, then draw the angles on it
+    var graphics = this.add.graphics();
+    graphics.lineStyle(1, 0xFFFFFF, 1); // white lines
+    var r1 = this.add.circle(340, 425, 5, 0x000000);
+    graphics.strokeCircleShape(circle);// make the circle
+    graphics.beginPath();
+    for (var a = 0; a < 360; a += 22.5) {
+      graphics.moveTo(340, 425);
+      var p = Phaser.Geom.Circle.CircumferencePoint(circle, Phaser.Math.DegToRad(a));
+      graphics.lineTo(p.x, p.y);
+    }
+    graphics.strokePath(); // lines visiblity
+    this.big = this.add.sprite(340, 425, 'big').setOrigin(.5, 1).setScale(0.15, 0.15);
+    this.tweens.addCounter({
+      from: 0,
+      to: 360,
+      duration: this.totalTime,
+      onUpdate: (tween) => {
+        this.big.setAngle(tween.getValue())
+      },
+      repeat: 0,
+    });
+    
   }
 
   //-------METER FUNCTIONS--------
@@ -246,11 +268,31 @@ class Table extends Phaser.Scene {
     })
   }
 
+  //Creates the illusion of a card flipping by shrinking in the X direction
+  //and replacing the sprite's texture
+  flipCard(card, set, image) {
+    let originalScaleX = card.scaleX;
+    let flipTween = this.tweens.addCounter({
+      from: card.width,
+      to: 0,
+      duration: 100,
+      onUpdate: (tween) => {
+        card.scaleX = (tween.getValue() / card.width) * originalScaleX;
+        if (tween.getValue() == 0) {
+          card.setTexture(`${set}`, `${image}`);
+        }
+      },
+      yoyo: true,
+      repeat: 0,
+      //TODO: FIGURE OUT EASING
+    });
+    return flipTween;
+  }
+
   //puts tarot card and ends the game
   finish() {
-    this.tarot = this.add.sprite(game.config.width / 2 - 10, game.config.height - 70, 'cards', `${this.tCard}`).setOrigin(.5);
-    this.tarot.setScale(.9, .9);
     this.tarot.angle = this.flip;
+    this.flipCard(this.tarot, 'cards', `${this.tCard}`);
     for (let i = 0; i < this.hand.length; i++) {
       this.hand[i].remove();
     }
@@ -373,10 +415,10 @@ class Table extends Phaser.Scene {
   //used based on user InfinitesLoop from stack overflow
   //formats a given number to have leading zeroes
   //used to convert positional data to animation frames
-  formatNum(num){
+  formatNum(num) {
     num = num.toString();
-    while(num.length<4){
-      num = "0"+num;
+    while (num.length < 4) {
+      num = "0" + num;
     }
     return num;
   }
@@ -399,15 +441,15 @@ class Table extends Phaser.Scene {
     this.leverBoundary.x = Phaser.Math.Clamp(this.leverBoundary.x, this.lockpoint, 0);
 
     if (this.leverMovable) {
-      this.leverSpeed = 2+((0 - this.leverBoundary.x) / 50);//its resistance increases as player pulls
+      this.leverSpeed = 2 + ((0 - this.leverBoundary.x) / 50);//its resistance increases as player pulls
     }
 
     //always move a little in the speed direction
     this.leverBoundary.x += this.leverSpeed;
 
-    this.boundInt = Phaser.Math.Snap.Ceil((0-this.leverBoundary.x),1);
+    this.boundInt = Phaser.Math.Snap.Ceil((0 - this.leverBoundary.x), 1);
     //console.log(this.boundInt);
-    if(this.boundInt >0){
+    if (this.boundInt > 0) {
       this.machine.setFrame(this.formatNum(this.boundInt));
     }
     //INPUT CONTROLS 
