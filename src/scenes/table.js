@@ -89,7 +89,7 @@ class Table extends Phaser.Scene {
       draggable: true,
       clickable: false,
     });
-    
+
     this.lockpoint = -30;
     //-----LEVER CONTROL LISTENER-----
     this.leverBoundary.on('drag', (pointer, dragX, dragY) => {
@@ -124,6 +124,7 @@ class Table extends Phaser.Scene {
     music.play();
     let goMusic = this.sound.add('goMusic', musicConfig);
 
+        ///---CARD SELECT AUDIO---
     let sfxConfig = {
       mute: false,
       volume: 0.3,
@@ -138,6 +139,36 @@ class Table extends Phaser.Scene {
     this.cDraw3 = this.sound.add('cDraw3', sfxConfig);
     this.cDraw4 = this.sound.add('cDraw4', sfxConfig);
     this.cDraw5 = this.sound.add('cDraw5', sfxConfig);
+
+        //---DISAPPROVE AUDIO---
+    let shuffleConfig = {
+      mute: false,
+      volume: 1,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0
+    }
+    this.cShuffle1 = this.sound.add('cShuffle1', shuffleConfig);
+    this.cShuffle2 = this.sound.add('cShuffle2', shuffleConfig);
+    this.cShuffle3 = this.sound.add('cShuffle3', shuffleConfig);
+    this.cShuffle4 = this.sound.add('cShuffle4', shuffleConfig);
+
+    //---APPROVE AUDIO---
+    let growthConfig = {
+      mute: false,
+      volume: 0.5,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0
+    }
+    this.tGrow1 = this.sound.add('tGrow1', growthConfig);
+    this.tGrow2 = this.sound.add('tGrow2', growthConfig);
+    this.tGrow3 = this.sound.add('tGrow3', growthConfig);
+    this.tGrow4 = this.sound.add('tGrow4', growthConfig);
 
     //-----PROMPT TEXT-----
     //sets up text at upper right of the screen
@@ -338,58 +369,28 @@ class Table extends Phaser.Scene {
   }
 
   playShuffle() {
-    //---DISAPPROVE AUDIO---
-    let shuffleConfig = {
-      mute: false,
-      volume: 1,
-      rate: 1,
-      detune: 0,
-      seek: 0,
-      loop: false,
-      delay: 0
-    }
-    let cShuffle1 = this.sound.add('cShuffle1', shuffleConfig);
-    let cShuffle2 = this.sound.add('cShuffle2', shuffleConfig);
-    let cShuffle3 = this.sound.add('cShuffle3', shuffleConfig);
-    let cShuffle4 = this.sound.add('cShuffle4', shuffleConfig);
-
     let sfxVar = Math.floor(Math.random() * 4);
     if (sfxVar == 0) {
-      cShuffle1.play();
+      this.cShuffle1.play();
     } else if (sfxVar == 1) {
-      cShuffle2.play();
+      this.cShuffle2.play();
     } else if (sfxVar == 2) {
-      cShuffle3.play();
+      this.cShuffle3.play();
     } else if (sfxVar == 3) {
-      cShuffle4.play();
+      this.cShuffle4.play();
     }
   }
 
   playGrowth() {
-    //---APPROVE AUDIO---
-    let growthConfig = {
-      mute: false,
-      volume: 0.5,
-      rate: 1,
-      detune: 0,
-      seek: 0,
-      loop: false,
-      delay: 0
-    }
-    let tGrow1 = this.sound.add('tGrow1', growthConfig);
-    let tGrow2 = this.sound.add('tGrow2', growthConfig);
-    let tGrow3 = this.sound.add('tGrow3', growthConfig);
-    let tGrow4 = this.sound.add('tGrow4', growthConfig);
-
     let sfxVar = Math.floor(Math.random() * 4);
     if (sfxVar == 0) {
-      tGrow1.play();
+      this.tGrow1.play();
     } else if (sfxVar == 1) {
-      tGrow2.play();
+      this.tGrow2.play();
     } else if (sfxVar == 2) {
-      tGrow3.play();
+      this.tGrow3.play();
     } else if (sfxVar == 3) {
-      tGrow4.play();
+      this.tGrow4.play();
     }
   }
 
