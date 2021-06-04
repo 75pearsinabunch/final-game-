@@ -124,52 +124,6 @@ class Table extends Phaser.Scene {
     music.play();
     let goMusic = this.sound.add('goMusic', musicConfig);
 
-    // //---CARD SELECT AUDIO---
-    // let selectConfig = {
-    //   mute: false,
-    //   volume: 0.3,
-    //   rate: 1,
-    //   detune: 0,
-    //   seek: 0,
-    //   loop: false,
-    //   delay: 0
-    // }
-    // this.cDraw1 = this.sound.add('cDraw1', selectConfig);
-    // this.cDraw2 = this.sound.add('cDraw2', selectConfig);
-    // this.cDraw3 = this.sound.add('cDraw3', selectConfig);
-    // this.cDraw4 = this.sound.add('cDraw4', selectConfig);
-    // this.cDraw5 = this.sound.add('cDraw5', selectConfig);
-
-    // //---DISAPPROVE AUDIO---
-    // let shuffleConfig = {
-    //   mute: false,
-    //   volume: 1,
-    //   rate: 1,
-    //   detune: 0,
-    //   seek: 0,
-    //   loop: false,
-    //   delay: 0
-    // }
-    // this.cShuffle1 = this.sound.add('cShuffle1', shuffleConfig);
-    // this.cShuffle2 = this.sound.add('cShuffle2', shuffleConfig);
-    // this.cShuffle3 = this.sound.add('cShuffle3', shuffleConfig);
-    // this.cShuffle4 = this.sound.add('cShuffle4', shuffleConfig);
-
-    //---APPROVE AUDIO---
-    let growthConfig = {
-      mute: false,
-      volume: 0.5,
-      rate: 1,
-      detune: 0,
-      seek: 0,
-      loop: false,
-      delay: 0
-    }
-    this.tGrow1 = this.sound.add('tGrow1', growthConfig);
-    this.tGrow2 = this.sound.add('tGrow2', growthConfig);
-    this.tGrow3 = this.sound.add('tGrow3', growthConfig);
-    this.tGrow4 = this.sound.add('tGrow4', growthConfig);
-
     //-----PROMPT TEXT-----
     //sets up text at upper right of the screen
     this.prompt = this.add.text(gameConfig.width - 10, 100, '', { color: '#FFF' }).setOrigin(1);
