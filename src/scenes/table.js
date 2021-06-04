@@ -158,8 +158,7 @@ class Table extends Phaser.Scene {
     //---------ENDING CARD------
     this.flip = 180 * Phaser.Math.Between(0, 1);
     this.tCard = Phaser.Math.Between(0, 21);
-    //this.tarot = this.add.sprite(game.config.width / 2 - 10, game.config.height - 70, 'cards', `backCard`).setOrigin(.5);
-    //this.tarot.setScale(.9, .9);
+
 
     //---------GAME TIMER------
     this.totalTime = 1*1000;
@@ -253,11 +252,37 @@ class Table extends Phaser.Scene {
 
   //puts tarot card and ends the game
   finish() {
-    //this.tarot.angle = this.flip;
-    //this.flipCard(this.tarot, 'cards', `${this.tCard}`);
     for (let i = 0; i < this.hand.length; i++) {
       this.hand[i].terminate();
     }
+    this.tHB = this.add.rectangle(gameConfig.width/2, gameConfig.height/2, 50, 10, 0xffffff);
+
+    /*
+    this.tweens.add({
+      targets: this.tHB,
+      height: {value: 100, duration: 1000, ease: 'Power1'},
+      loop:0
+    });
+
+    this.tHB.setInteractive({
+      useHandCursor: true,
+    }).on('pointerdown',
+      ()=>{
+        this.tarot = this.add.sprite(game.config.width / 2 - 10, game.config.height - 70, 'cards', `backCard`).setOrigin(.5);
+        this.tarot.setScale(.9, .9);
+        this.tarot.angle = this.flip;
+        this.flipCard(this.tarot, 'cards', `${this.tCard}`);
+    });
+    */
+
+/*
+        this.pulse = this.scene.tweens.add({
+      targets: this,
+      alpha: { value: 1, duration: Phaser.Math.Between(1000, 3000), ease: 'Power1' },
+      yoyo: true,
+      loop: -1,
+    })
+*/
     //this.endText = this.add.text(game.config.width / 2, game.config.height - 160, 'The Future your Choices Sew', this.textConfig).setOrigin(.5);
   }
 

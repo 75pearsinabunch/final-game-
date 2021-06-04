@@ -14,7 +14,6 @@ class PlayingCard extends Phaser.GameObjects.Sprite {
     const suit = Phaser.Math.Between(1, 4);//chooses random suit from list
     const texture = (`${value} ${suit}`); //creates texture name from random generation
     //const suitTranslate = (suits[suit - 1]);
-    //super(scene, posX, posY, 'cards', texture, 0);
     super(scene, posX, posY, 'cards', 'back', 0);
     this.sprite = scene.add.existing(this);//places in the world
     this.setScale(1.2, 1.2);
