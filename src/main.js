@@ -4,7 +4,7 @@ let gameConfig = {
   type: Phaser.AUTO,
   width: 500,
   height: 500,
-  scene: [Title, Intro, Attic, Loading, Table]
+  scene: [Table]
   //scene:[Loading, Table]
 };
 
