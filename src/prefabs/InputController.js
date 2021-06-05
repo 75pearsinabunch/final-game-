@@ -1,8 +1,8 @@
-let trieTypes = [
-  'suit',
-  'value',
-  'slot number'
-]
+  //trieTypes in order:
+  //0) suit
+  //1) value
+  //2) slot number
+
 //Input logger serves to store player input and hold it as a repository
 //for use across all objects. 
 class InputController {
@@ -17,10 +17,29 @@ class InputController {
       vague: 2
     };
 
-    //Setting up pattern tries
-    this.suitPattern = new PatternTrie(4,this, this.scene);
-    this.valuePattern = new PatternTrie(13,this, this.scene);
-    this.timesTried = 0;
+    //Setting which pattern we'll be searching for
+
+    this.pattern = null;
+    this.generateTrie();
+  }
+
+  generateTrie(){
+    if(this.pattern != null){
+      this.pattern.destroy();
+    }
+
+    switch(Phaser.Math.Between(0,2)){
+      case(0):
+        this.pattern = new PatternTrie(4,this,this.scene);
+        break;
+      case(1):
+        this.pattern = new PatternTrie(13, this,this.scene);
+        break;
+      default:
+        this.pattern = new PatternTrie(5, this, this.scene);
+        break;
+    }
+
   }
 
   //Controlls response of all card elements controlled by this controller
@@ -46,7 +65,6 @@ class InputController {
       return;
     }
 
-    this.timesTried++;
     //instantiate to holders of copies of cards
     this.hcV = []//copy of hand
     this.hcS = [];//copy of Suits

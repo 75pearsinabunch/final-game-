@@ -17,12 +17,14 @@ class Loading extends Phaser.Scene {
         };
         this.remainText = this.add.text(0, gameConfig.height / 2, "Loading", timeConfig).setOrigin(0, 0.5);
 
-        this.load.atlas('cards', 'assets/cardSheet.png', 'assets/cardSheet.json');
-        this.load.atlas('animachine', 'assets/machineAnim.png', 'assets/machineAnim.json');
-        this.load.atlas('cards', 'assets/cardSheet.png', 'assets/cardSheet.json');
-        
-        this.load.image('big', 'assets/big_hand.png');
+
         this.load.path = 'assets/';//shortens future path names
+
+
+        this.load.atlas('cards', 'cardSheet.png', 'cardSheet.json');
+        this.load.atlas('body', 'body.png', 'body.json');
+        this.load.atlas('handle', 'handle.png', 'handle.json');
+        this.load.image('big', 'big_hand.png');
 
         //audio
         this.load.audio('music', 'audio/Ambience.mp3');
@@ -49,6 +51,7 @@ class Loading extends Phaser.Scene {
 
     create() {
         //this.scene.start("introScene");
+        //this.scene.start("atticScene");
         this.scene.start("tableScene");
     }
 }

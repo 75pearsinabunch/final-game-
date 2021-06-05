@@ -5,24 +5,28 @@ class Table extends Phaser.Scene {
 
   create() {
 
-    //-----ANIMATIONS-------
+    //-----MACHINE IMAGE AND ANIMATIONS-------
     this.machineAnim = this.anims.create({
-      key: 'begin',
-      frames: this.anims.generateFrameNames('animachine', { prefix: 'machine', start: 0, end: 30, zeroPad: 4 }),
+      key: 'body-begin',
+      frames: this.anims.generateFrameNames('body', { prefix: 'body', start: 0, end: 30, zeroPad: 4 }),
     });
 
     this.machineAnim = this.anims.create({
-      key: 'end',
-      frames: this.anims.generateFrameNames('animachine', { prefix: 'machine', start: 61, end: 90, zeroPad: 4 }),
+      key: 'body-end',
+      frames: this.anims.generateFrameNames('body', { prefix: 'body', start: 61, end: 90, zeroPad: 4 }),
     });
 
     this.machineAnim = this.anims.create({
-      key: 'reset',
-      frames: this.anims.generateFrameNames('animachine', { prefix: 'machine', start: 30, end: 0, zeroPad: 4 }),
+      key: 'body-reset',
+      frames: this.anims.generateFrameNames('body', { prefix: 'body', start: 30, end: 0, zeroPad: 4 }),
     });
 
-    //------MACHINE IMAGE---------
-    this.machine = this.add.sprite(0, 0, 'animachine', "machine0000").setOrigin(0);
+    //------HANDLE IMAGE AND ANIMATION---------
+    this.machine = this.add.sprite(0, 0, 'body', "body0000").setOrigin(0);
+
+    this.add.rectangle(gameConfig.width/2, gameConfig.height/2, 100, 100, 0xffffff).setOrigin(.5);
+
+    this.handle = this.add.sprite(0,0, 'handle', 'machine0000').setOrigin(0);
 
     //-----LEVER IMAGE AND SETUP------
     this.leverIgnitePoint = 166;//the point at which the lever activates the mechanism
@@ -30,7 +34,7 @@ class Table extends Phaser.Scene {
     this.leverSpeed = 0;
     this.leverMovable = true;
 
-    //an invisible "hitbox" for the lever animation
+ 
 
     //-------INPUT OBJECTS------
     //using event system from prof Altice's example
@@ -75,6 +79,7 @@ class Table extends Phaser.Scene {
 
     //---------GAME TIMER------
     this.totalTime = 120 * 1000;//length of one game
+    //this.totalTime = 100;//length of one game
     this.gameOver = true;//WOAH PLOT TWIST
 
     //Visual Timer Stuff
@@ -113,7 +118,7 @@ class Table extends Phaser.Scene {
     //determines a middle state where game isn't fully over but no input should be read
     this.input.on('pointerdown', () => {
       if (this.cardTaken) {
-        this.machine.anims.play('begin');
+        this.machine.anims.play('body-begin');
         //set up ending card
         this.flip = 180 * Phaser.Math.Between(0, 1);
         this.tCard = Phaser.Math.Between(0, 21);
@@ -138,14 +143,14 @@ class Table extends Phaser.Scene {
     });
 
     //---MAKING SURE PLAYER CANT "MASH THROUGH OPENING CUTSCENE"---
-    this.machine.on('animationcomplete-begin', () => {
+    this.machine.on('animationcomplete-body-begin', () => {
       this.gameOver = false;
       this.hasStarted = false;
       //start w/ full lever access to "boot" machine
       this.lockpoint = 120;
     })
 
-    this.machine.on('animationcomplete-reset', () => {
+    this.machine.on('animationcomplete-body-reset', () => {
       this.gameOver = true;
       this.cardTaken = true;
     })
@@ -227,7 +232,7 @@ class Table extends Phaser.Scene {
 
   //Controlls actions which occur to indicate that play is finished
   finish() {
-    this.machine.anims.play('end');
+    this.machine.anims.play('body-end');
 
     for (let i = 0; i < this.hand.length; i++) {
       this.hand[i].terminate();
@@ -238,7 +243,7 @@ class Table extends Phaser.Scene {
     this.tHB.setInteractive({
       useHandCursor: true,
     }).on('pointerdown', () => {
-      this.machine.setFrame('machine0030');
+      this.machine.setFrame('body0030');
       this.displayTarot();
       this.tHB.disableInteractive();
       this.tHB.destroy();
@@ -262,7 +267,7 @@ class Table extends Phaser.Scene {
         clickedOnce = true;
       } else {
         this.tarot.destroy();
-        this.machine.anims.play('reset');
+        this.machine.anims.play('body-reset');
       }
     });
 
@@ -482,7 +487,8 @@ class Table extends Phaser.Scene {
     if (this.boundInt > 0) {
       let progPerc = (Phaser.Math.Snap.Ceil((percDone) * 29, 1) + 31);
       progPerc = Phaser.Math.Clamp(progPerc, 31, 60);
-      this.machine.setFrame('machine' + this.formatNum(progPerc));
+      this.handle.setFrame('machine' + this.formatNum(progPerc));
+      this.machine.setFrame('body'+this.formatNum(progPerc));
     }
 
     if ((this.leverBoundary.x < this.leverIgnitePoint) && this.leverMovable) {
