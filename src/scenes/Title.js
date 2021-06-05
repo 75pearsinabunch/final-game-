@@ -23,8 +23,7 @@ class Title extends Phaser.Scene {
 
     update() {
         if(cursors.isDown) {
-            console.log("to talking scene")
-            this.scene.start("introScene");
+            this.scene.start("loadingScene");
         }
     }
 }
