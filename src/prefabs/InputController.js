@@ -1,3 +1,8 @@
+let trieTypes = [
+  'suit',
+  'value',
+  'slot number'
+]
 //Input logger serves to store player input and hold it as a repository
 //for use across all objects. 
 class InputController {
@@ -64,7 +69,6 @@ class InputController {
         hand[i].remove();
         hand[i] = this.replaceCard;
         })
-
       }
     }
     this.hcV.sort((l, r) => { return (l - r) });
@@ -83,9 +87,6 @@ class InputController {
   //currently increases tower bar
   approve() {
     //HAND APPROVED, PLAYER PROGRESSES (♪)
-    this.scene.barFill += .1;
-    this.scene.setMeterPercentage(this.scene.barFill);//TODO: should probably randomize
-    this.scene.promptAnim("The Tower Grows");
     this.scene.playGrowth();
   }
 
@@ -93,9 +94,6 @@ class InputController {
   //currently lowers tower bar
   disapprove() {
     //HAND DISAPPROVED, PLAYER REGRESSES (♪)
-    this.scene.barFill -= .1;
-    this.scene.setMeterPercentage(this.scene.barFill);//TODO: should probably randomize
-    this.scene.promptAnim("The Tower Diminishes");
     this.scene.playShuffle();
   }
 }

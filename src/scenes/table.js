@@ -3,52 +3,34 @@ class Table extends Phaser.Scene {
     super('tableScene')
   }
 
-
-
-  init() {
-    this.fullWidth = 300
-  }
-
   create() {
-    //-------CAMERA---------
-    //this.cameras.main.setBackgroundColor('#FFF');
 
-    //top secret machine animation
+    //-----ANIMATIONS-------
     this.machineAnim = this.anims.create({
-      key: 'machanim',
-      frames: this.anims.generateFrameNames('animachine', { prefix: '', start: 1, end: 220, zeroPad: 4 }),
-      repeat: -1,
+      key: 'begin',
+      frames: this.anims.generateFrameNames('animachine', { prefix: 'machine', start: 0, end: 30, zeroPad: 4 }),
+    });
+
+    this.machineAnim = this.anims.create({
+      key: 'end',
+      frames: this.anims.generateFrameNames('animachine', { prefix: 'machine', start: 61, end: 90, zeroPad: 4 }),
+    });
+
+    this.machineAnim = this.anims.create({
+      key: 'reset',
+      frames: this.anims.generateFrameNames('animachine', { prefix: 'machine', start: 30, end: 0, zeroPad: 4 }),
     });
 
     //------MACHINE IMAGE---------
-    this.machine = this.add.sprite(0, 0, 'animachine', "0001").setOrigin(0);
-    //an invisible "hitbox" for the lever animation
-    this.leverBoundary = this.add.rectangle(0, 200, gameConfig.width * 3, 200)
+    this.machine = this.add.sprite(0, 0, 'animachine', "machine0000").setOrigin(0);
 
     //-----LEVER IMAGE AND SETUP------
-    this.leverIgnitePoint = -210;//the point at which the lever activates the mechanism
-    this.leverResetPoint = -2;
+    this.leverIgnitePoint = 166;//the point at which the lever activates the mechanism
+    this.leverResetPoint = 322;
     this.leverSpeed = 0;
     this.leverMovable = true;
 
-    this.leverBoundary.setInteractive({
-      draggable: true,
-      clickable: false,
-    });
-
-    this.lockpoint = -30;
-    //-----LEVER CONTROL LISTENER-----
-    this.leverBoundary.on('drag', (pointer, dragX, dragY) => {
-      //console.log(this.leverBoundary.x);
-      if (this.gameOver || !this.leverMovable) {
-        return;
-      }
-
-      this.leverBoundary.x = dragX;//moves the lever along with the pointer
-    });
-
-    //-----CARD SLOTS IMAGE--------
-    this.slots = this.add.image(0, 0, 'slots').setOrigin(0);
+    //an invisible "hitbox" for the lever animation
 
     //-------INPUT OBJECTS------
     //using event system from prof Altice's example
@@ -66,138 +48,161 @@ class Table extends Phaser.Scene {
       loop: true,
       delay: 0
     }
+
     let music = this.sound.add('music', musicConfig);
     music.play();
     let goMusic = this.sound.add('goMusic', musicConfig);
-
-    //-----PROMPT TEXT-----
-    //sets up text at upper right of the screen
-    this.prompt = this.add.text(gameConfig.width - 10, 100, '', { color: '#FFF' }).setOrigin(1);
-
-    //-----health bar/status bar
-    //pre-plans the bar changes 
-    const green_y = 25;
-    const x = 10;
-    const blue_y = 55;
-    // background shadow
-    const green_leftShadowCap = this.add.image(x, green_y, 'left-cap-shadow').setOrigin(0, 0.5);
-    const green_middleShaddowCap = this.add.image(green_leftShadowCap.x + green_leftShadowCap.width, green_y, 'middle-shadow').setOrigin(0, 0.5);
-    green_middleShaddowCap.displayWidth = this.fullWidth;
-    this.add.image(green_middleShaddowCap.x + green_middleShaddowCap.displayWidth, green_y, 'right-cap-shadow').setOrigin(0, 0.5);
-    this.green_leftCap = this.add.image(x, green_y, 'green_left-cap').setOrigin(0, 0.5);
-    this.green_middle = this.add.image(this.green_leftCap.x + this.green_leftCap.width, green_y, 'green_middle').setOrigin(0, 0.5);
-    this.green_rightCap = this.add.image(this.green_middle.x + this.green_middle.displayWidth, green_y, 'green_right-cap').setOrigin(0, 0.5)
-    this.setMeterPercentage(green_value);
-
-    //--------------TIMING/CLOCK---------------
-    //Temp meter fill
-    this.barFill = .5;
-    this.setMeterPercentage(this.barFill);
 
     //-----INPUT LOGGER DATA STRUCTURE----
     this.iC = new InputController(this);
 
     //-----PLAYING CARDS------
-    //Deck of cards
+    //Container for hand of cards
     this.hand = [];
     //instantiating 5 cards
     for (let i = 0; i < 5; i++) {
-      this.cards = new PlayingCard(
-        this,//scene 
-        (55 * i + 133), //x
-        (gameConfig.height - 190), //y
-        this.iC //input controller
+      this.cards = this.add.sprite(
+        (55 * i + 149), //x
+        (gameConfig.height - 189),//y
+        'cards',
+        'back',
       );
+      this.cards.setScale(1.2, 1.2);
+      this.cards.setAlpha(.7);
       this.hand.push(this.cards);
     }
 
-    //---------PRESS SPACE INSTRUCTIONS-----------
-    this.textConfig = {
-      fontFamily: 'Courier',
-      fontSize: '22px',
-      backgroundColor: '#FFF',
-      color: '#cc3300',
-      align: 'center',
-      padding: {
-        top: 1,
-        bottom: 1,
-      },
-      fixedWidth: 0
-    }
-
-    //---------ENDING CARD------
-    this.flip = 180 * Phaser.Math.Between(0, 1);
-    this.tCard = Phaser.Math.Between(0, 21);
-
 
     //---------GAME TIMER------
-    this.totalTime = 1*1000;
-    this.gameOver = false;
-    this.gOEvent = this.time.addEvent({
-      delay: this.totalTime,
-      callback: () => {
-        this.gameOver = true;
-        this.finish();
-        music.stop();
-        goMusic.setLoop(false);
-        goMusic.setVolume(0.025);
-        goMusic.play();
-      },
-    })
+    this.totalTime = 1 * 1000;//length of one game
+    this.gameOver = true;//WOAH PLOT TWIST
 
     //Visual Timer Stuff
-
-    
-    var circle = new Phaser.Geom.Circle(340, 425, 30);//  Create a large circle, then draw the angles on it
+    var circle = new Phaser.Geom.Circle(360, 430, 30);//  Create a large circle, then draw the angles on it
     var graphics = this.add.graphics();
     graphics.lineStyle(1, 0xFFFFFF, 1); // white lines
-    var r1 = this.add.circle(340, 425, 5, 0x000000);
     graphics.strokeCircleShape(circle);// make the circle
     graphics.beginPath();
     for (var a = 0; a < 360; a += 22.5) {
-      graphics.moveTo(340, 425);
+      graphics.moveTo(360, 430);
       var p = Phaser.Geom.Circle.CircumferencePoint(circle, Phaser.Math.DegToRad(a));
       graphics.lineTo(p.x, p.y);
     }
     graphics.strokePath(); // lines visiblity
-    this.big = this.add.sprite(341, 426, 'big').setOrigin(.5, 1).setScale(0.30, 0.15);
+    this.big = this.add.sprite(361, 430, 'big').setOrigin(.5, 1).setScale(0.30, 0.15);
+    this.add.circle(360, 430, 5, 0x000000);//adding center circle
 
-    this.tweens.addCounter({
-      from: 0,
-      to: 360,
-      duration: this.totalTime,
+    //Boolean that determines if the initial lever pull has occured
+    this.hasStarted = false;
+
+    //------INPUT CONTROLS SOUNDS-------
+    let leverConfig = {
+      mute: false,
+      volume: 0.05,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0
+    }
+
+    this.leverDrag = this.sound.add('leverDrag', leverConfig);
+
+    //---GAME OVER AND RENEWAL LOGIC---
+    this.cardTaken = true;
+    //determines a middle state where game isn't fully over but no input should be read
+    this.input.on('pointerdown', () => {
+      if (this.cardTaken) {
+        this.machine.anims.play('begin');
+        //set up ending card
+        this.flip = 180 * Phaser.Math.Between(0, 1);
+        this.tCard = Phaser.Math.Between(0, 21);
+        this.cardTaken = false;
+
+        //---INSTANTIATING LEVER CONTROLLES---
+        this.leverBoundary = this.add.rectangle(326, 115, 60, 130).setOrigin(0, 0);
+        this.leverBoundary.setInteractive({
+          draggable: true,
+          useHandCursor: true,
+          clickable: false,
+        });
+        
+        this.leverBoundary.on('drag', (pointer, dragX, dragY) => {
+          if (this.gameOver || !this.leverMovable) {
+            return;
+          }
+
+          this.leverBoundary.x = dragX;//moves the lever along with the pointer
+        });
+      }
+    });
+
+    //---MAKING SURE PLAYER CANT "MASH THROUGH OPENING CUTSCENE"---
+    this.machine.on('animationcomplete-begin', () => {
+      this.gameOver = false;
+      this.hasStarted = false;
+      //start w/ full lever access to "boot" machine
+      this.lockpoint = 120;
+    })
+
+    this.machine.on('animationcomplete-reset', () => {
+      this.gameOver = true;
+      this.cardTaken = true;
+    })
+  }
+
+  setRealCards() {
+    //Container for hand of cards
+    //instantiating 5 cards
+    for (let i = 0; i < 5; i++) {
+      this.hand[i].destroy();
+      this.hand[i] = new PlayingCard(
+        this,//scene 
+        (55 * i + 149), //x
+        (gameConfig.height - 189),//y
+        this.iC //input controller
+      );
+    }
+  }
+
+  startTimer() {
+    this.startSpin = this.tweens.addCounter({
+      from: 360,
+      to: 0,
+      duration: 500,
       onUpdate: (tween) => {
         this.big.setAngle(tween.getValue())
       },
       repeat: 0,
     });
-    
-  }
 
-  //-------METER FUNCTIONS--------
-  //handles the percentage 
-  setMeterPercentage(percent = 1) {
-    const width = this.fullWidth * percent;
-    this.green_middle.displayWidth = width;
-    this.green_rightCap.x = this.green_middle.x + this.green_middle.displayWidth;
-  }
+    this.startSpin.on('complete', (tween, targets) => {
+      //starts the counter proper
+      this.tweens.addCounter({
+        from: 0,
+        to: 360,
+        duration: this.totalTime,
+        onUpdate: (tween) => {
+          this.big.setAngle(tween.getValue())
+        },
+        repeat: 0,
+      });
 
-  //handles updating the animation of the bar
-  setMeterPercentageAnimated(percent = 1, duration = 1000) {
-    const width = this.fullWidth * percent;
-    this.tweens.add({
-      targets: this.middle,
-      displayWidth: width,
-      duration,
-      ease: Phaser.Math.Easing.Sine.Out,
-      onUpdate: () => {
-        this.green_rightCap.x = this.green_middle.x + this.green_middle.displayWidth;
-        this.green_leftCap.visible = this.green_middle.displayWidth > 0;
-        this.green_middle.visible = this.green_middle.displayWidth > 0;
-        this.green_rightCap.visible = this.green_middle.displayWidth > 0;
-      }
+      //starts internal timer for the game
+      this.gOEvent = this.time.addEvent({
+        delay: this.totalTime,
+        callback: () => {
+          this.gameOver = true;
+          this.finish();
+          //music.stop();
+          //goMusic.setLoop(false);
+          //goMusic.setVolume(0.025);
+          //goMusic.play();
+        },
+      })
     })
   }
+
 
   //Creates the illusion of a card flipping by shrinking in the X direction
   //and replacing the sprite's texture
@@ -220,66 +225,51 @@ class Table extends Phaser.Scene {
     return flipTween;
   }
 
-  //puts tarot card and ends the game
+  //Controlls actions which occur to indicate that play is finished
   finish() {
+    this.machine.anims.play('end');
+
     for (let i = 0; i < this.hand.length; i++) {
       this.hand[i].terminate();
     }
-    this.tHB = this.add.rectangle(gameConfig.width/2, gameConfig.height/2, 50, 10, 0xffffff);
 
-    /*
-    this.tweens.add({
-      targets: this.tHB,
-      height: {value: 100, duration: 1000, ease: 'Power1'},
-      loop:0
-    });
-
+    //Generates an invisible hitbox over the animated card object
+    this.tHB = this.add.rectangle(265, 430, 90, 80);
     this.tHB.setInteractive({
       useHandCursor: true,
-    }).on('pointerdown',
-      ()=>{
-        this.tarot = this.add.sprite(game.config.width / 2 - 10, game.config.height - 70, 'cards', `backCard`).setOrigin(.5);
-        this.tarot.setScale(.9, .9);
-        this.tarot.angle = this.flip;
+    }).on('pointerdown', () => {
+      this.machine.setFrame('machine0030');
+      this.displayTarot();
+      this.tHB.disableInteractive();
+      this.tHB.destroy();
+    });
+
+    this.leverBoundary.disableInteractive();
+    this.leverBoundary.destroy
+  }
+
+  displayTarot() {
+    let clickedOnce = false;
+    this.tarot = this.add.sprite(gameConfig.width / 2 + 10, gameConfig.height / 2, 'cards', 'backCard').setOrigin(.5, .5);
+    this.tarot.setAngle(this.flip);
+    this.tarot.setScale(1.5,1.5);
+    this.tarot.setInteractive({
+      useHandCursor: true,
+    }).on('pointerdown', () => {
+
+      if (!clickedOnce) {
         this.flipCard(this.tarot, 'cards', `${this.tCard}`);
+        clickedOnce = true;
+      } else {
+        this.tarot.destroy();
+        this.machine.anims.play('reset');
+      }
     });
-    */
 
-/*
-        this.pulse = this.scene.tweens.add({
-      targets: this,
-      alpha: { value: 1, duration: Phaser.Math.Between(1000, 3000), ease: 'Power1' },
-      yoyo: true,
-      loop: -1,
-    })
-*/
-    //this.endText = this.add.text(game.config.width / 2, game.config.height - 160, 'The Future your Choices Sew', this.textConfig).setOrigin(.5);
   }
 
-  //used just for bar values
-  recordInput() {
-    //if statements that stops the bar from hitting 0
-    if (green_value > 0.1) {
-      green_value = green_value - 0.1;
-    }
-    this.setMeterPercentage(green_value);
-    console.log(green_value);
-  }
-
-  //changes the text of the prompt to a given statement
-  //shows prompt for a short time, then removes text
-  promptAnim(changeText) {
-    this.prompt.text = changeText;
-    this.tweens.add({
-      targets: this.prompt,
-      alpha: { from: 0, to: 1 },
-      duration: 3000,
-      yoyo: true,
-      hold: 1000,
-    });
-  }
-
-  playDraw() {  
+  playDraw() {
+    /*
     //---CARD SELECT AUDIO---
     let selectConfig = {
       mute: false,
@@ -295,8 +285,8 @@ class Table extends Phaser.Scene {
     let cDraw3 = this.sound.add('cDraw3', selectConfig);
     let cDraw4 = this.sound.add('cDraw4', selectConfig);
     let cDraw5 = this.sound.add('cDraw5', selectConfig);
-
-    
+ 
+ 
     let sfxVar = Math.floor(Math.random() * 5);
     if (sfxVar == 0) {
       cDraw1.play();
@@ -309,26 +299,28 @@ class Table extends Phaser.Scene {
     } else if (sfxVar == 4) {
       cDraw5.play();
     }
-
+ 
     if (!cDraw1.isPlaying) {
       cDraw1.destroy();
-      console.log('destroy');
+      //console.log('destroy');
     } else if (!cDraw2.isPlaying) {
       cDraw2.destroy();
-      console.log('destroy');
+      //console.log('destroy');
     } else if (!cDraw3.isPlaying) {
       cDraw3.destroy();
-      console.log('destroy');
+      //console.log('destroy');
     } else if (!cDraw4.isPlaying) {
       cDraw4.destroy();
-      console.log('destroy');
+      //console.log('destroy');
     } else if (!cDraw5.isPlaying) {
       cDraw5.destroy();
-      console.log('destroy');
+      //console.log('destroy');
     }
+    */
   }
 
   playShuffle() {
+    /*
     //---DISAPPROVE AUDIO---
     let shuffleConfig = {
       mute: false,
@@ -343,7 +335,7 @@ class Table extends Phaser.Scene {
     let cShuffle2 = this.sound.add('cShuffle2', shuffleConfig);
     let cShuffle3 = this.sound.add('cShuffle3', shuffleConfig);
     let cShuffle4 = this.sound.add('cShuffle4', shuffleConfig);
-    
+ 
     let sfxVar = Math.floor(Math.random() * 4);
     if (sfxVar == 0) {
       cShuffle1.play();
@@ -354,7 +346,7 @@ class Table extends Phaser.Scene {
     } else if (sfxVar == 3) {
       cShuffle4.play();
     }
-
+ 
     if (!cShuffle1.isPlaying) {
       cShuffle1.destroy();
       console.log('destroy');
@@ -368,25 +360,26 @@ class Table extends Phaser.Scene {
       cShuffle4.destroy();
       console.log('destroy');
     }
-
+*/
   }
 
   playGrowth() {
+    /*
     let sfxVar = Math.floor(Math.random() * 4);
     if (sfxVar == 0) {
-      this.tGrow1.play();
+      //this.tGrow1.play();
       if (this.tGrow1.isPlaying) {
         return
       } else if (!this.tGrow1.isPlaying) {
-        this.tGrow1.destroy();
-        console.log('destroy');
+        //this.tGrow1.destroy();
+        //console.log('destroy');
       }
     } else if (sfxVar == 1) {
-      this.tGrow2.play();
+      //this.tGrow2.play();
       if (this.tGrow2.isPlaying) {
         return
       } else if (!this.tGrow2.isPlaying) {
-        this.tGrow2.destroy();
+        //this.tGrow2.destroy();
         console.log('destroy');
       }
     } else if (sfxVar == 2) {
@@ -395,18 +388,18 @@ class Table extends Phaser.Scene {
         return
       } else if (!this.tGrow3.isPlaying) {
         this.tGrow3.destroy();
-        console.log('destroy');
+        //console.log('destroy');
       }
     } else if (sfxVar == 3) {
-      this.tGrow4.play();
+      //this.tGrow4.play();
       if (this.tGrow4.isPlaying) {
         return
       } else if (!this.tGrow4.isPlaying) {
         this.tGrow4.destroy();
-        console.log('destroy');
+        //console.log('destroy');
       }
     }
-
+ 
     if (!tGrow1.isPlaying) {
       tGrow1.destroy();
       console.log('destroy');
@@ -420,11 +413,13 @@ class Table extends Phaser.Scene {
       tGrow4.destroy();
       console.log('destroy');
     }
+    */
   }
 
   //Called whenever the lever is pulled, determines whether or not
   //the card conditions permit the lever to move
   checkCardCount() {
+
     if (!this.leverMovable) {
       return;
     }
@@ -435,9 +430,9 @@ class Table extends Phaser.Scene {
       }
     }
     if (cardCount == 3) {
-      this.lockpoint = -222;
+      this.lockpoint = 120;
     } else {
-      this.lockpoint = -30;
+      this.lockpoint = 294;
     }
   }
 
@@ -453,55 +448,57 @@ class Table extends Phaser.Scene {
   }
 
   update() {
+
     //game over check
     if (this.gameOver) {
       return;
     }
 
-    this.checkCardCount();
+    if (this.hasStarted) {
+      this.checkCardCount();
+    }
+    //LEVER MOTION
+
+    this.leverBoundary.x = Phaser.Math.Clamp(this.leverBoundary.x, this.lockpoint, 326);
+    //always move a little in the speed direction
+
     //sets a reset point that resets all lever values
     if (this.leverBoundary.x > this.leverResetPoint) {
       this.leverSpeed = 0;
       this.leverMovable = true;
     }
 
-    //LEVER MOTION
-    //max -222
-    this.leverBoundary.x = Phaser.Math.Clamp(this.leverBoundary.x, this.lockpoint, 0);
-
     if (this.leverMovable) {
-      this.leverSpeed = 2 + ((0 - this.leverBoundary.x) / 50);//its resistance increases as player pulls
+      this.leverSpeed = 2 + ((this.leverBoundary.x) / 50);//its resistance increases as player pulls
     }
 
-    //always move a little in the speed direction
     this.leverBoundary.x += this.leverSpeed;
 
-    this.boundInt = Phaser.Math.Snap.Ceil((0 - this.leverBoundary.x), 1);
-    //console.log(this.boundInt);
+    this.boundInt = Phaser.Math.Snap.Ceil((this.leverBoundary.x), 1);
+
+    let percDone = 1 - ((this.boundInt - 156) / (335 - 156));
+    this.percDone = Phaser.Math.Clamp(percDone, 0, 1);
+
     if (this.boundInt > 0) {
-      this.machine.setFrame(this.formatNum(this.boundInt));
-    }
-    //INPUT CONTROLS 
-    let leverConfig = {
-      mute: false,
-      volume: 0.05,
-      rate: 1,
-      detune: 0,
-      seek: 0,
-      loop: false,
-      delay: 0
+      let progPerc = (Phaser.Math.Snap.Ceil((percDone) * 29, 1) + 31);
+      progPerc = Phaser.Math.Clamp(progPerc, 31, 60);
+      this.machine.setFrame('machine' + this.formatNum(progPerc));
     }
 
-    let leverDrag = this.sound.add('leverDrag', leverConfig);
     if ((this.leverBoundary.x < this.leverIgnitePoint) && this.leverMovable) {
       this.leverMovable = false;
-      this.iC.processSelection(this.hand);
-      leverDrag.play();
-      if (!leverDrag.isPlaying) {
-        leverDrag.destroy();
+      if (this.hasStarted) {
+        this.iC.processSelection(this.hand);
+      } else {
+        this.setRealCards();
+        this.startTimer();
+        this.hasStarted = true;
+      }
+      this.leverDrag.play();
+      if (!this.leverDrag.isPlaying) {
+        this.leverDrag.destroy();
         console.log('lever');
       }
     }
   }
 }
-

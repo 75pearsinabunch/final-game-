@@ -17,43 +17,12 @@ class Loading extends Phaser.Scene {
         };
         this.remainText = this.add.text(0, gameConfig.height / 2, "Loading", timeConfig).setOrigin(0, 0.5);
 
-
-        this.load.image('1back', 'assets/cardBack.png');
-        this.load.image('timer', 'assets/loading.png');
         this.load.atlas('cards', 'assets/cardSheet.png', 'assets/cardSheet.json');
         this.load.atlas('animachine', 'assets/machineAnim.png', 'assets/machineAnim.json');
-        //this.load.bitmapFont('digital', 'assets/font/digital-7.ttf');
-
-        //stuff I stole from table:
-        this.load.image('machine', 'blender/machine.png');//main machine done before path
-        this.load.image('lever', 'blender/lever.png');
-        this.load.image('slots', 'blender/slots.png');
-
-        this.load.image('1back', 'assets/cardBack.png');
-        this.load.image('timer', 'assets/loading.png');
         this.load.atlas('cards', 'assets/cardSheet.png', 'assets/cardSheet.json');
-        //this.load.bitmapFont('digital', 'assets/font/digital-7.ttf');
+        
         this.load.image('big', 'assets/big_hand.png');
         this.load.path = 'assets/';//shortens future path names
-        //this.load.image('cards', 'cardBack.png');
-        //health bar/ status bar assets
-        this.load.image('green_left-cap', 'barHorizontal_green_left.png');
-        this.load.image('green_middle', 'barHorizontal_green_mid.png');
-        this.load.image('green_right-cap', 'barHorizontal_green_right.png');
-
-        this.load.image('blue_left-cap', 'barHorizontal_blue_left.png');
-        this.load.image('blue_middle', 'barHorizontal_blue_mid.png');
-        this.load.image('blue_right-cap', 'barHorizontal_blue_right.png');
-
-        this.load.image('red_left-cap', 'barHorizontal_red_left.png');
-        this.load.image('red_middle', 'barHorizontal_red_mid.png');
-        this.load.image('red_right-cap', 'barHorizontal_red_right.png');
-
-        this.load.image('left-cap-shadow', 'barHorizontal_shadow_left.png');
-        this.load.image('middle-shadow', 'barHorizontal_shadow_mid.png');
-        this.load.image('right-cap-shadow', 'barHorizontal_shadow_right.png');
-
-
 
         //audio
         this.load.audio('music', 'audio/Ambience.mp3');
@@ -76,7 +45,6 @@ class Loading extends Phaser.Scene {
         this.load.audio('tGrow4', 'audio/Rumble-04.wav');
 
         this.load.audio('leverDrag', 'audio/LeverDrag.wav');
-
     }
 
     create() {

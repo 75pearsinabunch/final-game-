@@ -62,6 +62,10 @@ class PlayingCard extends Phaser.GameObjects.Sprite {
     this.setTint('0xffffcc')
   }
 
+  remove(){
+    this.destroy();
+  }
+
   terminate() {
     this.scene.flipCard(this, 'cards', 'back');
     this.disableInteractive();
