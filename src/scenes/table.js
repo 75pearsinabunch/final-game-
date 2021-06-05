@@ -74,7 +74,7 @@ class Table extends Phaser.Scene {
 
 
     //---------GAME TIMER------
-    this.totalTime = 1 * 1000;//length of one game
+    this.totalTime = 120 * 1000;//length of one game
     this.gameOver = true;//WOAH PLOT TWIST
 
     //Visual Timer Stuff
@@ -126,7 +126,7 @@ class Table extends Phaser.Scene {
           useHandCursor: true,
           clickable: false,
         });
-        
+
         this.leverBoundary.on('drag', (pointer, dragX, dragY) => {
           if (this.gameOver || !this.leverMovable) {
             return;
@@ -252,7 +252,7 @@ class Table extends Phaser.Scene {
     let clickedOnce = false;
     this.tarot = this.add.sprite(gameConfig.width / 2 + 10, gameConfig.height / 2, 'cards', 'backCard').setOrigin(.5, .5);
     this.tarot.setAngle(this.flip);
-    this.tarot.setScale(1.5,1.5);
+    this.tarot.setScale(1.5, 1.5);
     this.tarot.setInteractive({
       useHandCursor: true,
     }).on('pointerdown', () => {
