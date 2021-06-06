@@ -29,7 +29,8 @@ class Attic extends Phaser.Scene {
     }
     create() {
         this.attic = this.add.sprite(0, 0, 'attic').setOrigin(0, 0);
-        this.machine = this.add.sprite(gameConfig.width / 2, 160, 'animachine', 'machine0000').setOrigin(0, 0).setScale(0.5, 0.5);
+        this.body = this.add.sprite(gameConfig.width / 2, 160, 'body', 'body0000').setOrigin(0, 0).setScale(0.5, 0.5);
+        this.lever = this.add.sprite(gameConfig.width / 2, 160, 'handle', 'machine0000').setOrigin(0, 0).setScale(0.5, 0.5);
 
         var circle = new Phaser.Geom.Circle(430, 375, 14);//  Create a large circle, then draw the angles on it
         var graphics = this.add.graphics();
