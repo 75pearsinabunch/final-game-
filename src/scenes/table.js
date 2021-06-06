@@ -125,16 +125,9 @@ class Table extends Phaser.Scene {
 
     //------LEVER CONTROL SETUP-------
     this.leverBoundary = this.add.rectangle(326, 115, 60, 130).setOrigin(0, 0);
-/*
-    this.leverBoundary.setInteractive({
-      draggable: true,
-      useHandCursor: true,
-      clickable: false,
-    });
-*/
+
     this.leverBoundary.on('drag', (pointer, dragX, dragY) => {
       if (!this.leverMovable) {
-        console.log("lever immovable, returning");
         return;
       }
 
@@ -157,7 +150,6 @@ class Table extends Phaser.Scene {
 
     //---MAKING SURE PLAYER CANT "MASH THROUGH OPENING CUTSCENE"---
     this.machine.on('animationcomplete-body-begin', () => {
-      console.log("completed begin anim");
       //Allow player to interact with the lever
       this.leverMovable = true;
       this.hasStarted = true;
@@ -172,7 +164,6 @@ class Table extends Phaser.Scene {
 
     //This on serves to reset the state of the game back to the start
     this.machine.on('animationcomplete-body-reset', () => {
-      console.log("Finished reset anim");
       this.hasStarted = false;
       this.cardTaken = true;
       this.cardsTurned = false;
@@ -231,7 +222,6 @@ class Table extends Phaser.Scene {
 
         delay: this.totalTime,
         callback: () => {
-          console.log("gameOver event occured");
           this.leverMovable = false;//lock lever so player cant move it
 
 
