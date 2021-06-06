@@ -47,7 +47,6 @@ class Table extends Phaser.Scene {
 
     let music = this.sound.add('music', musicConfig);
     music.play();
-    let goMusic = this.sound.add('goMusic', musicConfig);
 
     //-----INPUT LOGGER DATA STRUCTURE----
     this.iC = new InputController(this);

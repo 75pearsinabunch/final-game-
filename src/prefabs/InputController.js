@@ -123,13 +123,13 @@ class InputController {
   //currently increases tower bar
   approve() {
     //HAND APPROVED, PLAYER PROGRESSES (♪)
-    this.scene.playGrowth();
+    this.loading.playGrowth();
   }
 
   //States a message of disapproval
   //currently lowers tower bar
   disapprove() {
     //HAND DISAPPROVED, PLAYER REGRESSES (♪)
-    this.scene.playShuffle();
+    this.loading.playShuffle();
   }
 }
