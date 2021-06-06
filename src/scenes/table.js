@@ -361,11 +361,13 @@ class Table extends Phaser.Scene {
       this.finger.y = score;
     } else {
       this.finger.y = 50;
+      score = 50;
     }
     if (score <= 200) {
       this.finger.y = score;
     } else {
       this.finger.y = 200;
+      score = 200;
     }
     //clamp movement between current max left and the constant max right
     this.leverBoundary.x = Phaser.Math.Clamp(this.leverBoundary.x, this.lockpoint, 326);
