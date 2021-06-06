@@ -54,7 +54,6 @@ class Loading extends Phaser.Scene {
 
       this.load.audio('mOn', 'audio/MachineOn.wav');
       this.load.audio('mOff', 'audio/MachineOff.wav');
-      this.load.audio('mAmbience', 'audio/MachineAmbience.wav');
     }
 
     create() {
