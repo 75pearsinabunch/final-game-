@@ -28,7 +28,7 @@ class PlayingCard extends Phaser.GameObjects.Sprite {
     this.on('pointerdown', () => {
       //records input to input logger
       controller.recieveClick(this);
-      scene.playDraw();
+      this.scene.loading.playDraw();
     });
 
     //variables from constructor

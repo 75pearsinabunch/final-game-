@@ -38,7 +38,7 @@ class Table extends Phaser.Scene {
     this.mouse = this.input.activePointer;
     this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
-    //-----AUDIO-----
+    //-----MUSIC-----
     let musicConfig = {
       mute: false,
       volume: 0.1,
