@@ -175,7 +175,7 @@ class Table extends Phaser.Scene {
   }
 
   startTimer() {
-    this.totalTime = 120 * 1000;//length of one game
+    this.totalTime = 90 * 1000;//length of one game
     //does a backward spin to give the player the impression it is winding up
     //and to catch attention 
     this.startSpin = this.tweens.addCounter({
@@ -236,7 +236,6 @@ class Table extends Phaser.Scene {
       },
       yoyo: true,
       repeat: 0,
-      //TODO: FIGURE OUT EASING
     });
     return flipTween;
   }

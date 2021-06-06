@@ -52,7 +52,7 @@ class PlayingCard extends Phaser.GameObjects.Sprite {
     this.setAlpha(.7);
     this.pulse = this.scene.tweens.add({
       targets: this,
-      alpha: { value: 1, duration: Phaser.Math.Between(1000, 3000), ease: 'Power1' },
+      alpha: { value: 1, duration: Phaser.Math.Between(1000, 3000), ease: 'Bounce' },
       yoyo: true,
       loop: -1,
     })
