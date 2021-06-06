@@ -181,7 +181,7 @@ class Table extends Phaser.Scene {
 
   startTimer() {
     //this.totalTime = 120 * 1000;//length of one game
-    this.totalTime = 45000;
+    this.totalTime = 5000;
     this.startSpin = this.tweens.addCounter({
       from: 360,
       to: 0,
@@ -211,12 +211,6 @@ class Table extends Phaser.Scene {
         callback: () => {
           console.log("gameOver event occured");
           this.leverMovable = false;//lock lever so player cant move it
-
-
-          //music.stop();
-          //goMusic.setLoop(false);
-          //goMusic.setVolume(0.025);
-          //goMusic.play();
         },
       })
       //a safety case to allow all player based actions to stop
@@ -254,6 +248,7 @@ class Table extends Phaser.Scene {
   //Controlls actions which occur to indicate that play is finished
   finish() {
     this.machine.anims.play('body-end');
+    this.playTarot();
 
     for (let i = 0; i < this.hand.length; i++) {
       this.hand[i].terminate();
@@ -268,6 +263,7 @@ class Table extends Phaser.Scene {
       this.displayTarot();
       this.tHB.disableInteractive();
       this.tHB.destroy();
+      this.playPull();
     });
 
     this.hasStarted = false;//close off game
@@ -287,6 +283,7 @@ class Table extends Phaser.Scene {
       if (!clickedOnce) {
         this.flipCard(this.tarot, 'cards', `${this.tCard}`);
         clickedOnce = true;
+        this.playDraw();
       } else {
         this.tarot.destroy();
         this.machine.anims.play('body-reset');
@@ -508,6 +505,44 @@ class Table extends Phaser.Scene {
     }
     if (!tGrow4.isPlaying) {
       tGrow4.destroy();
+    }
+  }
+
+  playPull() {
+    let pullConfig = {
+      mute: false,
+      volume: 0.1,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0
+    }
+    
+    let pullTarot = this.sound.add('cardPull', pullConfig);
+    pullTarot.play();
+
+    if (!pullTarot.isPlaying) {
+      pullTarot.destroy();
+    }
+  }
+
+  playTarot() {
+    let tarotConfig = {
+      mute: false,
+      volume: 0.1,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0
+    }
+    
+    let tarotOut = this.sound.add('tarotOut', tarotConfig);
+    tarotOut.play();
+
+    if (!tarotOut.isPlaying) {
+      tarotOut.destroy();
     }
   }
 

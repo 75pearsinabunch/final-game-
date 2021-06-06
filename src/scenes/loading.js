@@ -39,12 +39,15 @@ class Loading extends Phaser.Scene {
       this.load.audio('cShuffle3', 'audio/CardShuffle-03.wav');
       this.load.audio('cShuffle4', 'audio/CardShuffle-04.wav');
 
+      this.load.audio('cardPull', 'audio/CardPull.wav');
+
       this.load.audio('tGrow1', 'audio/Rumble-01.wav');
       this.load.audio('tGrow2', 'audio/Rumble-02.wav');
       this.load.audio('tGrow3', 'audio/Rumble-03.wav');
       this.load.audio('tGrow4', 'audio/Rumble-04.wav');
 
       this.load.audio('leverDrag', 'audio/LeverDrag.wav');
+      this.load.audio('tarotOut', 'audio/TarotOut.wav');
     }
 
     create() {
