@@ -102,7 +102,7 @@ class Table extends Phaser.Scene {
     this.leverDrag = this.sound.add('leverDrag', leverConfig);
 
     //------LEVER CONTROL SETUP-------
-    this.leverBoundary = this.add.rectangle(326, 115, 60, 130, 0xffffff).setOrigin(0, 0);
+    this.leverBoundary = this.add.rectangle(326, 115, 60, 130).setOrigin(0, 0);
 /*
     this.leverBoundary.setInteractive({
       draggable: true,
