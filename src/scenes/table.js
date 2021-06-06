@@ -3,6 +3,28 @@ class Table extends Phaser.Scene {
     super('tableScene')
   }
 
+  preload() {
+    this.load.path = 'assets/';
+
+    this.load.audio('music', 'audio/Ambience.mp3');
+
+    this.load.audio('cDraw1', 'audio/CardDraw-01.wav');
+    this.load.audio('cDraw2', 'audio/CardDraw-02.wav');
+    this.load.audio('cDraw3', 'audio/CardDraw-03.wav');
+    this.load.audio('cDraw4', 'audio/CardDraw-04.wav');
+    this.load.audio('cDraw5', 'audio/CardDraw-05.wav');
+
+    this.load.audio('cShuffle1', 'audio/CardShuffle-01.wav');
+    this.load.audio('cShuffle2', 'audio/CardShuffle-02.wav');
+    this.load.audio('cShuffle3', 'audio/CardShuffle-03.wav');
+    this.load.audio('cShuffle4', 'audio/CardShuffle-04.wav');
+
+    this.load.audio('tGrow1', 'audio/Rumble-01.wav');
+    this.load.audio('tGrow2', 'audio/Rumble-02.wav');
+    this.load.audio('tGrow3', 'audio/Rumble-03.wav');
+    this.load.audio('tGrow4', 'audio/Rumble-04.wav');
+}
+  
   create() {
     //-----MACHINE IMAGE AND ANIMATIONS-------
     this.machineAnim = this.anims.create({
@@ -181,7 +203,7 @@ class Table extends Phaser.Scene {
 
   startTimer() {
     //this.totalTime = 120 * 1000;//length of one game
-    this.totalTime = 3000;
+    this.totalTime = 45000;
     this.startSpin = this.tweens.addCounter({
       from: 360,
       to: 0,
@@ -380,7 +402,6 @@ class Table extends Phaser.Scene {
 
 
   playDraw() {
-    /*
     //---CARD SELECT AUDIO---
     let selectConfig = {
       mute: false,
@@ -413,25 +434,19 @@ class Table extends Phaser.Scene {
  
     if (!cDraw1.isPlaying) {
       cDraw1.destroy();
-      //console.log('destroy');
     } else if (!cDraw2.isPlaying) {
       cDraw2.destroy();
-      //console.log('destroy');
     } else if (!cDraw3.isPlaying) {
       cDraw3.destroy();
-      //console.log('destroy');
     } else if (!cDraw4.isPlaying) {
       cDraw4.destroy();
-      //console.log('destroy');
     } else if (!cDraw5.isPlaying) {
       cDraw5.destroy();
-      //console.log('destroy');
     }
-    */
   }
 
   playShuffle() {
-    /*
+
     //---DISAPPROVE AUDIO---
     let shuffleConfig = {
       mute: false,
@@ -460,71 +475,52 @@ class Table extends Phaser.Scene {
  
     if (!cShuffle1.isPlaying) {
       cShuffle1.destroy();
-      console.log('destroy');
     } else if (!cShuffle2.isPlaying) {
       cShuffle2.destroy();
-      console.log('destroy');
     } else if (!cShuffle3.isPlaying) {
       cShuffle3.destroy();
-      console.log('destroy');
     } else if (!cShuffle4.isPlaying) {
       cShuffle4.destroy();
-      console.log('destroy');
+
     }
-*/
   }
 
   playGrowth() {
-    /*
+    //---APPROVE AUDIO---
+    let growthConfig = {
+      mute: false,
+      volume: 0.3,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0
+    }
+    let tGrow1 = this.sound.add('tGrow1', growthConfig);
+    let tGrow2 = this.sound.add('tGrow2', growthConfig);
+    let tGrow3 = this.sound.add('tGrow3', growthConfig);
+    let tGrow4 = this.sound.add('tGrow4', growthConfig);
+    
     let sfxVar = Math.floor(Math.random() * 4);
     if (sfxVar == 0) {
-      //this.tGrow1.play();
-      if (this.tGrow1.isPlaying) {
-        return
-      } else if (!this.tGrow1.isPlaying) {
-        //this.tGrow1.destroy();
-        //console.log('destroy');
-      }
+      tGrow1.play();
     } else if (sfxVar == 1) {
-      //this.tGrow2.play();
-      if (this.tGrow2.isPlaying) {
-        return
-      } else if (!this.tGrow2.isPlaying) {
-        //this.tGrow2.destroy();
-        console.log('destroy');
-      }
+      tGrow2.play();
     } else if (sfxVar == 2) {
-      this.tGrow3.play();
-      if (this.tGrow3.isPlaying) {
-        return
-      } else if (!this.tGrow3.isPlaying) {
-        this.tGrow3.destroy();
-        //console.log('destroy');
-      }
+      tGrow3.play();
     } else if (sfxVar == 3) {
-      //this.tGrow4.play();
-      if (this.tGrow4.isPlaying) {
-        return
-      } else if (!this.tGrow4.isPlaying) {
-        this.tGrow4.destroy();
-        //console.log('destroy');
-      }
+      tGrow4.play();
     }
  
     if (!tGrow1.isPlaying) {
       tGrow1.destroy();
-      console.log('destroy');
     } else if (!tGrow2.isPlaying) {
       tGrow2.destroy();
-      console.log('destroy');
     } else if (!tGrow3.isPlaying) {
       tGrow3.destroy();
-      console.log('destroy');
     } else if (!tGrow4.isPlaying) {
       tGrow4.destroy();
-      console.log('destroy');
     }
-    */
   }
 
 }
