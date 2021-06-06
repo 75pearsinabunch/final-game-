@@ -50,6 +50,11 @@ class Loading extends Phaser.Scene {
       this.load.audio('tarotOut', 'audio/TarotOut.wav');
       this.load.audio('doorOpen', 'audio/DoorOpen.wav');
       this.load.audio('click', 'audio/Click.wav');
+      this.load.audio('footsteps', 'audio/Footsteps.wav');
+
+      this.load.audio('mOn', 'audio/MachineOn.wav');
+      this.load.audio('mOff', 'audio/MachineOff.wav');
+      this.load.audio('mAmbience', 'audio/MachineAmbience.wav');
     }
 
     create() {
