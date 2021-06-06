@@ -83,8 +83,11 @@ class InputController {
   //currently increases tower bar
   approve() {
     //HAND APPROVED, PLAYER PROGRESSES (♪)
-    this.scene.barFill += .1;
-    this.scene.setMeterPercentage(this.scene.barFill);//TODO: should probably randomize
+    //this.scene.barFill += .1;
+    score = score - 15;
+    //this.scene.hand(this.scene.score);
+    console.log("approve score: ",score);
+    //this.scene.setMeterPercentage(this.scene.barFill);//TODO: should probably randomize
     this.scene.promptAnim("The Tower Grows");
     this.scene.playGrowth();
   }
@@ -93,8 +96,11 @@ class InputController {
   //currently lowers tower bar
   disapprove() {
     //HAND DISAPPROVED, PLAYER REGRESSES (♪)
-    this.scene.barFill -= .1;
-    this.scene.setMeterPercentage(this.scene.barFill);//TODO: should probably randomize
+    //this.scene.barFill -= .1;
+   score = score + 15;
+    //this.scene.hand(this.scene.score);
+    console.log("disapprove score: ",score);
+    //this.scene.setMeterPercentage(this.scene.barFill);//TODO: should probably randomize
     this.scene.promptAnim("The Tower Diminishes");
     this.scene.playShuffle();
   }

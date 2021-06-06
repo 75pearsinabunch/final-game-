@@ -22,3 +22,6 @@ let blue_value = 0.5;
 let timeLeft = 59;
 
 let cursors = null; 
+
+let score = 125;
+console.log("real score: ",score);

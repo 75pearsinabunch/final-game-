@@ -8,27 +8,27 @@ class Table extends Phaser.Scene {
     this.load.image('lever', 'blender/lever.png');
     this.load.image('slots', 'blender/slots.png');
     //took this from loading scene
-    this.load.image('1back','assets/cardBack.png');
+    this.load.image('1back', 'assets/cardBack.png');
     this.load.image('timer', 'assets/loading.png');
-    this.load.atlas('cards','assets/cardSheet.png', 'assets/cardSheet.json');
-    this.load.atlas('animachine','assets/machineAnim.png','assets/machineAnim.json');
+    this.load.atlas('cards', 'assets/cardSheet.png', 'assets/cardSheet.json');
+    this.load.atlas('animachine', 'assets/machineAnim.png', 'assets/machineAnim.json');
 
     this.load.image('1back', 'assets/cardBack.png');
     this.load.image('timer', 'assets/loading.png');
     this.load.atlas('cards', 'assets/cardSheet.png', 'assets/cardSheet.json');
     //this.load.bitmapFont('digital', 'assets/font/digital-7.ttf');
     this.load.image('big', 'assets/big_hand.png');
-    this.load.image('hand', 'assets/hand_1.png');
+    this.load.image('finger', 'assets/hand_1.png');
     this.load.path = 'assets/';//shortens future path names
     //this.load.image('cards', 'cardBack.png');
     //health bar/ status bar assets
-    this.load.image('green_left-cap', 'barHorizontal_green_left.png');
-    this.load.image('green_middle', 'barHorizontal_green_mid.png');
-    this.load.image('green_right-cap', 'barHorizontal_green_right.png');
+    // this.load.image('green_left-cap', 'barHorizontal_green_left.png');
+    // this.load.image('green_middle', 'barHorizontal_green_mid.png');
+    // this.load.image('green_right-cap', 'barHorizontal_green_right.png');
 
-    this.load.image('left-cap-shadow', 'barHorizontal_shadow_left.png');
-    this.load.image('middle-shadow', 'barHorizontal_shadow_mid.png');
-    this.load.image('right-cap-shadow', 'barHorizontal_shadow_right.png');
+    // this.load.image('left-cap-shadow', 'barHorizontal_shadow_left.png');
+    // this.load.image('middle-shadow', 'barHorizontal_shadow_mid.png');
+    // this.load.image('right-cap-shadow', 'barHorizontal_shadow_right.png');
 
 
 
@@ -71,15 +71,13 @@ class Table extends Phaser.Scene {
       frames: this.anims.generateFrameNames('animachine', { prefix: '', start: 1, end: 220, zeroPad: 4 }),
       repeat: -1,
     });
-
-    //----- pointing finger-----
-    let score = 150;
-    this.finger = this.add.image(150, score, 'hand').setOrigin(0, 0).setScale(0.25);//50-125-200 every 15
     //------MACHINE IMAGE---------
     this.machine = this.add.sprite(0, 0, 'animachine', "0001").setOrigin(0);
+    console.log("finger score: ", score);
+    //----- pointing finger-----
+    this.finger = this.add.image(150, score, 'finger').setOrigin(0, 0).setScale(0.25);//50-125-200 every 15
     //an invisible "hitbox" for the lever animation
-    this.leverBoundary = this.add.rectangle(0, 200, gameConfig.width * 3, 200)
-
+    this.leverBoundary = this.add.rectangle(0, 200, gameConfig.width * 3, 200) 
     //-----LEVER IMAGE AND SETUP------
     this.leverIgnitePoint = -210;//the point at which the lever activates the mechanism
     this.leverResetPoint = -2;
@@ -119,12 +117,11 @@ class Table extends Phaser.Scene {
 
     //-----CARD SLOTS IMAGE--------
     this.slots = this.add.image(0, 0, 'slots').setOrigin(0);
-
     //-------INPUT OBJECTS------
     //using event system from prof Altice's example
     //https://newdocs.phaser.io/docs/3.54.0/Phaser.Input.Events
     this.mouse = this.input.activePointer;
-    this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    //this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
     //-----AUDIO-----
     let musicConfig = {
@@ -162,18 +159,18 @@ class Table extends Phaser.Scene {
     //-----health bar/status bar
 
     //pre-plans the bar changes 
-    const green_y = 25;
-    const x = 10;
-    const green_leftShadowCap = this.add.image(x, green_y, 'left-cap-shadow').setOrigin(0, 0.5);
-    const green_middleShaddowCap = this.add.image(green_leftShadowCap.x + green_leftShadowCap.width, green_y, 'middle-shadow').setOrigin(0, 0.5);
-    green_middleShaddowCap.displayWidth = this.fullWidth;
-    this.add.image(green_middleShaddowCap.x + green_middleShaddowCap.displayWidth, green_y, 'right-cap-shadow').setOrigin(0, 0.5);
-    this.green_leftCap = this.add.image(x, green_y, 'green_left-cap').setOrigin(0, 0.5);
-    this.green_middle = this.add.image(this.green_leftCap.x + this.green_leftCap.width, green_y, 'green_middle').setOrigin(0, 0.5);
-    this.green_rightCap = this.add.image(this.green_middle.x + this.green_middle.displayWidth, green_y, 'green_right-cap').setOrigin(0, 0.5)
-    this.setMeterPercentage(green_value);
-    this.barFill = .5;
-    this.setMeterPercentage(this.barFill);
+    // const green_y = 25;
+    // const x = 10;
+    // const green_leftShadowCap = this.add.image(x, green_y, 'left-cap-shadow').setOrigin(0, 0.5);
+    // const green_middleShaddowCap = this.add.image(green_leftShadowCap.x + green_leftShadowCap.width, green_y, 'middle-shadow').setOrigin(0, 0.5);
+    // green_middleShaddowCap.displayWidth = this.fullWidth;
+    // this.add.image(green_middleShaddowCap.x + green_middleShaddowCap.displayWidth, green_y, 'right-cap-shadow').setOrigin(0, 0.5);
+    // this.green_leftCap = this.add.image(x, green_y, 'green_left-cap').setOrigin(0, 0.5);
+    // this.green_middle = this.add.image(this.green_leftCap.x + this.green_leftCap.width, green_y, 'green_middle').setOrigin(0, 0.5);
+    // this.green_rightCap = this.add.image(this.green_middle.x + this.green_middle.displayWidth, green_y, 'green_right-cap').setOrigin(0, 0.5)
+    // this.setMeterPercentage(green_value);
+    // this.barFill = .5;
+    // this.setMeterPercentage(this.barFill);
 
     //-----INPUT LOGGER DATA STRUCTURE----
     this.iC = new InputController(this);
@@ -213,7 +210,7 @@ class Table extends Phaser.Scene {
     this.tarot.setScale(.9, .9);
 
     //---------GAME TIMER------
-    this.totalTime = 60*1000;
+    this.totalTime = 60 * 1000;
     this.gameOver = false;
     this.gOEvent = this.time.addEvent({
       delay: this.totalTime,
@@ -250,17 +247,16 @@ class Table extends Phaser.Scene {
       },
       repeat: 0,
     });
-    
+
   }
 
   //-------METER FUNCTIONS--------
   //handles the percentage 
-  setMeterPercentage(percent = 1) {
-    const width = this.fullWidth * percent;
-    this.green_middle.displayWidth = width;
-    this.green_rightCap.x = this.green_middle.x + this.green_middle.displayWidth;
-  }
-
+  // setMeterPercentage(percent = 1) {
+  //   const width = this.fullWidth * percent;
+  //   this.green_middle.displayWidth = width;
+  //   this.green_rightCap.x = this.green_middle.x + this.green_middle.displayWidth;
+  // }
   //handles updating the animation of the bar
   // setMeterPercentageAnimated(percent = 1, duration = 1000) {
   //   const width = this.fullWidth * percent;
@@ -438,6 +434,17 @@ class Table extends Phaser.Scene {
     if (this.gameOver) {
       return;
     }
+    //-----in charge of moving the finger
+    // if (score >= 50) {
+    //   this.finger.y = score;
+    // }else{
+    //   this.finger.y = 50;
+    // }
+    if (score <= 200) {
+      this.finger.y = score;
+    }else{
+      this.finger.y = 200;
+    }
 
     this.checkCardCount();
     //sets a reset point that resets all lever values
@@ -481,4 +488,3 @@ class Table extends Phaser.Scene {
     }
   }
 }
-
