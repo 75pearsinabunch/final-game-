@@ -1,9 +1,32 @@
+/*
+An explaination of the trie system:
+This data structure "remembers" player movements
+and adjusts "correct" movements based on them
+
+Players make a move, and if it is incorrect, several "correct" solutions
+are made nearby it. 
+
+however, these solutions can become used up.
+
+The result of this is that players suddenly find themselves with solution
+tenuously in hand, but as their possible solutions dwindle they are left
+yet again clueless and frustrated 
+
+This design is intentional to match with Prof Swensen's challenge to make
+the game flip player's perspectives. In this case it is from confused to
+pretty sure they are in control, to confused again. 
+*/
+
+//Develops a trie-node structure that permits successful use of all
+//possibilites developed from that point
 class TrieNode {
   constructor(slots) {
     this.children = new Array(slots + 1);
-    this.children[slots] = true;//stopper is false
+    this.children[slots] = true;
+    //this instantiates with all child possibilites as acceptable
   }
 }
+
 
 class PatternTrie {
   //slots: the number of elements tracked by nodes

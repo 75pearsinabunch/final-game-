@@ -5,6 +5,7 @@ class Table extends Phaser.Scene {
   
   create() {
     //-----MACHINE IMAGE AND ANIMATIONS-------
+    //These are animations performed by the machine body throughout play
     this.machineAnim = this.anims.create({
       key: 'body-begin',
       frames: this.anims.generateFrameNames('body', { prefix: 'body', start: 0, end: 30, zeroPad: 4 }),
@@ -21,10 +22,10 @@ class Table extends Phaser.Scene {
     });
 
     //------HANDLE IMAGE AND ANIMATION---------
+    //the main body of the machine's sprite
     this.machine = this.add.sprite(0, 0, 'body', "body0000").setOrigin(0, 0);
 
-    //this.add.rectangle(gameConfig.width / 2, gameConfig.height / 2, 100, 100, 0xffffff).setOrigin(.5);
-
+    //the sliding bar
     this.handle = this.add.sprite(0, 0, 'handle', 'machine0000').setOrigin(0);
 
     //-----LEVER IMAGE AND SETUP------
@@ -45,6 +46,7 @@ class Table extends Phaser.Scene {
       delay: 0
     }
 
+    //background music
     let music = this.sound.add('music', musicConfig);
     music.play();
 
@@ -69,8 +71,6 @@ class Table extends Phaser.Scene {
     }
 
     //-----VISUAL TIMER REPRESENTATION SETUP-----
-    //the following "big" hand is controlled by the timer event created later when the player
-    //pulls the lever to begin the game
     var circle = new Phaser.Geom.Circle(360, 430, 30);//  Create a large circle, then draw the angles on it
     var graphics = this.add.graphics();
     graphics.lineStyle(1, 0xFFFFFF, 1); // white lines
@@ -102,8 +102,10 @@ class Table extends Phaser.Scene {
     this.leverDrag = this.sound.add('leverDrag', leverConfig);
 
     //------LEVER CONTROL SETUP-------
+    //a "hitbox" for the player go grab and pull the lever
     this.leverBoundary = this.add.rectangle(326, 115, 60, 130).setOrigin(0, 0);
 
+    //moves this hitbox (if movable) relative to the player's drag
     this.leverBoundary.on('drag', (pointer, dragX, dragY) => {
       if (!this.leverMovable) {
         return;
@@ -112,11 +114,14 @@ class Table extends Phaser.Scene {
       this.leverBoundary.x = dragX;//moves the lever along with the pointer
     });
 
+    //For purpose of repititious play, this determines if the final tarot card has been taken
+    //by the player (the default is true)
     this.cardTaken = true;
+    //establishes if the cards have been flipped to be visible to the player
     this.cardsTurned = false;
     //determines a middle state where game isn't fully over but no input should be read
     this.input.on('pointerdown', () => {
-      if (this.cardTaken) {//ensures this only happens once per game
+      if (this.cardTaken) {
         //does not use "hasStarted" because animations must occur before player can place input
         this.machine.anims.play('body-begin');
         //set up ending card
@@ -136,18 +141,15 @@ class Table extends Phaser.Scene {
         useHandCursor: true,
         clickable: false,
       });
-      //start w/ full lever access to "boot" machine
-
     })
 
     //This on serves to reset the state of the game back to the start
     this.machine.on('animationcomplete-body-reset', () => {
+      //reset interactability
       this.hasStarted = false;
       this.cardTaken = true;
       this.cardsTurned = false;
       this.lockpoint = 120;
-      //reset interactability
-
       //lever movable should be equal to false already
     })
   }
@@ -156,7 +158,9 @@ class Table extends Phaser.Scene {
     //Container for hand of cards
     //instantiating 5 cards
     for (let i = 0; i < 5; i++) {
+      //remove placeholder or previous card
       this.hand[i].destroy();
+      //sets up new playing card objects in proper locations
       this.hand[i] = new PlayingCard(
         this,//scene 
         (55 * i + 149), //x
@@ -171,8 +175,9 @@ class Table extends Phaser.Scene {
   }
 
   startTimer() {
-    //this.totalTime = 120 * 1000;//length of one game
-    this.totalTime = 45000;
+    this.totalTime = 120 * 1000;//length of one game
+    //does a backward spin to give the player the impression it is winding up
+    //and to catch attention 
     this.startSpin = this.tweens.addCounter({
       from: 360,
       to: 0,
@@ -183,6 +188,7 @@ class Table extends Phaser.Scene {
       repeat: 0,
     });
 
+    //begins rotating the clock hand to indicate the remaining time
     this.startSpin.on('complete', (tween, targets) => {
       //starts the counter proper
       this.tweens.addCounter({
@@ -195,7 +201,7 @@ class Table extends Phaser.Scene {
         repeat: 0,
       });
 
-      //starts internal timer for the game
+      //locks controlls down after a game is over
       this.gOEvent = this.time.addEvent({
 
         delay: this.totalTime,
@@ -210,6 +216,7 @@ class Table extends Phaser.Scene {
         },
       })
       //a safety case to allow all player based actions to stop
+      //once everything is guarenteed to stop, the game ends. 
       this.finishEvent = this.time.addEvent({
         delay: (this.totalTime + 500),//one 
         callback: () => {
@@ -218,7 +225,6 @@ class Table extends Phaser.Scene {
       });
     })
   }
-
 
   //Creates the illusion of a card flipping by shrinking in the X direction
   //and replacing the sprite's texture
@@ -241,7 +247,7 @@ class Table extends Phaser.Scene {
     return flipTween;
   }
 
-  //Controlls actions which occur to indicate that play is finished
+  //Controls actions which occur to indicate that play is finished
   finish() {
     this.machine.anims.play('body-end');
 
@@ -251,20 +257,26 @@ class Table extends Phaser.Scene {
 
     //Generates an invisible hitbox over the animated card object
     this.tHB = this.add.rectangle(265, 430, 90, 80);
+    //creates a "pick up" scenario for the aparition of the printed
+    //tarot card
     this.tHB.setInteractive({
       useHandCursor: true,
     }).on('pointerdown', () => {
       this.machine.setFrame('body0030');
       this.displayTarot();
+      //break down the hitbox
       this.tHB.disableInteractive();
       this.tHB.destroy();
     });
 
     this.hasStarted = false;//close off game
 
+    //make further lever usage impossible
     this.leverBoundary.disableInteractive();
   }
 
+  //presents a tarot card to the player, reveals it, then removes it from the screen 
+  //each on consecutive clicks
   displayTarot() {
     let clickedOnce = false;
     this.tarot = this.add.sprite(gameConfig.width / 2 + 10, gameConfig.height / 2, 'cards', 'backCard').setOrigin(.5, .5);
@@ -288,10 +300,11 @@ class Table extends Phaser.Scene {
   //Called whenever the lever is pulled, determines whether or not
   //the card conditions permit the lever to move
   checkCardCount() {
-
-    if (!this.leverMovable || !this.cardsTurned) {
+    //do nothing if the game hasn't yet begun
+    if (!this.cardsTurned) {
       return;
     }
+    //count active cards in hand
     let cardCount = 0;
     for (let i = 0; i < this.hand.length; i++) {
       if (this.hand[i].isSelected) {
@@ -299,8 +312,10 @@ class Table extends Phaser.Scene {
       }
     }
     if (cardCount == 3) {
+      //allows full bar pull
       this.lockpoint = 120;
     } else {
+      //permits only partial pull
       this.lockpoint = 294;
     }
   }
@@ -316,32 +331,39 @@ class Table extends Phaser.Scene {
     return num;
   }
 
+  //update is dedicated to the degree which the lever can move
   update() {
-
+    //check number of cards selected and determine max motion distance
     this.checkCardCount();
 
-    //LEVER MOTION
-    //console.log(this.leverBoundary.x);
+    //clamp movement between current max left and the constant max right
     this.leverBoundary.x = Phaser.Math.Clamp(this.leverBoundary.x, this.lockpoint, 326);
     //always move a little in the speed direction
 
     //sets a reset point that resets all lever values
     if (this.leverBoundary.x > this.leverResetPoint && this.hasStarted) {
+      //stops rightward motion
       this.leverSpeed = 0;
+      //allows for player control of lever
       this.leverMovable = true;
     }
 
+    //sets an increasing "resistance" to player's pulls
     if (this.leverBoundary.x < 300) {
-      this.leverSpeed = 2 + ((this.leverBoundary.x) / 50);//its resistance increases as player pulls
+      this.leverSpeed = 2 + ((this.leverBoundary.x) / 50);
     }
 
+    //moves the lever backward to its resting position
     this.leverBoundary.x += this.leverSpeed;
 
+    //a modifiable representation of the lever boundary's current location
     this.boundInt = this.leverBoundary.x;
 
+    //calculating the percentage traversed for frame calculation
     let percDone = 1 - ((this.boundInt - 156) / (335 - 156));
     this.percDone = Phaser.Math.Clamp(percDone, 0, 1);
 
+    //sets "animation" frames for both the handle and the machine's body
     if (this.boundInt > 0 && this.hasStarted) {
       let progPerc = (Phaser.Math.Snap.Ceil((percDone) * 29, 1) + 31);
       progPerc = Phaser.Math.Clamp(progPerc, 31, 60);
@@ -349,6 +371,8 @@ class Table extends Phaser.Scene {
       this.machine.setFrame('body' + this.formatNum(progPerc));
     }
 
+    //details what occurs when the player slides the lever furthest left
+    //this will either flip cards to begin play or process a current selection of hands
     if ((this.leverBoundary.x < this.leverIgnitePoint && this.leverMovable)) {
       this.leverMovable = false;
       //console.log("cards turned: "+this.cardsTurned)

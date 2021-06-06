@@ -1,5 +1,4 @@
-//An actor is one of the characters in our scene
-//they are automatically instantiated to be interactive
+//enumeration of all possible suits a card can be
 let suits = [
   'hearts',
   'diamonds',
@@ -7,31 +6,30 @@ let suits = [
   'spades',
 ]
 
+//Contains most behavior native to the playing cards (some required to be external for functionality)
 class PlayingCard extends Phaser.GameObjects.Sprite {
   constructor(scene, posX, posY, controller) {
-    //TODO: DRAW ANIMATION
     const value = Phaser.Math.Between(1, 13);//randomizes card value
     const suit = Phaser.Math.Between(1, 4);//chooses random suit from list
     const texture = (`${value} ${suit}`); //creates texture name from random generation
-    //const suitTranslate = (suits[suit - 1]);
     super(scene, posX, posY, 'cards', 'back', 0);
-    this.sprite = scene.add.existing(this);//places in the world
+    this.sprite = scene.add.existing(this);//places card in the scene
     this.setScale(1.2, 1.2);
     scene.flipCard(this, 'cards', texture);
 
     //Set interactivity
     this.setInteractive({
-      draggable: false,
       useHandCursor: true,
     });
 
+    //on click behavior
     this.on('pointerdown', () => {
       //records input to input logger
       controller.recieveClick(this);
       this.scene.playDraw();
     });
 
-    //variables from constructor
+    //storing variables from constructor for use
     this.value = value;
     this.suit = suit;
     this.posX = posX;
@@ -42,7 +40,6 @@ class PlayingCard extends Phaser.GameObjects.Sprite {
     this.isSelected = false;
     this.setAlpha(.7);
     this.deactiveColoration();
-
   }
 
   activeColoration() {
@@ -62,6 +59,8 @@ class PlayingCard extends Phaser.GameObjects.Sprite {
     this.setTint('0xffffcc')
   }
 
+  //effectively turns cards off
+  //used when game is over
   terminate() {
     this.scene.flipCard(this, 'cards', 'back');
     this.disableInteractive();

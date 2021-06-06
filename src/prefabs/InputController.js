@@ -28,16 +28,20 @@ class InputController {
 
     this.patternType = Phaser.Math.Between(0, 2)
 
+    //randomly determines what type of pattern will be detected
     switch (this.patternType) {
       case (this.patternTypes.suit):
+        //patterns based on card suits
         console.log("Suit selected");
         this.pattern = new PatternTrie(4, this, this.scene);
         break;
       case (this.patternTypes.value):
+        //patterns based on card values
         console.log("Value selected");
         this.pattern = new PatternTrie(13, this, this.scene);
         break;
       default:
+        //patterns on which slots were selected, card values notwithstanding
         console.log("Slot Number selected");
         this.pattern = new PatternTrie(5, this, this.scene);
         break;
@@ -46,12 +50,13 @@ class InputController {
 
   //Controlls response of all card elements controlled by this controller
   recieveClick(card) {
-    //guarentee we're recieving an actor
+    //guarentee we're recieving a playing card
     if (card.constructor.name != "PlayingCard") {
       console.warn("InputController.reieveClick: Tag not found, Actor not passed in");
       return;
     }
-    //highlights selected cards
+
+    //toggles card highlighting
     card.isSelected = !card.isSelected;
     if (card.isSelected) {
       card.activeColoration();
@@ -68,10 +73,8 @@ class InputController {
     }
 
     //instantiate to holders of copies of cards
-    this.hcV = []//copy of hand
-    //this.hcS = [];//copy of Suits
-    //don't need more than this b/c you never check if you have a value
-    //AND it's on a certain color, you just check colors and values separately
+    this.hcV = []
+
     //find cards selected
     for (let i = 0; i < hand.length; i++) {
       if (hand[i].isSelected) {
@@ -87,8 +90,9 @@ class InputController {
             break;
         }
         this.hcV.push(hand[i].value);
-        //this.hcS.push(hand[i].suit);
+        //visual of flipping card
         this.flipping = this.scene.flipCard(hand[i], 'cards', 'back');
+        //replace with a new card
         this.flipping.on('complete', (tween, targets) => {
           //removes card from scene completely
           this.replaceCard = new PlayingCard(
@@ -97,7 +101,9 @@ class InputController {
             hand[i].posY,
             hand[i].controller
           );
+          //delete the old one
           hand[i].destroy();
+          //refill the now vacant hand position
           hand[i] = this.replaceCard;
         })
       }
@@ -119,14 +125,14 @@ class InputController {
     }
   }
 
-  //States a message of approval
-  //currently increases tower bar
+  //plays approval sound
+  //currently increases hand location
   approve() {
     //HAND APPROVED, PLAYER PROGRESSES (♪)
     this.scene.playGrowth();
   }
 
-  //States a message of disapproval
+  //plays disaproval sound
   //currently lowers tower bar
   disapprove() {
     //HAND DISAPPROVED, PLAYER REGRESSES (♪)
