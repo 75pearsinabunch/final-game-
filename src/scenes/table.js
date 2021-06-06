@@ -4,7 +4,6 @@ class Table extends Phaser.Scene {
   }
 
   create() {
-
     //-----MACHINE IMAGE AND ANIMATIONS-------
     this.machineAnim = this.anims.create({
       key: 'body-begin',
@@ -22,25 +21,18 @@ class Table extends Phaser.Scene {
     });
 
     //------HANDLE IMAGE AND ANIMATION---------
-    this.machine = this.add.sprite(0, 0, 'body', "body0000").setOrigin(0);
+    this.machine = this.add.sprite(0, 0, 'body', "body0000").setOrigin(0, 0);
 
-    this.add.rectangle(gameConfig.width/2, gameConfig.height/2, 100, 100, 0xffffff).setOrigin(.5);
+    //this.add.rectangle(gameConfig.width / 2, gameConfig.height / 2, 100, 100, 0xffffff).setOrigin(.5);
 
-    this.handle = this.add.sprite(0,0, 'handle', 'machine0000').setOrigin(0);
+    this.handle = this.add.sprite(0, 0, 'handle', 'machine0000').setOrigin(0);
 
     //-----LEVER IMAGE AND SETUP------
     this.leverIgnitePoint = 166;//the point at which the lever activates the mechanism
-    this.leverResetPoint = 322;
-    this.leverSpeed = 0;
-    this.leverMovable = true;
-
- 
-
-    //-------INPUT OBJECTS------
-    //using event system from prof Altice's example
-    //https://newdocs.phaser.io/docs/3.54.0/Phaser.Input.Events
-    this.mouse = this.input.activePointer;
-    this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    this.leverResetPoint = 322;//point at which lever is considered at rest
+    this.leverSpeed = 0;//speed the lever moves rightward on its own
+    this.leverMovable = false;//whether the player can move the lever
+    this.lockpoint = 120;//the furthest point left the lever can reach, this changes frequently
 
     //-----AUDIO-----
     let musicConfig = {
@@ -63,7 +55,8 @@ class Table extends Phaser.Scene {
     //-----PLAYING CARDS------
     //Container for hand of cards
     this.hand = [];
-    //instantiating 5 cards
+
+    //instantiating 5 pictures of cards as the game begins
     for (let i = 0; i < 5; i++) {
       this.cards = this.add.sprite(
         (55 * i + 149), //x
@@ -76,13 +69,9 @@ class Table extends Phaser.Scene {
       this.hand.push(this.cards);
     }
 
-
-    //---------GAME TIMER------
-    this.totalTime = 120 * 1000;//length of one game
-    //this.totalTime = 100;//length of one game
-    this.gameOver = true;//WOAH PLOT TWIST
-
-    //Visual Timer Stuff
+    //-----VISUAL TIMER REPRESENTATION SETUP-----
+    //the following "big" hand is controlled by the timer event created later when the player
+    //pulls the lever to begin the game
     var circle = new Phaser.Geom.Circle(360, 430, 30);//  Create a large circle, then draw the angles on it
     var graphics = this.add.graphics();
     graphics.lineStyle(1, 0xFFFFFF, 1); // white lines
@@ -113,46 +102,63 @@ class Table extends Phaser.Scene {
 
     this.leverDrag = this.sound.add('leverDrag', leverConfig);
 
-    //---GAME OVER AND RENEWAL LOGIC---
+    //------LEVER CONTROL SETUP-------
+    this.leverBoundary = this.add.rectangle(326, 115, 60, 130, 0xffffff).setOrigin(0, 0);
+/*
+    this.leverBoundary.setInteractive({
+      draggable: true,
+      useHandCursor: true,
+      clickable: false,
+    });
+*/
+    this.leverBoundary.on('drag', (pointer, dragX, dragY) => {
+      if (!this.leverMovable) {
+        console.log("lever immovable, returning");
+        return;
+      }
+
+      this.leverBoundary.x = dragX;//moves the lever along with the pointer
+    });
+
     this.cardTaken = true;
+    this.cardsTurned = false;
     //determines a middle state where game isn't fully over but no input should be read
     this.input.on('pointerdown', () => {
-      if (this.cardTaken) {
+      if (this.cardTaken) {//ensures this only happens once per game
+        //does not use "hasStarted" because animations must occur before player can place input
         this.machine.anims.play('body-begin');
         //set up ending card
         this.flip = 180 * Phaser.Math.Between(0, 1);
         this.tCard = Phaser.Math.Between(0, 21);
         this.cardTaken = false;
-
-        //---INSTANTIATING LEVER CONTROLLES---
-        this.leverBoundary = this.add.rectangle(326, 115, 60, 130).setOrigin(0, 0);
-        this.leverBoundary.setInteractive({
-          draggable: true,
-          useHandCursor: true,
-          clickable: false,
-        });
-
-        this.leverBoundary.on('drag', (pointer, dragX, dragY) => {
-          if (this.gameOver || !this.leverMovable) {
-            return;
-          }
-
-          this.leverBoundary.x = dragX;//moves the lever along with the pointer
-        });
       }
     });
 
     //---MAKING SURE PLAYER CANT "MASH THROUGH OPENING CUTSCENE"---
     this.machine.on('animationcomplete-body-begin', () => {
-      this.gameOver = false;
-      this.hasStarted = false;
+      console.log("completed begin anim");
+      //Allow player to interact with the lever
+      this.leverMovable = true;
+      this.hasStarted = true;
+      this.leverBoundary.setInteractive({
+        draggable: true,
+        useHandCursor: true,
+        clickable: false,
+      });
       //start w/ full lever access to "boot" machine
-      this.lockpoint = 120;
+
     })
 
+    //This on serves to reset the state of the game back to the start
     this.machine.on('animationcomplete-body-reset', () => {
-      this.gameOver = true;
+      console.log("Finished reset anim");
+      this.hasStarted = false;
       this.cardTaken = true;
+      this.cardsTurned = false;
+      this.lockpoint = 120;
+      //reset interactability
+
+      //lever movable should be equal to false already
     })
   }
 
@@ -168,9 +174,15 @@ class Table extends Phaser.Scene {
         this.iC //input controller
       );
     }
+
+    //creates a fresh trie object
+    this.iC.generateTrie();
+
   }
 
   startTimer() {
+    //this.totalTime = 120 * 1000;//length of one game
+    this.totalTime = 3000;
     this.startSpin = this.tweens.addCounter({
       from: 360,
       to: 0,
@@ -195,16 +207,26 @@ class Table extends Phaser.Scene {
 
       //starts internal timer for the game
       this.gOEvent = this.time.addEvent({
+
         delay: this.totalTime,
         callback: () => {
-          this.gameOver = true;
-          this.finish();
+          console.log("gameOver event occured");
+          this.leverMovable = false;//lock lever so player cant move it
+
+
           //music.stop();
           //goMusic.setLoop(false);
           //goMusic.setVolume(0.025);
           //goMusic.play();
         },
       })
+      //a safety case to allow all player based actions to stop
+      this.finishEvent = this.time.addEvent({
+        delay: (this.totalTime + 500),//one 
+        callback: () => {
+          this.finish()
+        },
+      });
     })
   }
 
@@ -249,8 +271,9 @@ class Table extends Phaser.Scene {
       this.tHB.destroy();
     });
 
+    this.hasStarted = false;//close off game
+
     this.leverBoundary.disableInteractive();
-    this.leverBoundary.destroy
   }
 
   displayTarot() {
@@ -272,6 +295,90 @@ class Table extends Phaser.Scene {
     });
 
   }
+
+  //Called whenever the lever is pulled, determines whether or not
+  //the card conditions permit the lever to move
+  checkCardCount() {
+
+    if (!this.leverMovable || !this.cardsTurned) {
+      return;
+    }
+    let cardCount = 0;
+    for (let i = 0; i < this.hand.length; i++) {
+      if (this.hand[i].isSelected) {
+        cardCount++;
+      }
+    }
+    if (cardCount == 3) {
+      this.lockpoint = 120;
+    } else {
+      this.lockpoint = 294;
+    }
+  }
+
+  //used based on user InfinitesLoop from stack overflow
+  //formats a given number to have leading zeroes
+  //used to convert positional data to animation frames
+  formatNum(num) {
+    num = num.toString();
+    while (num.length < 4) {
+      num = "0" + num;
+    }
+    return num;
+  }
+
+  update() {
+
+    this.checkCardCount();
+
+    //LEVER MOTION
+    //console.log(this.leverBoundary.x);
+    this.leverBoundary.x = Phaser.Math.Clamp(this.leverBoundary.x, this.lockpoint, 326);
+    //always move a little in the speed direction
+
+    //sets a reset point that resets all lever values
+    if (this.leverBoundary.x > this.leverResetPoint && this.hasStarted) {
+      this.leverSpeed = 0;
+      this.leverMovable = true;
+    }
+
+    if (this.leverBoundary.x < 300) {
+      this.leverSpeed = 2 + ((this.leverBoundary.x) / 50);//its resistance increases as player pulls
+    }
+
+    this.leverBoundary.x += this.leverSpeed;
+
+    this.boundInt = this.leverBoundary.x;
+
+    let percDone = 1 - ((this.boundInt - 156) / (335 - 156));
+    this.percDone = Phaser.Math.Clamp(percDone, 0, 1);
+
+    if (this.boundInt > 0 && this.hasStarted) {
+      let progPerc = (Phaser.Math.Snap.Ceil((percDone) * 29, 1) + 31);
+      progPerc = Phaser.Math.Clamp(progPerc, 31, 60);
+      this.handle.setFrame('machine' + this.formatNum(progPerc));
+      this.machine.setFrame('body' + this.formatNum(progPerc));
+    }
+
+    if ((this.leverBoundary.x < this.leverIgnitePoint && this.leverMovable)) {
+      this.leverMovable = false;
+      //console.log("cards turned: "+this.cardsTurned)
+      if (this.cardsTurned) {
+        this.iC.processSelection(this.hand);
+      } else {
+        this.setRealCards();
+        this.startTimer();
+        this.hasStarted = true;
+        this.cardsTurned = true;
+      }
+      this.leverDrag.play();
+      if (!this.leverDrag.isPlaying) {
+        this.leverDrag.destroy();
+        console.log('lever');
+      }
+    }
+  }
+
 
   playDraw() {
     /*
@@ -421,90 +528,4 @@ class Table extends Phaser.Scene {
     */
   }
 
-  //Called whenever the lever is pulled, determines whether or not
-  //the card conditions permit the lever to move
-  checkCardCount() {
-
-    if (!this.leverMovable) {
-      return;
-    }
-    let cardCount = 0;
-    for (let i = 0; i < this.hand.length; i++) {
-      if (this.hand[i].isSelected) {
-        cardCount++;
-      }
-    }
-    if (cardCount == 3) {
-      this.lockpoint = 120;
-    } else {
-      this.lockpoint = 294;
-    }
-  }
-
-  //used based on user InfinitesLoop from stack overflow
-  //formats a given number to have leading zeroes
-  //used to convert positional data to animation frames
-  formatNum(num) {
-    num = num.toString();
-    while (num.length < 4) {
-      num = "0" + num;
-    }
-    return num;
-  }
-
-  update() {
-
-    //game over check
-    if (this.gameOver) {
-      return;
-    }
-
-    if (this.hasStarted) {
-      this.checkCardCount();
-    }
-    //LEVER MOTION
-
-    this.leverBoundary.x = Phaser.Math.Clamp(this.leverBoundary.x, this.lockpoint, 326);
-    //always move a little in the speed direction
-
-    //sets a reset point that resets all lever values
-    if (this.leverBoundary.x > this.leverResetPoint) {
-      this.leverSpeed = 0;
-      this.leverMovable = true;
-    }
-
-    if (this.leverMovable) {
-      this.leverSpeed = 2 + ((this.leverBoundary.x) / 50);//its resistance increases as player pulls
-    }
-
-    this.leverBoundary.x += this.leverSpeed;
-
-    this.boundInt = Phaser.Math.Snap.Ceil((this.leverBoundary.x), 1);
-
-    let percDone = 1 - ((this.boundInt - 156) / (335 - 156));
-    this.percDone = Phaser.Math.Clamp(percDone, 0, 1);
-
-    if (this.boundInt > 0) {
-      let progPerc = (Phaser.Math.Snap.Ceil((percDone) * 29, 1) + 31);
-      progPerc = Phaser.Math.Clamp(progPerc, 31, 60);
-      this.handle.setFrame('machine' + this.formatNum(progPerc));
-      this.machine.setFrame('body'+this.formatNum(progPerc));
-    }
-
-    if ((this.leverBoundary.x < this.leverIgnitePoint) && this.leverMovable) {
-      this.leverMovable = false;
-      if (this.hasStarted) {
-        this.iC.processSelection(this.hand);
-      } else {
-        this.setRealCards();
-        this.startTimer();
-        this.hasStarted = true;
-      }
-      this.leverDrag.play();
-      if (!this.leverDrag.isPlaying) {
-        this.leverDrag.destroy();
-        console.log('lever');
-      }
-    }
-  }
 }
