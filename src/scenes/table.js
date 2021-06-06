@@ -2,28 +2,6 @@ class Table extends Phaser.Scene {
   constructor() {
     super('tableScene')
   }
-
-  preload() {
-    this.load.path = 'assets/';
-
-    this.load.audio('music', 'audio/Ambience.mp3');
-
-    this.load.audio('cDraw1', 'audio/CardDraw-01.wav');
-    this.load.audio('cDraw2', 'audio/CardDraw-02.wav');
-    this.load.audio('cDraw3', 'audio/CardDraw-03.wav');
-    this.load.audio('cDraw4', 'audio/CardDraw-04.wav');
-    this.load.audio('cDraw5', 'audio/CardDraw-05.wav');
-
-    this.load.audio('cShuffle1', 'audio/CardShuffle-01.wav');
-    this.load.audio('cShuffle2', 'audio/CardShuffle-02.wav');
-    this.load.audio('cShuffle3', 'audio/CardShuffle-03.wav');
-    this.load.audio('cShuffle4', 'audio/CardShuffle-04.wav');
-
-    this.load.audio('tGrow1', 'audio/Rumble-01.wav');
-    this.load.audio('tGrow2', 'audio/Rumble-02.wav');
-    this.load.audio('tGrow3', 'audio/Rumble-03.wav');
-    this.load.audio('tGrow4', 'audio/Rumble-04.wav');
-}
   
   create() {
     //-----MACHINE IMAGE AND ANIMATIONS-------
@@ -400,7 +378,7 @@ class Table extends Phaser.Scene {
     }
   }
 
-
+//--------SFX--------
   playDraw() {
     //---CARD SELECT AUDIO---
     let selectConfig = {
@@ -434,13 +412,17 @@ class Table extends Phaser.Scene {
  
     if (!cDraw1.isPlaying) {
       cDraw1.destroy();
-    } else if (!cDraw2.isPlaying) {
+    }
+    if (!cDraw2.isPlaying) {
       cDraw2.destroy();
-    } else if (!cDraw3.isPlaying) {
+    }
+    if (!cDraw3.isPlaying) {
       cDraw3.destroy();
-    } else if (!cDraw4.isPlaying) {
+    }
+    if (!cDraw4.isPlaying) {
       cDraw4.destroy();
-    } else if (!cDraw5.isPlaying) {
+    }
+    if (!cDraw5.isPlaying) {
       cDraw5.destroy();
     }
   }
@@ -475,11 +457,14 @@ class Table extends Phaser.Scene {
  
     if (!cShuffle1.isPlaying) {
       cShuffle1.destroy();
-    } else if (!cShuffle2.isPlaying) {
+    }
+    if (!cShuffle2.isPlaying) {
       cShuffle2.destroy();
-    } else if (!cShuffle3.isPlaying) {
+    }
+    if (!cShuffle3.isPlaying) {
       cShuffle3.destroy();
-    } else if (!cShuffle4.isPlaying) {
+    }
+    if (!cShuffle4.isPlaying) {
       cShuffle4.destroy();
 
     }
@@ -514,11 +499,14 @@ class Table extends Phaser.Scene {
  
     if (!tGrow1.isPlaying) {
       tGrow1.destroy();
-    } else if (!tGrow2.isPlaying) {
+    }
+    if (!tGrow2.isPlaying) {
       tGrow2.destroy();
-    } else if (!tGrow3.isPlaying) {
+    }
+    if (!tGrow3.isPlaying) {
       tGrow3.destroy();
-    } else if (!tGrow4.isPlaying) {
+    }
+    if (!tGrow4.isPlaying) {
       tGrow4.destroy();
     }
   }
