@@ -38,7 +38,7 @@ class Table extends Phaser.Scene {
     this.leverMovable = false;//whether the player can move the lever
     this.lockpoint = 120;//the furthest point left the lever can reach, this changes frequently
 
-    //-----MUSIC-----
+    //-----AUDIO-----
     let musicConfig = {
       mute: false,
       volume: 0.1,
@@ -101,7 +101,6 @@ class Table extends Phaser.Scene {
       loop: false,
       delay: 0
     }
-
     this.leverDrag = this.sound.add('leverDrag', leverConfig);
 
     //------LEVER CONTROL SETUP-------
@@ -117,6 +116,17 @@ class Table extends Phaser.Scene {
       this.leverBoundary.x = dragX;//moves the lever along with the pointer
     });
 
+    let machineConfig = {
+      mute: false,
+      volume: 0.1,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0
+    }
+    let machineOn = this.sound.add('mOn', machineConfig);
+    
     //For purpose of repititious play, this determines if the final tarot card has been taken
     //by the player (the default is true)
     this.cardTaken = true;
@@ -127,6 +137,7 @@ class Table extends Phaser.Scene {
       if (this.cardTaken) {
         //does not use "hasStarted" because animations must occur before player can place input
         this.machine.anims.play('body-begin');
+        machineOn.play();
         //set up ending card
         this.flip = 180 * Phaser.Math.Between(0, 1);
         this.tCard = Phaser.Math.Between(0, 21);
@@ -174,7 +185,6 @@ class Table extends Phaser.Scene {
 
     //creates a fresh trie object
     this.iC.generateTrie();
-
   }
 
   startTimer() {
@@ -276,6 +286,17 @@ class Table extends Phaser.Scene {
   //presents a tarot card to the player, reveals it, then removes it from the screen 
   //each on consecutive clicks
   displayTarot() {
+    let machineConfig = {
+      mute: false,
+      volume: 0.1,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0
+    }
+    let machineOff = this.sound.add('mOff', machineConfig);
+    
     let clickedOnce = false;
     this.tarot = this.add.sprite(gameConfig.width / 2 + 10, gameConfig.height / 2, 'cards', 'backCard').setOrigin(.5, .5);
     this.tarot.setAngle(this.flip);
@@ -291,6 +312,7 @@ class Table extends Phaser.Scene {
       } else {
         this.tarot.destroy();
         this.machine.anims.play('body-reset');
+        machineOff.play();
       }
     });
 
@@ -396,7 +418,6 @@ class Table extends Phaser.Scene {
       this.leverDrag.play();
       if (!this.leverDrag.isPlaying) {
         this.leverDrag.destroy();
-        console.log('lever');
       }
     }
   }

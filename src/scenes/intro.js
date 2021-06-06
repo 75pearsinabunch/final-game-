@@ -26,6 +26,19 @@ class Intro extends Phaser.Scene{
         this.load.image('intro', 'assets/intro.png');
     }
     create(){
+        let sfxConfig = {
+            mute: false,
+            volume: 0.5,
+            rate: 1,
+            detune: 0,
+            seek: 0,
+            loop: false,
+            delay: 0
+        }
+        this.click = this.sound.add('click', sfxConfig);
+        let doorOpen = this.sound.add('doorOpen', sfxConfig);
+        doorOpen.play();
+        
         this.intro = this.add.sprite(0, 0, 'intro').setOrigin(0,0);
 
         this.dialog = this.cache.json.get('dialog');
@@ -38,6 +51,7 @@ class Intro extends Phaser.Scene{
     update() {
         if(cursors.isDown && !this.dialogTyping) {
             this.typeText();
+            this.click.play();
         }
     }
     typeText() {
