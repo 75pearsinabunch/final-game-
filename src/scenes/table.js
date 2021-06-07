@@ -2,7 +2,10 @@ class Table extends Phaser.Scene {
   constructor() {
     super('tableScene')
   }
-  
+
+  preload() {
+    this.load.image('finger', 'assets/hand_1.png');
+  }
   create() {
     //-----MACHINE IMAGE AND ANIMATIONS-------
     //These are animations performed by the machine body throughout play
@@ -10,7 +13,6 @@ class Table extends Phaser.Scene {
       key: 'body-begin',
       frames: this.anims.generateFrameNames('body', { prefix: 'body', start: 0, end: 30, zeroPad: 4 }),
     });
-
     this.machineAnim = this.anims.create({
       key: 'body-end',
       frames: this.anims.generateFrameNames('body', { prefix: 'body', start: 61, end: 90, zeroPad: 4 }),
@@ -24,7 +26,8 @@ class Table extends Phaser.Scene {
     //------HANDLE IMAGE AND ANIMATION---------
     //the main body of the machine's sprite
     this.machine = this.add.sprite(0, 0, 'body', "body0000").setOrigin(0, 0);
-
+    //------- finger ------
+    this.finger = this.add.image(150, score, 'finger').setOrigin(0, 0).setScale(0.25);//50-125-200 every 15
     //the sliding bar
     this.handle = this.add.sprite(0, 0, 'handle', 'machine0000').setOrigin(0);
 
@@ -35,7 +38,7 @@ class Table extends Phaser.Scene {
     this.leverMovable = false;//whether the player can move the lever
     this.lockpoint = 120;//the furthest point left the lever can reach, this changes frequently
 
-    //-----MUSIC-----
+    //-----AUDIO-----
     let musicConfig = {
       mute: false,
       volume: 0.1,
@@ -98,7 +101,6 @@ class Table extends Phaser.Scene {
       loop: false,
       delay: 0
     }
-
     this.leverDrag = this.sound.add('leverDrag', leverConfig);
 
     //------LEVER CONTROL SETUP-------
@@ -114,6 +116,17 @@ class Table extends Phaser.Scene {
       this.leverBoundary.x = dragX;//moves the lever along with the pointer
     });
 
+    let machineConfig = {
+      mute: false,
+      volume: 0.1,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0
+    }
+    let machineOn = this.sound.add('mOn', machineConfig);
+    
     //For purpose of repititious play, this determines if the final tarot card has been taken
     //by the player (the default is true)
     this.cardTaken = true;
@@ -124,6 +137,7 @@ class Table extends Phaser.Scene {
       if (this.cardTaken) {
         //does not use "hasStarted" because animations must occur before player can place input
         this.machine.anims.play('body-begin');
+        machineOn.play();
         //set up ending card
         this.flip = 180 * Phaser.Math.Between(0, 1);
         this.tCard = Phaser.Math.Between(0, 21);
@@ -171,7 +185,6 @@ class Table extends Phaser.Scene {
 
     //creates a fresh trie object
     this.iC.generateTrie();
-
   }
 
   startTimer() {
@@ -273,6 +286,17 @@ class Table extends Phaser.Scene {
   //presents a tarot card to the player, reveals it, then removes it from the screen 
   //each on consecutive clicks
   displayTarot() {
+    let machineConfig = {
+      mute: false,
+      volume: 0.1,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0
+    }
+    let machineOff = this.sound.add('mOff', machineConfig);
+    
     let clickedOnce = false;
     this.tarot = this.add.sprite(gameConfig.width / 2 + 10, gameConfig.height / 2, 'cards', 'backCard').setOrigin(.5, .5);
     this.tarot.setAngle(this.flip);
@@ -288,6 +312,7 @@ class Table extends Phaser.Scene {
       } else {
         this.tarot.destroy();
         this.machine.anims.play('body-reset');
+        machineOff.play();
       }
     });
 
@@ -331,7 +356,19 @@ class Table extends Phaser.Scene {
   update() {
     //check number of cards selected and determine max motion distance
     this.checkCardCount();
-
+    //-----in charge of moving the finger
+    if (score >= 50) {
+      this.finger.y = score;
+    } else {
+      this.finger.y = 50;
+      score = 50;
+    }
+    if (score <= 200) {
+      this.finger.y = score;
+    } else {
+      this.finger.y = 200;
+      score = 200;
+    }
     //clamp movement between current max left and the constant max right
     this.leverBoundary.x = Phaser.Math.Clamp(this.leverBoundary.x, this.lockpoint, 326);
     //always move a little in the speed direction
@@ -383,12 +420,11 @@ class Table extends Phaser.Scene {
       this.leverDrag.play();
       if (!this.leverDrag.isPlaying) {
         this.leverDrag.destroy();
-        console.log('lever');
       }
     }
   }
 
-//--------SFX--------
+  //--------SFX--------
   playDraw() {
     //---CARD SELECT AUDIO---
     let selectConfig = {
@@ -405,8 +441,8 @@ class Table extends Phaser.Scene {
     let cDraw3 = this.sound.add('cDraw3', selectConfig);
     let cDraw4 = this.sound.add('cDraw4', selectConfig);
     let cDraw5 = this.sound.add('cDraw5', selectConfig);
- 
- 
+
+
     let sfxVar = Math.floor(Math.random() * 5);
     if (sfxVar == 0) {
       cDraw1.play();
@@ -419,7 +455,7 @@ class Table extends Phaser.Scene {
     } else if (sfxVar == 4) {
       cDraw5.play();
     }
- 
+
     if (!cDraw1.isPlaying) {
       cDraw1.destroy();
     }
@@ -453,7 +489,7 @@ class Table extends Phaser.Scene {
     let cShuffle2 = this.sound.add('cShuffle2', shuffleConfig);
     let cShuffle3 = this.sound.add('cShuffle3', shuffleConfig);
     let cShuffle4 = this.sound.add('cShuffle4', shuffleConfig);
- 
+
     let sfxVar = Math.floor(Math.random() * 4);
     if (sfxVar == 0) {
       cShuffle1.play();
@@ -464,7 +500,7 @@ class Table extends Phaser.Scene {
     } else if (sfxVar == 3) {
       cShuffle4.play();
     }
- 
+
     if (!cShuffle1.isPlaying) {
       cShuffle1.destroy();
     }
@@ -495,7 +531,7 @@ class Table extends Phaser.Scene {
     let tGrow2 = this.sound.add('tGrow2', growthConfig);
     let tGrow3 = this.sound.add('tGrow3', growthConfig);
     let tGrow4 = this.sound.add('tGrow4', growthConfig);
-    
+
     let sfxVar = Math.floor(Math.random() * 4);
     if (sfxVar == 0) {
       tGrow1.play();
@@ -506,7 +542,7 @@ class Table extends Phaser.Scene {
     } else if (sfxVar == 3) {
       tGrow4.play();
     }
- 
+
     if (!tGrow1.isPlaying) {
       tGrow1.destroy();
     }
@@ -531,7 +567,7 @@ class Table extends Phaser.Scene {
       loop: false,
       delay: 0
     }
-    
+
     let pullTarot = this.sound.add('cardPull', pullConfig);
     pullTarot.play();
 
@@ -550,7 +586,7 @@ class Table extends Phaser.Scene {
       loop: false,
       delay: 0
     }
-    
+
     let tarotOut = this.sound.add('tarotOut', tarotConfig);
     tarotOut.play();
 

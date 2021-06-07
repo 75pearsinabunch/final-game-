@@ -128,6 +128,7 @@ class InputController {
   //plays approval sound
   //currently increases hand location
   approve() {
+    score = score - 15;
     //HAND APPROVED, PLAYER PROGRESSES (♪)
     this.scene.playGrowth();
   }
@@ -135,6 +136,7 @@ class InputController {
   //plays disaproval sound
   //currently lowers tower bar
   disapprove() {
+    score = score + 15;
     //HAND DISAPPROVED, PLAYER REGRESSES (♪)
     this.scene.playShuffle();
   }

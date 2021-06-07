@@ -28,6 +28,19 @@ class Attic extends Phaser.Scene {
 
     }
     create() {
+        let sfxConfig = {
+            mute: false,
+            volume: 0.5,
+            rate: 1,
+            detune: 0,
+            seek: 0,
+            loop: false,
+            delay: 0
+        }
+        this.click = this.sound.add('click', sfxConfig);
+        let footsteps = this.sound.add('footsteps', sfxConfig);
+        footsteps.play();
+        
         this.attic = this.add.sprite(0, 0, 'attic').setOrigin(0, 0);
         this.body = this.add.sprite(gameConfig.width / 2, 160, 'body', 'body0000').setOrigin(0, 0).setScale(0.5, 0.5);
         this.lever = this.add.sprite(gameConfig.width / 2, 160, 'handle', 'machine0000').setOrigin(0, 0).setScale(0.5, 0.5);
@@ -56,6 +69,7 @@ class Attic extends Phaser.Scene {
     update() {
         if (cursors.isDown && !this.talkTyping) {
             this.typeText();
+            this.click.play();
         }
     }
     typeText() {
