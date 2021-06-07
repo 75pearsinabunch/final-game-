@@ -22,6 +22,7 @@ pretty sure they are in control, to confused again.
 class TrieNode {
   constructor(slots) {
     this.children = new Array(slots + 1);
+    //randomly generate if this child will be a valid path link
     this.children[slots] = true;
     //this instantiates with all child possibilites as acceptable
   }
@@ -40,20 +41,25 @@ class PatternTrie {
 
   //Traverses a given pattern. If it's interrupted decider determines result
   checkPattern(hand) {
-    this.currRoot = this.root;//doing it iteratively, nothing fancy
+    this.currRoot = this.root;
     this.tempRoot = undefined;
-    for (let i = 0; i < hand.length; i++) {
+    for (let i = 0; i < hand.length; i++) {//basically always 0-2
       this.chI = this.getChildIndex(hand[i]);
       this.tempRoot = this.currRoot.children[this.chI];
-      //check for existance
-      if (this.tempRoot == undefined || !this.tempRoot.children[this.chI]) {
-        //make the thing we tried to land on not an option for continuity
-        this.tempRoot = new TrieNode(this.slots);
-        return this.sprout(this.currRoot, (i - 3));//credit the remaining to make a tree
+      //in the case that the root searched for doesn't exist
+
+      if (this.tempRoot == undefined) {
+        this.bud(this.currRoot);
+        return false;//effectively makes first two guesses always false
+      }
+
+      if (!this.tempRoot.children[this.stopI]) {
+        return false;
       }
 
       this.currRoot = this.tempRoot;//continue iteration
     }
+
     //close off this path
     this.currRoot.children[this.stopI] = false;
 
@@ -61,26 +67,17 @@ class PatternTrie {
     return true;
   }
 
+  //recursive function that creates branches off a given starting node
   //generates a node structure based off of given input
   //node: the last node reached before termination
-  sprout(node, credits = 0) {
-    let avNodes = node.children;
-    for (let i = 0; i < credits; i++) {
-      for (let j = 0; i < avNodes.length; i++) {
-        if (avNodes[this.stopI]) {
-          avNodes.splice(j, 1);//remove from list of possiblilites
-        }
+  bud(node) {
+    for (let j = 0; j < node.children.length - 1; j++) {//fill each slot w/ new possiblities
+      if (node.children[j] == undefined) {
+        node.children[j] = new TrieNode(this.slots);
       }
-      let ind = Phaser.Math.Between[0, avNodes.length - 1];
-      avNodes[ind] = new TrieNode(this.slots);
     }
-
-    //num to right of 0 is magic, empirically decided
-    if (Phaser.Math.Between(0,3) == 0) {
-      return true;
-    }
-    return false;
   }
+
 
   //determines the index a node's child should be based on the kind 
   //of input recieved

@@ -18,8 +18,24 @@ let score = 125;
   An explaination of specifically how the game works is in the PatternTrie.js file.
   For your benefit, we have left in console logs which state what form of input the
   current game is looking for.
+
   Suits: The card suit.
   Value: The card's value (face values range from prince = 11 to king = 13).
   slotNum: The slot selected's number, ordered 1-5 from left to right.
-  With this in mind
+
+  At the start of the game, every input is considered "incorrect" until the 3rd-5th try,
+  leaving the player somewhat perterbed for just the right amount of time. 
+
+  It takes this long because it waits for the first type of data it can recieve that creates
+  a "valid combination", that is, the first solid link of three cards. It then ONLY checks 
+  for this sort of combination. 
+
+  After this point, connections will become easier to create. Players will find success by remembering
+  what they've done and making subtle changes to their own pattern. 
+
+  Though with random inputs, the game still produces and interesting "uplifting series of successes" 
+  around the half way point. 
+
+  We take particular pride in pointing out that this system is in fact designed to conform to
+  the player's experience and actions and did NOT in fact rely on randomness, asside from the card generation.
 */

@@ -10,42 +10,22 @@ class InputController {
     this.patternTypes = {
       suit: 0,
       value: 1,
-      slotNum: 2,
+      notFound: 2,
     }
 
-    //Setting which pattern we'll be searching for
-    this.pattern = null;
-    this.generateTrie();
+    this.patternType = this.patternTypes.notFound;
+
+    this.suits = null;
+    this.values = null;
+
+    this.generateTries();
   }
 
-  generateTrie() {
-    if (this.pattern != null) {
-      this.pattern = null;
-    }
-
-    this.patternType = Phaser.Math.Between(0, 2)
-
-    //randomly determines what type of pattern will be detected
-    switch (this.patternType) {
-      case (this.patternTypes.suit):
-        //patterns based on card suits
-        //intentional comments for graders
-        console.log("Suit selected");
-        this.pattern = new PatternTrie(4, this, this.scene);
-        break;
-      case (this.patternTypes.value):
-        //patterns based on card values
-        //intentional comments for graders
-        console.log("Value selected");
-        this.pattern = new PatternTrie(13, this, this.scene);
-        break;
-      default:
-        //patterns on which slots were selected, card values notwithstanding
-        //intentional comments for graders
-        console.log("Slot Number selected");
-        this.pattern = new PatternTrie(5, this, this.scene);
-        break;
-    }
+  //used for resetting the game
+  generateTries() {
+    this.patternType = this.patternTypes.notFound;
+    this.suits = new PatternTrie(4, this, this.scene);
+    this.values = new PatternTrie(13, this, this.scene);
   }
 
   //Controlls response of all card elements controlled by this controller
@@ -72,24 +52,24 @@ class InputController {
       return;
     }
 
-    //instantiate to holders of copies of cards
-    this.hcV = []
+    this.hcS = [];//contains suit values
+    this.hcV = [];//contains value numbers
 
     //find cards selected
     for (let i = 0; i < hand.length; i++) {
       if (hand[i].isSelected) {
         switch (this.patternType) {
           case (this.patternTypes.suit):
-            this.hcV.push(hand[i].suit)
+            this.hcS.push(hand[i].suit)
             break;
           case (this.patternTypes.value):
             this.hcV.push(hand[i].value);
             break;
-          default:
-            this.hcV.push(i);
+          default://if a type has not been selected, we record all information
+            this.hcS.push(hand[i].suit)
+            this.hcV.push(hand[i].value);
             break;
         }
-        this.hcV.push(hand[i].value);
         //visual of flipping card
         this.flipping = this.scene.flipCard(hand[i], 'cards', 'back');
         //replace with a new card
@@ -108,20 +88,54 @@ class InputController {
         })
       }
     }
-    //if numeric, must use custom numeric sorting function
-    if(this.patternTypes.value || this.patternTypes.slotNum){
-      this.hcV.sort((l, r) => { return (l - r) });
-    }else{//otherwise, lexicographic will do fine
-      this.hcV.sort();
+
+    //This sorts the hands of types selected and checks to see if they are within
+    //the set of possiblilities to be approved of, and disapproves anyway
+
+    switch (this.patternType) {
+      case (this.patternTypes.suit):
+        this.hcS.sort();
+        if (this.suits.checkPattern(this.hcS)) {
+          this.approve();
+        } else {
+          this.disapprove();
+        }
+        break;
+      case (this.patternTypes.value):
+        this.hcV.sort((l, r) => { return (l - r) });
+        if (this.values.checkPattern(this.hcV)) {
+          this.approve();
+        } else {
+          this.disapprove();
+        };
+        break;
+      //if a type of value to watch for had not yet been selected, we look through all of them
+      //and go with the first affirmitive match 
+      default:
+        this.hcS.sort();
+        if (this.suits.checkPattern(this.hcS)) {
+          console.log("Approving of suits now");
+          this.patternType = this.patternTypes.suit //from hence forth, we only care about suits
+          this.approve();
+          break;
+        }
+
+        this.hcV.sort((l, r) => { return (l - r) });
+        if (this.values.checkPattern(this.hcV)) {
+          console.log("Approving of values now");
+          this.patternType = this.patternTypes.value //from hence forth, we only care about card values
+          this.approve();
+          break;
+        }
     }
 
-    //check to see if we have a match
-    if (this.pattern.checkPattern(this.hcV)) {
-      this.approve();
-    } else {
+    //this causes the hand indicator to drop only once on failed pick
+    if (this.patternType == this.patternTypes.notFound) {
       this.disapprove();
     }
+
   }
+
 
   //plays approval sound
   //currently increases hand location

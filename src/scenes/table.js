@@ -25,8 +25,8 @@ class Table extends Phaser.Scene {
     this.machine = this.add.sprite(0, 0, 'body', "body0000").setOrigin(0, 0);
 
     //-------wire attatched to finger----
-    this.wireOffset = (25-score);
-    this.wire = this.add.image(0,score+this.wireOffset,'wire').setOrigin(0)
+    this.wireOffset = (25 - score);
+    this.wire = this.add.image(0, score + this.wireOffset, 'wire').setOrigin(0)
     //------- finger ------
     this.finger = this.add.image(150, score, 'finger').setOrigin(0, 0).setScale(0.25);//50-125-200 every 15
 
@@ -128,7 +128,7 @@ class Table extends Phaser.Scene {
       delay: 0
     }
     let machineOn = this.sound.add('mOn', machineConfig);
-    
+
     //For purpose of repititious play, this determines if the final tarot card has been taken
     //by the player (the default is true)
     this.cardTaken = true;
@@ -162,6 +162,7 @@ class Table extends Phaser.Scene {
     //This on serves to reset the state of the game back to the start
     this.machine.on('animationcomplete-body-reset', () => {
       //reset interactability
+
       this.hasStarted = false;
       this.cardTaken = true;
       this.cardsTurned = false;
@@ -186,7 +187,7 @@ class Table extends Phaser.Scene {
     }
 
     //creates a fresh trie object
-    this.iC.generateTrie();
+    this.iC.generateTries();
   }
 
   startTimer() {
@@ -227,7 +228,7 @@ class Table extends Phaser.Scene {
       //a safety case to allow all player based actions to stop
       //once everything is guarenteed to stop, the game ends. 
       this.finishEvent = this.time.addEvent({
-        delay: (this.totalTime + 500),//one 
+        delay: (this.totalTime + 1000),
         callback: () => {
           this.finish()
         },
@@ -298,7 +299,7 @@ class Table extends Phaser.Scene {
       delay: 0
     }
     let machineOff = this.sound.add('mOff', machineConfig);
-    
+
     let clickedOnce = false;
     this.tarot = this.add.sprite(gameConfig.width / 2 + 10, gameConfig.height / 2, 'cards', 'backCard').setOrigin(.5, .5);
     this.tarot.setAngle(this.flip);
@@ -315,6 +316,7 @@ class Table extends Phaser.Scene {
         this.tarot.destroy();
         this.machine.anims.play('body-reset');
         machineOff.play();
+        score = 125//resets hand/wire position
       }
     });
 
@@ -362,18 +364,18 @@ class Table extends Phaser.Scene {
     //-----in charge of moving the finger
     if (score >= 50) {
 
-      this.finger.y =  Phaser.Math.Linear(this.finger.y, score, .3);
+      this.finger.y = Phaser.Math.Linear(this.finger.y, score, .3);
     } else {
       this.finger.y = 50;
       score = 50;
     }
     if (score <= 200) {
-      this.finger.y =  Phaser.Math.Linear(this.finger.y, score, .3);
+      this.finger.y = Phaser.Math.Linear(this.finger.y, score, .3);
     } else {
       this.finger.y = 200;
       score = 200;
     }
-    
+
     this.wire.y = this.finger.y + this.wireOffset;
 
     //clamp movement between current max left and the constant max right
