@@ -24,8 +24,13 @@ class Loading extends Phaser.Scene {
       this.load.atlas('cards', 'cardSheet.png', 'cardSheet.json');
       this.load.atlas('body', 'body.png', 'body.json');
       this.load.atlas('handle', 'handle.png', 'handle.json');
+
+      //misc last minute adds that didn't quite warrant a new sheet
+      this.load.image('finger', 'hand_1.png');
+      this.load.image('wire', 'wire.png');
       this.load.image('big', 'big_hand.png');
-        
+
+      //audio  
       this.load.audio('music', 'audio/Ambience.mp3');
 
       this.load.audio('cDraw1', 'audio/CardDraw-01.wav');

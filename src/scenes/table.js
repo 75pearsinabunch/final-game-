@@ -3,9 +3,6 @@ class Table extends Phaser.Scene {
     super('tableScene')
   }
 
-  preload() {
-    this.load.image('finger', 'assets/hand_1.png');
-  }
   create() {
     //-----MACHINE IMAGE AND ANIMATIONS-------
     //These are animations performed by the machine body throughout play
@@ -26,8 +23,13 @@ class Table extends Phaser.Scene {
     //------HANDLE IMAGE AND ANIMATION---------
     //the main body of the machine's sprite
     this.machine = this.add.sprite(0, 0, 'body', "body0000").setOrigin(0, 0);
+
+    //-------wire attatched to finger----
+    this.wireOffset = (25-score);
+    this.wire = this.add.image(0,score+this.wireOffset,'wire').setOrigin(0)
     //------- finger ------
     this.finger = this.add.image(150, score, 'finger').setOrigin(0, 0).setScale(0.25);//50-125-200 every 15
+
     //the sliding bar
     this.handle = this.add.sprite(0, 0, 'handle', 'machine0000').setOrigin(0);
 
@@ -372,6 +374,8 @@ class Table extends Phaser.Scene {
       score = 200;
     }
     
+    this.wire.y = this.finger.y + this.wireOffset;
+
     //clamp movement between current max left and the constant max right
     this.leverBoundary.x = Phaser.Math.Clamp(this.leverBoundary.x, this.lockpoint, 326);
     //always move a little in the speed direction
