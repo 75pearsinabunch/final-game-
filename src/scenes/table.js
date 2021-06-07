@@ -601,5 +601,4 @@ class Table extends Phaser.Scene {
       tarotOut.destroy();
     }
   }
-
 }
