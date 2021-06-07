@@ -1,8 +1,3 @@
-//trieTypes in order:
-//0) suit
-//1) value
-//2) slot number
-
 //Input logger serves to store player input and hold it as a repository
 //for use across all objects. 
 class InputController {
@@ -10,6 +5,8 @@ class InputController {
     //Variables
     this.scene = scene;
 
+    //enum determining what the data the system
+    //"pays attention to" through play
     this.patternTypes = {
       suit: 0,
       value: 1,

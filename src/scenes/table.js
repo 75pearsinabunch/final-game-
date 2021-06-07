@@ -356,19 +356,22 @@ class Table extends Phaser.Scene {
   update() {
     //check number of cards selected and determine max motion distance
     this.checkCardCount();
+
     //-----in charge of moving the finger
     if (score >= 50) {
-      this.finger.y = score;
+
+      this.finger.y =  Phaser.Math.Linear(this.finger.y, score, .3);
     } else {
       this.finger.y = 50;
       score = 50;
     }
     if (score <= 200) {
-      this.finger.y = score;
+      this.finger.y =  Phaser.Math.Linear(this.finger.y, score, .3);
     } else {
       this.finger.y = 200;
       score = 200;
     }
+    
     //clamp movement between current max left and the constant max right
     this.leverBoundary.x = Phaser.Math.Clamp(this.leverBoundary.x, this.lockpoint, 326);
     //always move a little in the speed direction
