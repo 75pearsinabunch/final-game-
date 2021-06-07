@@ -21,7 +21,6 @@ let score = 125;
 
   Suits: The card suit.
   Value: The card's value (face values range from prince = 11 to king = 13).
-  slotNum: The slot selected's number, ordered 1-5 from left to right.
 
   At the start of the game, every input is considered "incorrect" until the 3rd-5th try,
   leaving the player somewhat perterbed for just the right amount of time. 
