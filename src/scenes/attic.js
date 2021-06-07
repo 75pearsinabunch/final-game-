@@ -51,7 +51,6 @@ class Attic extends Phaser.Scene {
         this.nextText = this.add.bitmapText(this.NEXT_X, this.NEXT_Y, this.DBOX_FONT, '', this.TEXT_SIZE);
         cursors = this.input.mousePointer;
         this.typeText();
-        console.log("intro scene");
     }
 
     update() {
@@ -66,14 +65,11 @@ class Attic extends Phaser.Scene {
         if (this.talkLine > this.talk[this.talkConvo].length - 1) {
             this.talkLine = 0;
             this.talkConvo++;
-            console.log("to title scene");
             this.scene.start("tableScene");
         }
 
         if (this.talkConvo >= this.talk.length) {
-            console.log('End of Conversations');
             this.dialogbox.visible = false;
-
         } else {
             this.talkSpeaker = this.talk[this.talkConvo][this.talkLine]['speaker'];
             if (this.talk[this.talkConvo][this.talkLine]['newSpeaker']) {
