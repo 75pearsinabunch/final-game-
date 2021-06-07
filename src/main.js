@@ -19,7 +19,7 @@ let score = 125;
   For your benefit, we have left in console logs which state what form of input the
   current game is looking for.
   Suits: The card suit.
-  Value: The card's value (face values range from prince = 11 to king =13).
+  Value: The card's value (face values range from prince = 11 to king = 13).
   slotNum: The slot selected's number, ordered 1-5 from left to right.
   With this in mind
 */
