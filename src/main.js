@@ -14,6 +14,12 @@ let cursors = null;
 let score = 125;
 
 /*A NOTE FOR GRADERS (PLEASE READ AFTER FIRST PLAY THROUGH):
+  KNOWN BUG: Two playtesters out of 12 playing on chrome have encountered and error
+  in which the card flipping breaks the game. No-one on our team can re-create this 
+  dispite also functioning on chrome. Measures have been taken to avoid this problem
+  but whether or not this has actually been fixed is conjecture. 
+
+  Why this game is cool (but might not immediately seem like it):
   Our game is an experimental one, so this is a note for judging its functionality.
   An explaination of specifically how the game works is in the PatternTrie.js file.
   For your benefit, we have left in console logs which state what form of input the
