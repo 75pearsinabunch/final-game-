@@ -64,11 +64,11 @@ class Table extends Phaser.Scene {
 
     //instantiating 5 pictures of cards as the game begins
     for (let i = 0; i < 5; i++) {
-      this.cards = this.add.sprite(
+      this.cards = new PlayingCard(
+        this,//scene 
         (55 * i + 149), //x
         (gameConfig.height - 189),//y
-        'cards',
-        'back',
+        this.iC //input controller
       );
       this.cards.setScale(1.2, 1.2);
       this.cards.setAlpha(.7);
@@ -162,37 +162,21 @@ class Table extends Phaser.Scene {
     //This on serves to reset the state of the game back to the start
     this.machine.on('animationcomplete-body-reset', () => {
       //reset interactability
-
-      this.hasStarted = false;
-      this.cardTaken = true;
-      this.cardsTurned = false;
-      this.lockpoint = 120;
+      this.scene.restart();
       //lever movable should be equal to false already
     })
-  }
+  }//END CREATE
 
-  setRealCards() {
-    //Container for hand of cards
-    //instantiating 5 cards
-    for (let i = 0; i < 5; i++) {
-      //remove placeholder or previous card
-      this.hand[i].destroy();
-      //sets up new playing card objects in proper locations
-      this.hand[i] = new PlayingCard(
-        this,//scene 
-        (55 * i + 149), //x
-        (gameConfig.height - 189),//y
-        this.iC //input controller
-      );
+  showCardsInit(){
+    for(let i = 0; i<this.hand.length; i++){
+      this.hand[i].turnToFace();
+      this.hand[i].setActive();
+      this.hand[i].setPulse();
     }
-
-    //creates a fresh trie object
-    this.iC.generateTries();
   }
 
   startTimer() {
     this.totalTime = 70 * 1000;//length of one game
-    
     //does a backward spin to give the player the impression it is winding up
     //and to catch attention 
     this.startSpin = this.tweens.addCounter({
@@ -241,19 +225,13 @@ class Table extends Phaser.Scene {
   //and replacing the sprite's texture
   flipCard(card, set, image) {
     let originalScaleX = card.scaleX;//keeps original scale
-    let flipTween = this.tweens.addCounter({ 
+    let flipTween = this.tweens.addCounter({
       from: card.width,
       to: 0,
       duration: 100,
       onUpdate: (tween) => {
-        //break statement to avoid a hard crash in case card gets destroyed mid flip
-        if (card == undefined) {
-          tween.stop();
-          return;
-        }
-
         card.scaleX = (tween.getValue() / card.width) * originalScaleX;
-        if (tween.getValue() == 0) {
+        if (tween.getValue() == 0 && (card.scene != undefined)) {
           card.setTexture(`${set}`, `${image}`);
         }
       },
@@ -320,10 +298,10 @@ class Table extends Phaser.Scene {
         clickedOnce = true;
         this.playDraw();
       } else {
+        score = 125//resets hand/wire position
         this.tarot.destroy();
         this.machine.anims.play('body-reset');
         machineOff.play();
-        score = 125//resets hand/wire position
       }
     });
 
@@ -424,11 +402,10 @@ class Table extends Phaser.Scene {
     //this will either flip cards to begin play or process a current selection of hands
     if ((this.leverBoundary.x < this.leverIgnitePoint && this.leverMovable)) {
       this.leverMovable = false;
-      //console.log("cards turned: "+this.cardsTurned)
       if (this.cardsTurned) {
         this.iC.processSelection(this.hand);
       } else {
-        this.setRealCards();
+        this.showCardsInit();
         this.startTimer();
         this.hasStarted = true;
         this.cardsTurned = true;
