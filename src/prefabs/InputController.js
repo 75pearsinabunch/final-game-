@@ -36,6 +36,7 @@ class InputController {
       return;
     }
 
+    console.log("recieved click");
     //toggles card highlighting
     card.isSelected = !card.isSelected;
     if (card.isSelected) {
@@ -70,22 +71,14 @@ class InputController {
             this.hcV.push(hand[i].value);
             break;
         }
+
         //visual of flipping card
         this.flipping = this.scene.flipCard(hand[i], 'cards', 'back');
-        //replace with a new card
+        hand[i].deactiveColoration();
+        //change the card's value
         this.flipping.on('complete', (tween, targets) => {
-          //removes card from scene completely
-          this.replaceCard = new PlayingCard(
-            hand[i].scene,
-            hand[i].posX,
-            hand[i].posY,
-            hand[i].controller
-          );
-          //delete the old one
-          hand[i].destroy();
-          //refill the now vacant hand position
-          hand[i] = this.replaceCard;
-        })
+          hand[i].turnToFace();
+        });
       }
     }
 
