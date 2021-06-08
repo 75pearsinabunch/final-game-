@@ -191,7 +191,7 @@ class Table extends Phaser.Scene {
   }
 
   startTimer() {
-    this.totalTime = 90 * 1000;//length of one game
+    this.totalTime = 70 * 1000;//length of one game
     //does a backward spin to give the player the impression it is winding up
     //and to catch attention 
     this.startSpin = this.tweens.addCounter({
@@ -239,12 +239,17 @@ class Table extends Phaser.Scene {
   //Creates the illusion of a card flipping by shrinking in the X direction
   //and replacing the sprite's texture
   flipCard(card, set, image) {
+
     let originalScaleX = card.scaleX;
     let flipTween = this.tweens.addCounter({
       from: card.width,
       to: 0,
       duration: 100,
       onUpdate: (tween) => {
+        if (card == undefined) {
+          tween.stop();
+          console.warn("Sorry, something went wrong, please restart the game!");
+        }
         card.scaleX = (tween.getValue() / card.width) * originalScaleX;
         if (tween.getValue() == 0) {
           card.setTexture(`${set}`, `${image}`);

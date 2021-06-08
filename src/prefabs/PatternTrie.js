@@ -37,6 +37,7 @@ class PatternTrie {
     this.stopI = slots;
     this.scene = scene;
     this.iC = controller;
+    this.bud(this.root);
   }
 
   //Traverses a given pattern. If it's interrupted decider determines result
@@ -50,21 +51,24 @@ class PatternTrie {
 
       if (this.tempRoot == undefined) {
         this.bud(this.currRoot);
-        return false;//effectively makes first two guesses always false
+        this.tempRoot = this.currRoot.children[this.chI];
+        if(i == 2){
+          this.tempRoot.children[this.stopI] = false;
+        }
       }
 
       if (!this.tempRoot.children[this.stopI]) {
         return false;
       }
-
       this.currRoot = this.tempRoot;//continue iteration
     }
 
+    this.result = this.currRoot.children[this.stopI];
     //close off this path
     this.currRoot.children[this.stopI] = false;
 
     //checks to see if this is a valid stopping point
-    return true;
+    return this.result;
   }
 
   //recursive function that creates branches off a given starting node
@@ -78,7 +82,6 @@ class PatternTrie {
     }
   }
 
-
   //determines the index a node's child should be based on the kind 
   //of input recieved
   getChildIndex(card) {
@@ -86,15 +89,6 @@ class PatternTrie {
       return suits.indexOf(card - 1);//returns index based on place in global index
     }
     return (card - 1);//just return the value
-  }
-
-  //A testing function to determine the structure of a trie
-  printTrie(node) {
-    for (let i = 0; i < node.children.length; i++) {
-      if (node.children[i] != undefined) {
-        this.printTrie(node.children[i]);
-      }
-    }
   }
 
 }
