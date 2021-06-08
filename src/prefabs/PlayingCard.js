@@ -38,6 +38,7 @@ class PlayingCard extends Phaser.GameObjects.Sprite {
     this.tag = texture;
     this.controller = controller;
     this.isSelected = false;
+    
     this.setAlpha(.7);
     this.deactiveColoration();
   }
